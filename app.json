@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "POS",
+    "slug": "personal-operating-system",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": { "supportsTablet": true },
+    "android": { "adaptiveIcon": { "backgroundColor": "#F4F3EF" } },
+    "plugins": ["expo-font"],
+    "splash": { "backgroundColor": "#F4F3EF", "resizeMode": "contain" }
+  }
+}

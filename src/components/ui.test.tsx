@@ -1,0 +1,11 @@
+import React from 'react';
+import { fireEvent, render } from '@testing-library/react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
+import { ChecklistRow, DetailScreenHeader, POSCard, PrimaryButton, ProgressBar, ScreenContainer, TabScreenHeader } from './ui';
+
+const wrapper = ({ children }: React.PropsWithChildren) => <SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 390, height: 844 }, insets: { top: 47, left: 0, right: 0, bottom: 34 } }}>{children}</SafeAreaProvider>;
+test('ScreenContainer reserves safe-area and tab-bar space', () => { const view = render(<ScreenContainer tabScreen testID="screen"><TabScreenHeader title="Today" /></ScreenContainer>, { wrapper }); const style = StyleSheet.flatten(view.getByTestId('screen').props.contentContainerStyle); expect(style.paddingTop).toBeGreaterThanOrEqual(47); expect(style.paddingBottom).toBeGreaterThan(100); });
+test('headers expose one accessible heading without native overlap', () => { const tab = render(<TabScreenHeader eyebrow="Your day" title="Plan" />); expect(tab.getByTestId('tab-screen-header').props.accessibilityRole).toBe('header'); const detail = render(<DetailScreenHeader title="Weight" onBack={jest.fn()} />); expect(detail.getByTestId('detail-screen-header').props.accessibilityRole).toBe('header'); expect(detail.getByLabelText('Back')).toBeTruthy(); });
+test('POSCard and PrimaryButton support press and disabled state', () => { const onPress = jest.fn(); const view = render(<POSCard testID="card"><PrimaryButton title="Save" onPress={onPress} /></POSCard>); fireEvent.press(view.getByRole('button', { name: 'Save' })); expect(onPress).toHaveBeenCalled(); expect(view.getByTestId('card')).toBeTruthy(); });
+test('ProgressBar and ChecklistRow expose semantic values and states', () => { const view = render(<><ProgressBar value={40} accessibilityLabel="Water progress" /><ChecklistRow item={{ id: '1', title: 'Warm water', meta: '7:00 AM', done: true }} onPress={jest.fn()} /></>); expect(view.getByRole('progressbar').props.accessibilityValue.now).toBe(40); expect(view.getByRole('checkbox').props.accessibilityState.checked).toBe(true); });

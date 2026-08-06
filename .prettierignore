@@ -1,0 +1,15 @@
+node_modules/
+.expo/
+coverage/
+dist/
+build/
+web-build/
+package-lock.json
+
+# Existing prototype source is intentionally left unchanged during first-commit preparation.
+App.tsx
+app.json
+eslint.config.js
+jest.setup.js
+metro.config.js
+src/
