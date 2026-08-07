@@ -1,0 +1,53 @@
+name: Bug report
+description: Report a reproducible problem in POS Mobile.
+title: 'bug: '
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for helping improve POS Mobile. Do not include private user data or credentials.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest reliable sequence that demonstrates the problem.
+      placeholder: |
+        1. Open…
+        2. Tap…
+        3. Observe…
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - iOS
+        - Android
+        - Both
+        - Unable to determine
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App revision or branch
+      placeholder: Branch name or commit hash
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Relevant evidence
+      description: Add sanitized logs, screenshots, or recordings. Remove sensitive data first.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials and private health, finance, nutrition, and profile data.
+          required: true
