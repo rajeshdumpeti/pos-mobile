@@ -10,7 +10,9 @@ the independently managed POS mock backend.
 - Expo SDK 54
 - React 19
 - TypeScript
-- React Navigation
+- Expo Router (built on React Navigation)
+- TanStack React Query
+- Documented ownership boundaries for future Zustand, React Hook Form, Zod, and Expo SQLite use
 - Jest and React Native Testing Library
 - ESLint and Prettier
 
@@ -70,3 +72,10 @@ data.
 
 See `docs/repository-setup.md` for additional local-development and repository
 preparation guidance.
+
+## Frontend architecture
+
+Expo Router owns navigation and route files only compose feature screens. The
+provider order, dependency rules, state ownership, offline storage policy, and
+feature-module convention are documented in
+[`docs/frontend-architecture.md`](docs/frontend-architecture.md).
