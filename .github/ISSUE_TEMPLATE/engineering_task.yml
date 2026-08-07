@@ -1,0 +1,37 @@
+name: Engineering task
+description: Propose bounded technical work for POS Mobile.
+title: 'chore: '
+body:
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Intended outcome
+      description: Describe the user or engineering outcome, not only the implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: List what is included and explicitly excluded.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Provide observable completion criteria and required validation.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Risks and dependencies
+      description: Note API, environment, accessibility, privacy, offline, or cross-repository dependencies.
+  - type: checkboxes
+    id: approval
+    attributes:
+      label: Product boundary
+      options:
+        - label: This task follows approved POS scope and does not invent product requirements.
+          required: true
