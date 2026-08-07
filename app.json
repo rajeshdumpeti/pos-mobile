@@ -5,9 +5,36 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "ios": { "supportsTablet": true },
-    "android": { "adaptiveIcon": { "backgroundColor": "#F4F3EF" } },
-    "plugins": ["expo-font"],
-    "splash": { "backgroundColor": "#F4F3EF", "resizeMode": "contain" }
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.personaloperatingsystem.mobile",
+      "buildNumber": "1"
+    },
+    "android": {
+      "package": "com.personaloperatingsystem.mobile",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#F4F3EF"
+      }
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "splash": {
+      "backgroundColor": "#F4F3EF",
+      "resizeMode": "contain"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7eda4110-a762-4d91-b02e-646e9ff2c1fa"
+      }
+    },
+    "owner": "rajesh05db",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "enabled": false
+    }
   }
 }
