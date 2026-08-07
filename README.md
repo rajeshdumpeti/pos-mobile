@@ -33,6 +33,19 @@ npm start
 From the Expo terminal, press `i` for iOS or `a` for Android. Expo Go may also
 be used where supported.
 
+For local Metro development with an already installed development client:
+
+```bash
+npx expo start --dev-client
+```
+
+The repository includes local EAS build profiles for future development,
+preview, staging, and production builds. The Expo project is linked;
+credentials, device registration, cloud builds, TestFlight, and production
+submission are **NOT YET CONFIGURED**. See `docs/devops/eas-build.md` for the
+profile mapping, versioning strategy, safe validation commands, and required
+founder actions.
+
 ## Quality checks
 
 ```bash
