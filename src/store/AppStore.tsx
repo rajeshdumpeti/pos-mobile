@@ -15,7 +15,18 @@ export function AppProvider({ children }: React.PropsWithChildren) {
   const [data, setData] = useState(demoData);
   const [offline, setOffline] = useState(false);
   useEffect(() => {
-    fetch(`${appConfig.apiUrl}/dashboard`).then(r => r.ok ? r.json() : Promise.reject()).then(() => setOffline(false)).catch(() => setOffline(true));
+    const controller = new AbortController();
+
+    fetch(`${appConfig.apiUrl}/dashboard`, { signal: controller.signal })
+      .then(response => (response.ok ? response.json() : Promise.reject()))
+      .then(() => setOffline(false))
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setOffline(true);
+        }
+      });
+
+    return () => controller.abort();
   }, []);
   const value = useMemo<Context>(() => ({
     data, offline,
