@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { appConfig } from '../config/env';
 import { demoData } from '../mock/demo';
 import { DemoData, Item } from '../types';
 
@@ -14,8 +15,7 @@ export function AppProvider({ children }: React.PropsWithChildren) {
   const [data, setData] = useState(demoData);
   const [offline, setOffline] = useState(false);
   useEffect(() => {
-    const base = process.env.EXPO_PUBLIC_API_URL ?? 'http://127.0.0.1:8000';
-    fetch(`${base}/dashboard`).then(r => r.ok ? r.json() : Promise.reject()).then(() => setOffline(false)).catch(() => setOffline(true));
+    fetch(`${appConfig.apiUrl}/dashboard`).then(r => r.ok ? r.json() : Promise.reject()).then(() => setOffline(false)).catch(() => setOffline(true));
   }, []);
   const value = useMemo<Context>(() => ({
     data, offline,
