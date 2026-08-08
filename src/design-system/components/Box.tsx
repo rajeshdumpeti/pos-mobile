@@ -20,6 +20,7 @@ export function Box({
   paddingVertical,
   radius,
   surface = 'transparent',
+  className,
   style,
   ...props
 }: BoxProps) {
@@ -34,6 +35,7 @@ export function Box({
   };
   return (
     <View
+      className={className}
       style={[
         { backgroundColor: surfaces[surface] },
         padding && { padding: theme.spacing[padding] },

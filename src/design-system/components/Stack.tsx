@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-
+import { joinClassNames } from '@/design-system/nativewind';
 import { SpacingToken } from '@/design-system/tokens';
 import { useTheme } from '@/design-system/theme';
 
@@ -17,14 +16,15 @@ export function Stack({
   direction = 'vertical',
   align = 'stretch',
   justify = 'flex-start',
+  className,
   style,
   ...props
 }: StackProps) {
   const theme = useTheme();
   return (
     <Box
+      className={joinClassNames('shrink-0', className)}
       style={[
-        styles.base,
         {
           flexDirection: direction === 'vertical' ? 'column' : 'row',
           gap: theme.spacing[gap],
@@ -37,4 +37,3 @@ export function Stack({
     />
   );
 }
-const styles = StyleSheet.create({ base: { flexShrink: 0 } });

@@ -1,0 +1,73 @@
+import { colorScheme, vars } from 'nativewind';
+
+import type { POSThemeTokens } from '@/design-system/tokens';
+import type { ThemePreference } from '@/design-system/theme';
+
+export function createNativeWindThemeVariables(theme: POSThemeTokens) {
+  return vars({
+    '--pos-color-background-primary': theme.colors.backgroundPrimary,
+    '--pos-color-background-secondary': theme.colors.backgroundSecondary,
+    '--pos-color-surface-primary': theme.colors.surfacePrimary,
+    '--pos-color-surface-elevated': theme.colors.surfaceElevated,
+    '--pos-color-surface-glass': theme.colors.surfaceGlass,
+    '--pos-color-accent-primary': theme.colors.accentPrimary,
+    '--pos-color-accent-pressed': theme.colors.accentPressed,
+    '--pos-color-accent-soft': theme.colors.accentSoft,
+    '--pos-color-text-primary': theme.colors.textPrimary,
+    '--pos-color-text-secondary': theme.colors.textSecondary,
+    '--pos-color-text-muted': theme.colors.textMuted,
+    '--pos-color-text-inverse': theme.colors.textInverse,
+    '--pos-color-border-default': theme.colors.borderDefault,
+    '--pos-color-divider': theme.colors.divider,
+    '--pos-color-focus-ring': theme.colors.focusRing,
+    '--pos-color-success': theme.colors.success,
+    '--pos-color-success-soft': theme.colors.successSoft,
+    '--pos-color-warning': theme.colors.warning,
+    '--pos-color-warning-soft': theme.colors.warningSoft,
+    '--pos-color-danger': theme.colors.danger,
+    '--pos-color-danger-soft': theme.colors.dangerSoft,
+    '--pos-color-info': theme.colors.info,
+    '--pos-color-info-soft': theme.colors.infoSoft,
+    '--pos-spacing-none': theme.spacing.none,
+    '--pos-spacing-xxs': theme.spacing.xxs,
+    '--pos-spacing-xs': theme.spacing.xs,
+    '--pos-spacing-sm': theme.spacing.sm,
+    '--pos-spacing-md': theme.spacing.md,
+    '--pos-spacing-lg': theme.spacing.lg,
+    '--pos-spacing-xl': theme.spacing.xl,
+    '--pos-spacing-xxl': theme.spacing.xxl,
+    '--pos-spacing-xxxl': theme.spacing.xxxl,
+    '--pos-spacing-huge': theme.spacing.huge,
+    '--pos-radius-none': theme.radii.none,
+    '--pos-radius-small': theme.radii.small,
+    '--pos-radius-medium': theme.radii.medium,
+    '--pos-radius-large': theme.radii.large,
+    '--pos-radius-pill': theme.radii.pill,
+    '--pos-font-size-display': theme.typography.display.fontSize,
+    '--pos-line-height-display': theme.typography.display.lineHeight,
+    '--pos-letter-spacing-display': theme.typography.display.letterSpacing,
+    '--pos-font-size-heading': theme.typography.heading.fontSize,
+    '--pos-line-height-heading': theme.typography.heading.lineHeight,
+    '--pos-letter-spacing-heading': theme.typography.heading.letterSpacing,
+    '--pos-font-size-title': theme.typography.title.fontSize,
+    '--pos-line-height-title': theme.typography.title.lineHeight,
+    '--pos-font-size-body': theme.typography.body.fontSize,
+    '--pos-line-height-body': theme.typography.body.lineHeight,
+    '--pos-font-size-label': theme.typography.label.fontSize,
+    '--pos-line-height-label': theme.typography.label.lineHeight,
+    '--pos-font-size-caption': theme.typography.caption.fontSize,
+    '--pos-line-height-caption': theme.typography.caption.lineHeight,
+    '--pos-font-weight-regular': theme.fontWeights.regular,
+    '--pos-font-weight-medium': theme.fontWeights.medium,
+    '--pos-font-weight-semibold': theme.fontWeights.semibold,
+    '--pos-font-weight-bold': theme.fontWeights.bold,
+    '--pos-minimum-touch-target': theme.accessibility.minimumTouchTarget,
+    '--pos-opacity-disabled': theme.opacity.disabled,
+    '--pos-opacity-pressed': theme.opacity.pressed,
+    '--pos-opacity-muted': theme.opacity.muted,
+  });
+}
+
+export function syncNativeWindColorScheme(preference: ThemePreference): void {
+  colorScheme.set(preference);
+}

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Pressable, PressableProps, StyleSheet } from 'react-native';
+import { Pressable, PressableProps } from 'react-native';
 
 import { useTheme } from '@/design-system/theme';
+import { joinClassNames } from '@/design-system/nativewind';
 import { AppText } from './AppText';
 import { LoadingIndicator } from './LoadingIndicator';
 
@@ -16,6 +17,7 @@ export function Button({
   variant = 'primary',
   loading = false,
   disabled = false,
+  className,
   style,
   ...props
 }: ButtonProps) {
@@ -34,9 +36,9 @@ export function Button({
       accessibilityRole="button"
       accessibilityLabel={props.accessibilityLabel ?? label}
       accessibilityState={{ disabled: unavailable, busy: loading }}
+      className={joinClassNames('min-w-touch items-center justify-center', className)}
       disabled={unavailable}
       style={(state) => [
-        styles.button,
         {
           minHeight: theme.accessibility.minimumTouchTarget,
           borderRadius: theme.radii.small,
@@ -61,6 +63,3 @@ export function Button({
     </Pressable>
   );
 }
-const styles = StyleSheet.create({
-  button: { minWidth: 44, alignItems: 'center', justifyContent: 'center' },
-});
