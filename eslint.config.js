@@ -14,5 +14,5 @@ module.exports = tseslint.config(
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-  { files: ['jest.setup.js', 'metro.config.js', 'eslint.config.js'], languageOptions: { globals: { ...globals.node, ...globals.jest } }, rules: { '@typescript-eslint/no-require-imports': 'off' } },
+  { files: ['babel.config.js', 'jest.setup.js', 'metro.config.js', 'tailwind.config.js', 'eslint.config.js'], languageOptions: { globals: { ...globals.node, ...globals.jest } }, rules: { '@typescript-eslint/no-require-imports': 'off' } },
 );

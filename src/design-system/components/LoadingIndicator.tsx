@@ -8,14 +8,17 @@ import { Stack } from './Stack';
 export function LoadingIndicator({
   label = 'Loading',
   inverse = false,
+  className,
 }: {
   label?: string;
   inverse?: boolean;
+  className?: string;
 }) {
   const theme = useTheme();
   return (
     <Stack
       direction="horizontal"
+      className={className}
       gap="xs"
       align="center"
       accessible
