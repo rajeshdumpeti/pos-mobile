@@ -1,32 +1,32 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
-import { typography, usePOSTheme } from '@/theme';
+import { POSIcon, POSIconName } from '@/design-system/icons';
+import { useTheme } from '@/design-system/theme';
 
 const icons = {
-  index: 'sunny-outline',
-  plan: 'calendar-outline',
-  log: 'add-circle-outline',
-  focus: 'timer-outline',
-  review: 'stats-chart-outline',
-} as const;
+  index: 'today',
+  plan: 'calendar',
+  log: 'log',
+  focus: 'focus',
+  review: 'review',
+} as const satisfies Record<string, POSIconName>;
 
 export default function TabsLayout() {
-  const { colors } = usePOSTheme();
+  const theme = useTheme();
 
   return (
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: colors.action.primary,
-        tabBarInactiveTintColor: colors.text.muted,
-        tabBarLabelStyle: typography.tabLabel,
+        tabBarActiveTintColor: theme.colors.accentPrimary,
+        tabBarInactiveTintColor: theme.colors.textMuted,
+        tabBarLabelStyle: theme.typography.caption,
         tabBarStyle: {
-          backgroundColor: colors.surface.primary,
-          borderTopColor: colors.border.default,
+          backgroundColor: theme.colors.surfacePrimary,
+          borderTopColor: theme.colors.borderDefault,
         },
         tabBarIcon: ({ color, size }) => (
-          <Ionicons name={icons[route.name as keyof typeof icons]} color={color} size={size} />
+          <POSIcon name={icons[route.name as keyof typeof icons]} color={color} size={size} />
         ),
       })}
     >

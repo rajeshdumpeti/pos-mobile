@@ -1,15 +1,14 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useColorScheme } from 'react-native';
 
+import { useTheme } from '@/design-system/theme';
 import { AppProviders } from '@/providers/AppProviders';
 
-export default function RootLayout() {
-  const dark = useColorScheme() === 'dark';
-
+function ThemedRootNavigator() {
+  const theme = useTheme();
   return (
-    <AppProviders>
-      <StatusBar style={dark ? 'light' : 'dark'} />
+    <>
+      <StatusBar style={theme.isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
@@ -17,6 +16,14 @@ export default function RootLayout() {
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AppProviders>
+      <ThemedRootNavigator />
     </AppProviders>
   );
 }

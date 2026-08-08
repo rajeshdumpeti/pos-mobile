@@ -5,19 +5,25 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AppErrorBoundary } from '@/components/feedback/AppErrorBoundary';
+import { ThemeProvider, ThemePreference } from '@/design-system/theme';
 import { createQueryClient } from '@/lib/query/queryClient';
 import { AppProvider } from '@/store/AppStore';
 
-export function AppProviders({ children }: React.PropsWithChildren) {
+export function AppProviders({
+  children,
+  themePreference = 'system',
+}: React.PropsWithChildren<{ themePreference?: ThemePreference }>) {
   const [queryClient] = useState(createQueryClient);
 
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <AppErrorBoundary>
-          <QueryClientProvider client={queryClient}>
-            <AppProvider>{children}</AppProvider>
-          </QueryClientProvider>
+          <ThemeProvider preference={themePreference}>
+            <QueryClientProvider client={queryClient}>
+              <AppProvider>{children}</AppProvider>
+            </QueryClientProvider>
+          </ThemeProvider>
         </AppErrorBoundary>
       </SafeAreaProvider>
     </GestureHandlerRootView>
