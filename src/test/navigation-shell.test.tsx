@@ -5,6 +5,12 @@ jest.mock('@/providers/AppProviders', () => ({
   AppProviders: ({ children }: React.PropsWithChildren) => children,
 }));
 
+jest.mock('@/design-system/theme', () => {
+  const actual =
+    jest.requireActual<typeof import('@/design-system/theme')>('@/design-system/theme');
+  return { ...actual, useTheme: () => actual.createTheme('light') };
+});
+
 jest.mock('expo-router', () => {
   const ReactModule = jest.requireActual<typeof import('react')>('react');
   const { Text: MockText } = jest.requireActual<typeof import('react-native')>('react-native');

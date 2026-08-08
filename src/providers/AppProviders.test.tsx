@@ -3,6 +3,7 @@ import { render, waitFor } from '@testing-library/react-native';
 import { Text } from 'react-native';
 
 import { AppProviders } from '@/providers/AppProviders';
+import { useTheme } from '@/design-system/theme';
 
 jest.mock('react-native-gesture-handler', () => {
   const { View } = jest.requireActual<typeof import('react-native')>('react-native');
@@ -19,19 +20,20 @@ jest.mock('react-native-safe-area-context', () => {
 
 function QueryConsumer() {
   const queryClient = useQueryClient();
-  return <Text>{queryClient ? 'providers ready' : 'missing providers'}</Text>;
+  const theme = useTheme();
+  return <Text>{queryClient ? `providers ready:${theme.mode}` : 'missing providers'}</Text>;
 }
 
 test('renders application children with the React Query provider', async () => {
   const fetchMock = jest.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('offline'));
 
   const view = render(
-    <AppProviders>
+    <AppProviders themePreference="dark">
       <QueryConsumer />
     </AppProviders>,
   );
 
-  expect(view.getByText('providers ready')).toBeTruthy();
+  expect(view.getByText('providers ready:dark')).toBeTruthy();
   await waitFor(() => expect(fetchMock).toHaveBeenCalled());
   fetchMock.mockRestore();
 });
