@@ -9,7 +9,13 @@ export type AppTextProps = TextProps & {
   color?: 'primary' | 'secondary' | 'muted' | 'inverse' | 'danger';
 };
 
-export function AppText({ variant = 'body', color = 'primary', style, ...props }: AppTextProps) {
+export function AppText({
+  variant = 'body',
+  color = 'primary',
+  className,
+  style,
+  ...props
+}: AppTextProps) {
   const theme = useTheme();
   const colors = {
     primary: theme.colors.textPrimary,
@@ -21,6 +27,7 @@ export function AppText({ variant = 'body', color = 'primary', style, ...props }
   return (
     <Text
       allowFontScaling
+      className={className}
       style={[theme.typography[variant], { color: colors[color] }, style]}
       {...props}
     />

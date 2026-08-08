@@ -7,13 +7,22 @@ export function ErrorState({
   title = 'Something went wrong',
   message,
   onRetry,
+  className,
 }: {
   title?: string;
   message: string;
   onRetry?: () => void;
+  className?: string;
 }) {
   return (
-    <Stack accessible accessibilityRole="alert" align="center" gap="sm" padding="xl">
+    <Stack
+      accessible
+      accessibilityRole="alert"
+      className={className}
+      align="center"
+      gap="sm"
+      padding="xl"
+    >
       <POSIcon name="error" size={28} tone="danger" />
       <AppText variant="title" accessibilityRole="header">
         {title}

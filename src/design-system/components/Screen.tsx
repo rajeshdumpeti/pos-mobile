@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/design-system/theme';
 
 export type ScreenProps = React.PropsWithChildren<{
+  className?: string;
   scroll?: boolean;
   keyboardSafe?: boolean;
   contentContainerStyle?: ScrollViewProps['contentContainerStyle'];
@@ -19,6 +20,7 @@ export type ScreenProps = React.PropsWithChildren<{
 }>;
 export function Screen({
   children,
+  className,
   scroll = true,
   keyboardSafe = false,
   contentContainerStyle,
@@ -38,6 +40,7 @@ export function Screen({
   ];
   const body = scroll ? (
     <ScrollView
+      className={className}
       testID={testID}
       style={{ backgroundColor: theme.colors.backgroundPrimary }}
       contentContainerStyle={content}
@@ -48,6 +51,7 @@ export function Screen({
     </ScrollView>
   ) : (
     <View
+      className={className}
       testID={testID}
       style={[content, { flex: 1, backgroundColor: theme.colors.backgroundPrimary }]}
     >

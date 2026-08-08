@@ -5,10 +5,11 @@ import { useTheme } from '@/design-system/theme';
 
 import { Box } from './Box';
 export type CardProps = ViewProps & { variant?: 'standard' | 'elevated' };
-export function Card({ variant = 'standard', style, ...props }: CardProps) {
+export function Card({ variant = 'standard', className, style, ...props }: CardProps) {
   const theme = useTheme();
   return (
     <Box
+      className={className}
       surface={variant === 'elevated' ? 'elevated' : 'surface'}
       padding="md"
       radius="medium"

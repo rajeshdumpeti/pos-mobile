@@ -21,6 +21,7 @@ export function TextInput({
   error,
   disabled = false,
   accessibilityLabel,
+  className,
   style,
   ...props
 }: TextInputProps) {
@@ -36,6 +37,7 @@ export function TextInput({
         accessibilityLabel={accessibilityLabel ?? label}
         accessibilityHint={error ?? hint}
         accessibilityState={{ disabled }}
+        className={className}
         editable={!disabled}
         placeholderTextColor={theme.colors.textMuted}
         onFocus={(event) => {

@@ -6,17 +6,20 @@ export function Skeleton({
   height = 16,
   radius = 'small',
   accessibilityLabel = 'Loading content',
+  className,
 }: {
   width?: ViewStyle['width'];
   height?: number;
   radius?: 'small' | 'medium' | 'pill';
   accessibilityLabel?: string;
+  className?: string;
 }) {
   const theme = useTheme();
   return (
     <View
       accessibilityRole="progressbar"
       accessibilityLabel={accessibilityLabel}
+      className={className}
       style={{
         width,
         height,

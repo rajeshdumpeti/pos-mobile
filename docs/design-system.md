@@ -9,6 +9,7 @@ feature-specific composition.
 src/design-system/
   tokens/       typed semantic values shared by both themes
   theme/        ThemeProvider, theme resolution, and useTheme()
+  nativewind/   runtime token variables and safe class composition
   icons/        the controlled @expo/vector-icons boundary
   components/   accessible product-agnostic React Native primitives
 ```
@@ -16,7 +17,7 @@ src/design-system/
 Imports flow in one direction:
 
 ```text
-tokens → theme → icons and primitives → feature components → route composition
+tokens → theme → NativeWind adapter → icons and primitives → feature components → routes
 ```
 
 Tokens and the theme must never import feature code. Shared primitives may consume tokens, theme,
@@ -43,6 +44,40 @@ persistence is intentionally not implemented in this milestone.
 Components access the current typed theme only through `useTheme()`. New code must not call
 `useColorScheme` independently to choose POS colors.
 
+## NativeWind's role
+
+NativeWind is the approved utility-class layer for layout and state composition. It consumes POS
+decisions; it does not own them. `tailwind.config.js` exposes semantic names such as
+`bg-surface-primary`, `text-text-secondary`, `border-border`, `bg-accent`, `p-pos-md`, and
+`rounded-pos-md`. Screen-specific names and raw palette utilities are not approved for product UI.
+
+Tailwind scans active `app/` and `src/` code while excluding the preserved prototype and legacy
+theme directories. Classes must be present as complete strings so the build can discover them. Do
+not construct partial class names dynamically.
+
+NativeWind compiles class rules ahead of time, but the POS values referenced by those rules are CSS
+variables. `ThemeProvider` creates those variables from the current typed POS theme and applies them
+at the application root. It also synchronizes NativeWind's color-scheme setting from the same
+`light | dark | system` preference. This preserves one runtime owner and allows future explicit
+preferences without persistence in this milestone.
+
+This variable adapter is the safest maintainable bridge for NativeWind v4: build-time Tailwind
+configuration cannot import the TypeScript runtime theme directly, and static light/dark copies in
+configuration would create a second token source. CSS-variable support is strongest for ordinary
+React Native style values; platform-specific shadows and stateful calculations remain inline styles.
+
+## Choosing className, component props, or StyleSheet
+
+- Use primitive props first for POS semantics: `surface`, `padding`, `radius`, text variants, button
+  variants, and accessibility behavior.
+- Use `className` for local layout composition and supported interaction utilities when a primitive
+  prop does not already express the intent.
+- Use `style` or `StyleSheet` for calculated values, safe-area measurements, platform behavior,
+  dynamic press/focus/error styles, shadows, and third-party native APIs.
+- Caller classes must not override accessibility requirements such as the 44-point target or create
+  unapproved visual variants. Shared reusable rules belong in the primitive rather than repeated
+  feature strings.
+
 ## Components
 
 Feature code should import primitives through `@/design-system` or the narrow
@@ -57,7 +92,7 @@ import { AppText, Button, Card, Screen, Stack } from '@/design-system';
 export function ExampleScreen() {
   return (
     <Screen>
-      <Stack gap="lg">
+      <Stack gap="lg" className="w-full">
         <AppText variant="heading">Example</AppText>
         <Card>
           <AppText>Feature-owned content</AppText>
@@ -94,7 +129,6 @@ The following remain deliberately deferred until an approved consumer requires t
 - custom font loading and typography migration
 - persisted appearance preference
 - feature-specific composite components
-- NativeWind
 - MMKV
 
 The preserved prototype is not migrated wholesale by this milestone. Future feature work should

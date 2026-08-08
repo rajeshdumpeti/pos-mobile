@@ -9,15 +9,17 @@ export function EmptyState({
   icon = 'leaf',
   actionLabel,
   onAction,
+  className,
 }: {
   title: string;
   message: string;
   icon?: POSIconName;
   actionLabel?: string;
   onAction?: () => void;
+  className?: string;
 }) {
   return (
-    <Stack align="center" gap="sm" padding="xl">
+    <Stack className={className} align="center" gap="sm" padding="xl">
       <POSIcon name={icon} size={28} tone="muted" />
       <AppText variant="title" accessibilityRole="header">
         {title}

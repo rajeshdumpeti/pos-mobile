@@ -1,7 +1,8 @@
 import React from 'react';
-import { Pressable, PressableProps, StyleSheet } from 'react-native';
+import { Pressable, PressableProps } from 'react-native';
 
 import { POSIcon, POSIconName } from '@/design-system/icons';
+import { joinClassNames } from '@/design-system/nativewind';
 import { useTheme } from '@/design-system/theme';
 
 export type IconButtonProps = Omit<PressableProps, 'children'> & {
@@ -12,6 +13,7 @@ export function IconButton({
   icon,
   accessibilityLabel,
   disabled = false,
+  className,
   style,
   ...props
 }: IconButtonProps) {
@@ -23,10 +25,10 @@ export function IconButton({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       accessibilityState={{ disabled: isDisabled }}
+      className={joinClassNames('items-center justify-center', className)}
       disabled={isDisabled}
       hitSlop={4}
       style={(state) => [
-        styles.button,
         {
           width: theme.accessibility.minimumTouchTarget,
           height: theme.accessibility.minimumTouchTarget,
@@ -41,4 +43,3 @@ export function IconButton({
     </Pressable>
   );
 }
-const styles = StyleSheet.create({ button: { alignItems: 'center', justifyContent: 'center' } });
