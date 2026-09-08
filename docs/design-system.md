@@ -150,16 +150,17 @@ change centrally. Direct `@expo/vector-icons` imports are not allowed outside
 
 `src/design-system/illustrations` provides `IllustrationFrame` and a centralized semantic registry.
 Future screens request `welcome`, `emailVerification`, `passwordReset`, `success`, `offline`, or
-`securityState`; they do not import arbitrary artwork assets directly. Each registry entry owns its
-artwork component, allowing future light/dark-aware image replacement in one location without
-editing screen consumers.
+`securityState`; they do not import arbitrary artwork assets directly. The six original POS-owned
+Authentication PNG assets live in `illustrations/assets/auth/`, and each registry entry is their
+only selection boundary. Replace artwork by changing that entry and its local asset, never screen
+consumers.
 
-All roles currently resolve to an existing information icon as a temporary generic fallback. No
-final raster or vector artwork is included. Unknown and missing runtime roles safely resolve to the
-same fallback. The frame uses `accentSoft` and supports the current light or dark theme. Meaningful
-artwork requires an `accessibilityLabel`; decorative artwork requires `decorative` and is hidden
-from assistive technology. The frame owns meaningful image semantics so its child artwork is not
-announced twice.
+The transparent assets use the frame's `accentSoft` semantic surface and therefore work across the
+current light and dark themes. Unknown and missing runtime roles still safely resolve to the
+code-native information-icon fallback. Meaningful artwork requires an `accessibilityLabel`;
+decorative artwork requires `decorative` and is hidden from assistive technology. The frame owns
+meaningful image semantics so its child artwork is not announced twice. Authentication UI may add
+restrained entrance or success motion later; artwork files contain no embedded motion.
 
 ```tsx
 <IllustrationFrame

@@ -7,6 +7,7 @@ export type IllustrationArtworkProps = { size: number };
 
 export type IllustrationEntry = {
   Artwork: ComponentType<IllustrationArtworkProps>;
+  assetPath?: string;
 };
 
 export type IllustrationFrameProps = {

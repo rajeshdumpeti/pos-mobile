@@ -2,7 +2,12 @@ import { render } from '@testing-library/react-native';
 
 import { createTheme, ThemeProvider } from '@/design-system/theme';
 
-import { IllustrationFrame, illustrationRegistry, resolveIllustration } from './index';
+import {
+  IllustrationFrame,
+  illustrationAssetPaths,
+  illustrationRegistry,
+  resolveIllustration,
+} from './index';
 import type { IllustrationRole } from './types';
 
 test.each<IllustrationRole>([
@@ -15,6 +20,8 @@ test.each<IllustrationRole>([
 ])('resolves the registered artwork for %s', (role) => {
   expect(resolveIllustration(role)).toBe(illustrationRegistry[role]);
   expect(typeof resolveIllustration(role).Artwork).toBe('function');
+  expect(resolveIllustration(role).assetPath).toBe(illustrationAssetPaths[role]);
+  expect(illustrationAssetPaths[role]).toMatch(/^\.\/assets\/auth\/.+\.png$/);
 });
 
 test.each([undefined, null, '', 'unknown', 'toString', '__proto__'])(
@@ -51,4 +58,14 @@ test('renders a missing role safely and hides decorative artwork from accessibil
     view.getByTestId('illustration', { includeHiddenElements: true }).props
       .importantForAccessibility,
   ).toBe('no-hide-descendants');
+});
+
+test('keeps the local raster artwork hidden so the frame is the only meaningful image', () => {
+  const view = render(
+    <ThemeProvider preference="light">
+      <IllustrationFrame role="success" accessibilityLabel="Password updated" />
+    </ThemeProvider>,
+  );
+
+  expect(view.getAllByRole('image', { name: 'Password updated' })).toHaveLength(1);
 });
