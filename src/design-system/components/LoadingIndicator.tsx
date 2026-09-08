@@ -8,10 +8,12 @@ import { Stack } from './Stack';
 export function LoadingIndicator({
   label = 'Loading',
   inverse = false,
+  onAccent = false,
   className,
 }: {
   label?: string;
   inverse?: boolean;
+  onAccent?: boolean;
   className?: string;
 }) {
   const theme = useTheme();
@@ -25,8 +27,16 @@ export function LoadingIndicator({
       accessibilityRole="progressbar"
       accessibilityLabel={label}
     >
-      <ActivityIndicator color={inverse ? theme.colors.textInverse : theme.colors.accentPrimary} />
-      <AppText variant="label" color={inverse ? 'inverse' : 'secondary'}>
+      <ActivityIndicator
+        color={
+          onAccent
+            ? theme.colors.onAccent
+            : inverse
+              ? theme.colors.textInverse
+              : theme.colors.accentPrimary
+        }
+      />
+      <AppText variant="label" color={onAccent ? 'onAccent' : inverse ? 'inverse' : 'secondary'}>
         {label}
       </AppText>
     </Stack>

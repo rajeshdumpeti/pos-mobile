@@ -30,6 +30,7 @@ module.exports = {
           DEFAULT: 'var(--pos-color-accent-primary)',
           pressed: 'var(--pos-color-accent-pressed)',
           soft: 'var(--pos-color-accent-soft)',
+          content: 'var(--pos-color-on-accent)',
         },
         status: {
           success: 'var(--pos-color-success)',

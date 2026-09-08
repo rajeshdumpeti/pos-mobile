@@ -29,7 +29,8 @@ export function Button({
     ghost: 'transparent',
     destructive: theme.colors.danger,
   }[variant];
-  const textColor = variant === 'primary' || variant === 'destructive' ? 'inverse' : 'primary';
+  const textColor =
+    variant === 'primary' ? 'onAccent' : variant === 'destructive' ? 'inverse' : 'accent';
   return (
     <Pressable
       {...props}
@@ -45,7 +46,11 @@ export function Button({
           paddingHorizontal: theme.spacing.lg,
           backgroundColor:
             state.pressed && variant === 'primary' ? theme.colors.accentPressed : background,
-          opacity: unavailable ? theme.opacity.disabled : state.pressed ? theme.opacity.pressed : 1,
+          opacity: unavailable
+            ? theme.opacity.disabled
+            : state.pressed && variant !== 'primary'
+              ? theme.opacity.pressed
+              : 1,
         },
         typeof style === 'function' ? style(state) : style,
       ]}
@@ -53,7 +58,8 @@ export function Button({
       {loading ? (
         <LoadingIndicator
           label={`${label}, loading`}
-          inverse={variant === 'primary' || variant === 'destructive'}
+          inverse={variant === 'destructive'}
+          onAccent={variant === 'primary'}
         />
       ) : (
         <AppText variant="label" color={textColor}>

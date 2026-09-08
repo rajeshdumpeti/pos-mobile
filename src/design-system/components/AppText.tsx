@@ -6,7 +6,7 @@ import { useTheme } from '@/design-system/theme';
 
 export type AppTextProps = TextProps & {
   variant?: TypographyToken;
-  color?: 'primary' | 'secondary' | 'muted' | 'inverse' | 'danger';
+  color?: 'primary' | 'secondary' | 'muted' | 'inverse' | 'danger' | 'accent' | 'onAccent';
 };
 
 export function AppText({
@@ -23,6 +23,8 @@ export function AppText({
     muted: theme.colors.textMuted,
     inverse: theme.colors.textInverse,
     danger: theme.colors.danger,
+    accent: theme.colors.accentPrimary,
+    onAccent: theme.colors.onAccent,
   };
   return (
     <Text

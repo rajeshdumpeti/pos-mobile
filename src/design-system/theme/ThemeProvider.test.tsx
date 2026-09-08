@@ -31,3 +31,26 @@ test('useTheme returns the provider-owned theme', () => {
 test('useTheme rejects use outside the provider', () => {
   expect(() => render(<ThemeConsumer />)).toThrow('useTheme must be used inside ThemeProvider');
 });
+
+test('defaults missing system appearance to light and keeps both themes structurally valid', () => {
+  expect(resolveThemeMode('system', null)).toBe('light');
+  expect(resolveThemeMode('system', undefined)).toBe('light');
+  expect(resolveThemeMode('dark', 'light')).toBe('dark');
+  expect(Object.keys(createTheme('light').colors)).toEqual(Object.keys(createTheme('dark').colors));
+});
+
+test('updates consumers when the explicit preference changes', () => {
+  const view = render(
+    <ThemeProvider preference="light">
+      <ThemeConsumer />
+    </ThemeProvider>,
+  );
+  expect(view.getByText(`light:${createTheme('light').colors.backgroundPrimary}`)).toBeTruthy();
+
+  view.rerender(
+    <ThemeProvider preference="dark">
+      <ThemeConsumer />
+    </ThemeProvider>,
+  );
+  expect(view.getByText(`dark:${createTheme('dark').colors.backgroundPrimary}`)).toBeTruthy();
+});

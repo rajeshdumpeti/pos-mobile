@@ -11,6 +11,7 @@ src/design-system/
   theme/        ThemeProvider, theme resolution, and useTheme()
   nativewind/   runtime token variables and safe class composition
   icons/        the controlled @expo/vector-icons boundary
+  illustrations/ semantic artwork selection and accessible framing
   components/   accessible product-agnostic React Native primitives
 ```
 
@@ -44,12 +45,38 @@ persistence is intentionally not implemented in this milestone.
 Components access the current typed theme only through `useTheme()`. New code must not call
 `useColorScheme` independently to choose POS colors.
 
+## Premium violet primary direction
+
+Premium violet is the official global POS primary accent. `tokens/index.ts` is its single source of
+truth for both appearances. `accentPrimary` drives primary actions, links, selected controls, and
+loading indicators; `accentPressed` drives active primary actions; `accentSoft` provides subtle
+primary surfaces; `focusRing` provides primary border and focus treatment; and `onAccent` supplies
+readable text and icons on primary actions. Existing background, surface, text, border, success,
+warning, danger, and informational roles remain independent.
+
+Feature screens consume those semantic roles through the theme, NativeWind, or shared primitives.
+They must not contain direct violet values, visual-color aliases, or screen-specific accent tokens.
+Changing the global primary direction requires changing palette values in the token source rather
+than editing consumers.
+
+Primary buttons retain full opacity while pressed so the pressed token remains visibly violet and
+keeps its tested content contrast. Loading content on a primary action uses `onAccent`. Secondary
+and ghost actions use `accentPrimary`; inputs use `focusRing`; and icon tone `accent` resolves to the
+same primary role.
+
+Unit checks require at least 4.5:1 contrast for primary action content and 3:1 for focus treatment
+against supported opaque surfaces in light and dark appearances. Disabled controls retain their
+existing reduced-opacity treatment. Final composed screens still require device and screen-reader
+verification.
+
 ## NativeWind's role
 
 NativeWind is the approved utility-class layer for layout and state composition. It consumes POS
 decisions; it does not own them. `tailwind.config.js` exposes semantic names such as
 `bg-surface-primary`, `text-text-secondary`, `border-border`, `bg-accent`, `p-pos-md`, and
-`rounded-pos-md`. Screen-specific names and raw palette utilities are not approved for product UI.
+`rounded-pos-md`. The primary mappings include `bg-accent`, `bg-accent-pressed`, `bg-accent-soft`,
+`text-accent-content`, and `border-border-focus`. Screen-specific names and raw palette utilities are
+not approved for product UI.
 
 Tailwind scans active `app/` and `src/` code. Classes must be present as complete strings so the
 build can discover them. Do not construct partial class names dynamically.
@@ -110,6 +137,32 @@ prevent vendor-specific names from spreading through features and allow the unde
 change centrally. Direct `@expo/vector-icons` imports are not allowed outside
 `src/design-system/icons`.
 
+## Replaceable illustrations
+
+`src/design-system/illustrations` provides `IllustrationFrame` and a centralized semantic registry.
+Future screens request `welcome`, `emailVerification`, `passwordReset`, `success`, `offline`, or
+`securityState`; they do not import arbitrary artwork assets directly. Each registry entry owns its
+artwork component, allowing future light/dark-aware image replacement in one location without
+editing screen consumers.
+
+All roles currently resolve to an existing information icon as a temporary generic fallback. No
+final raster or vector artwork is included. Unknown and missing runtime roles safely resolve to the
+same fallback. The frame uses `accentSoft` and supports the current light or dark theme. Meaningful
+artwork requires an `accessibilityLabel`; decorative artwork requires `decorative` and is hidden
+from assistive technology. The frame owns meaningful image semantics so its child artwork is not
+announced twice.
+
+```tsx
+<IllustrationFrame
+  role="emailVerification"
+  accessibilityLabel="Check your email to verify your account"
+/>
+<IllustrationFrame role="welcome" decorative />
+```
+
+Final Authentication illustrations and exact Authentication UI are deferred to the dedicated
+Authentication UI rebuild milestone.
+
 ## Accessibility baseline
 
 - Interactive controls meet the 44-point minimum touch target.
@@ -130,3 +183,5 @@ The following remain deliberately deferred until an approved consumer requires t
 - MMKV
 
 Future approved feature work should consume the design system with visual and behavior tests.
+The provider's explicit appearance input exists for testing and future composition; user-facing
+appearance settings and persistence belong to the later 1.B Theme System milestone.

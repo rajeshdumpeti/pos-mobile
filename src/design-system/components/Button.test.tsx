@@ -1,6 +1,7 @@
 import { fireEvent, render } from '@testing-library/react-native';
+import { ActivityIndicator } from 'react-native';
 
-import { ThemeProvider } from '@/design-system/theme';
+import { createTheme, ThemeProvider } from '@/design-system/theme';
 
 import { Button } from './Button';
 
@@ -30,3 +31,33 @@ test('disabled and loading buttons are unavailable and announce state', () => {
   expect(loading.getByRole('button', { name: 'Save' }).props.accessibilityState.busy).toBe(true);
   expect(loading.getByRole('progressbar', { name: 'Save, loading' })).toBeTruthy();
 });
+
+test.each(['light', 'dark'] as const)(
+  'uses semantic primary colors for normal, pressed, and loading states in %s',
+  (mode) => {
+    const colors = createTheme(mode).colors;
+    const view = render(
+      <ThemeProvider preference={mode}>
+        <Button label="Continue" />
+      </ThemeProvider>,
+    );
+
+    const button = view.getByRole('button');
+    expect(button).toHaveStyle({ backgroundColor: colors.accentPrimary });
+    expect(view.getByText('Continue')).toHaveStyle({ color: colors.onAccent });
+
+    view.rerender(
+      <ThemeProvider preference={mode}>
+        <Button label="Continue" testOnly_pressed />
+      </ThemeProvider>,
+    );
+    expect(button).toHaveStyle({ backgroundColor: colors.accentPressed, opacity: 1 });
+
+    view.rerender(
+      <ThemeProvider preference={mode}>
+        <Button label="Continue" loading />
+      </ThemeProvider>,
+    );
+    expect(view.UNSAFE_getByType(ActivityIndicator).props.color).toBe(colors.onAccent);
+  },
+);

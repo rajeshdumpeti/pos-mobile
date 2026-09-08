@@ -13,6 +13,7 @@ export function createNativeWindThemeVariables(theme: POSThemeTokens) {
     '--pos-color-accent-primary': theme.colors.accentPrimary,
     '--pos-color-accent-pressed': theme.colors.accentPressed,
     '--pos-color-accent-soft': theme.colors.accentSoft,
+    '--pos-color-on-accent': theme.colors.onAccent,
     '--pos-color-text-primary': theme.colors.textPrimary,
     '--pos-color-text-secondary': theme.colors.textSecondary,
     '--pos-color-text-muted': theme.colors.textMuted,
