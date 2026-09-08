@@ -1,7 +1,7 @@
 import { colorScheme, vars } from 'nativewind';
 
 import type { POSThemeTokens } from '@/design-system/tokens';
-import type { ThemePreference } from '@/design-system/theme';
+import type { ThemePreference } from '@/design-system/theme/appearancePreference';
 
 export function createNativeWindThemeVariables(theme: POSThemeTokens) {
   return vars({
