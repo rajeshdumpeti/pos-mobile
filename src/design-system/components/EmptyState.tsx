@@ -6,7 +6,7 @@ import { Stack } from './Stack';
 export function EmptyState({
   title,
   message,
-  icon = 'leaf',
+  icon,
   actionLabel,
   onAction,
   className,
@@ -20,7 +20,7 @@ export function EmptyState({
 }) {
   return (
     <Stack className={className} align="center" gap="sm" padding="xl">
-      <POSIcon name={icon} size={28} tone="muted" />
+      {icon ? <POSIcon name={icon} size={28} tone="muted" /> : null}
       <AppText variant="title" accessibilityRole="header">
         {title}
       </AppText>

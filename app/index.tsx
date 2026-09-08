@@ -1,5 +1,5 @@
-import { Redirect } from 'expo-router';
+import { FoundationScreen } from '@/features/foundation/FoundationScreen';
 
 export default function IndexRoute() {
-  return <Redirect href="/(app)/(tabs)" />;
+  return <FoundationScreen />;
 }

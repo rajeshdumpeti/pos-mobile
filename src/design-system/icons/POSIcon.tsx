@@ -11,13 +11,8 @@ const iconMap = {
   check: 'checkmark',
   close: 'close',
   error: 'warning-outline',
-  focus: 'timer-outline',
   info: 'information-circle-outline',
-  leaf: 'leaf-outline',
-  log: 'add-circle-outline',
-  review: 'stats-chart-outline',
   search: 'search-outline',
-  today: 'sunny-outline',
 } as const satisfies Record<string, React.ComponentProps<typeof Ionicons>['name']>;
 
 export type POSIconName = keyof typeof iconMap;
