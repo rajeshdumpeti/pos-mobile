@@ -56,8 +56,9 @@ Its order is deliberate:
 
 1. Gesture Handler owns the native gesture root.
 2. Safe Area exposes platform insets.
-3. The app error boundary provides accessible recovery without deleting data.
-4. React Query owns future remote/server state and cache lifecycle.
+3. ThemeProvider restores and resolves the local appearance preference.
+4. The app error boundary provides accessible recovery without deleting data.
+5. React Query owns future remote/server state and cache lifecycle.
 
 Database initialization may be added here only after a real schema and migration
 contract exists. Initialization errors must reach the recovery boundary; they
@@ -70,7 +71,8 @@ must never trigger an automatic database or preference reset.
 | Component-only UI state                 | React component                                 |
 | Shared temporary client state           | Zustand feature or shared store, once installed |
 | Server state                            | TanStack React Query                            |
-| Small durable non-sensitive preferences | MMKV-backed preference adapter                  |
+| Appearance preference                   | Theme-owned AsyncStorage adapter                |
+| Other durable non-sensitive preferences | Add an approved adapter with its first contract |
 | Structured offline/domain records       | Expo SQLite repository, once installed          |
 | Form state                              | React Hook Form, once installed                 |
 | Validation                              | Zod schema owned by the feature, once installed |
@@ -84,10 +86,10 @@ Zustand, React Hook Form, Zod, and Expo SQLite are intentionally not installed
 until their first approved runtime consumer is implemented. The ownership rules
 remain fixed while avoiding dormant direct dependencies.
 
-MMKV is intentionally not installed in this milestone. It requires a native
-development runtime and no durable preference contract exists yet. Add it only
-with an approved native-capability escalation and an Expo Go fallback or an
-approved development-client workflow.
+The appearance preference is the only durable preference implemented. ThemeProvider owns its
+hydration and exposes a storage-agnostic hook; routes and future Settings UI must not import
+AsyncStorage. The value is local-only and never enters backend, Authentication, URL, or analytics
+state. Other preference storage requires an approved contract rather than reuse by convenience.
 
 ## API and environment boundaries
 
@@ -125,4 +127,5 @@ native projects as part of ordinary frontend work.
 
 Temporary assumptions: authentication and database initialization are not yet implemented. The
 foundation entry is a boot-safe placeholder and must be replaced by the first approved roadmap
-screen rather than expanded into product behavior.
+screen rather than expanded into product behavior. Appearance restoration completes before that
+entry renders, using an accessible non-product progress state during the single storage read.

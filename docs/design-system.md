@@ -37,13 +37,22 @@ when they are documented by the component's behavior.
 
 ## Theme and dark-mode policy
 
-`ThemeProvider` is composed once in `AppProviders`. The default preference is `system`, resolved
-through React Native `useColorScheme`. The provider also accepts explicit `light` or `dark` values so
-a future Settings preference can override the system without changing consumers. Preference
-persistence is intentionally not implemented in this milestone.
+`ThemeProvider` is composed once in `AppProviders` and is the single owner of appearance state.
+`ThemePreference` is the stored user choice: `system`, `light`, or `dark`. `ResolvedAppearance` is
+the effective `light` or `dark` mode applied to semantic tokens. `system` follows React Native
+`useColorScheme` and responds to later device changes; forced light or dark ignores device changes.
+
+On startup, the provider reads the non-sensitive preference from a theme-owned AsyncStorage adapter.
+Until that one read completes, it renders an accessible `Restoring appearance` progress state rather
+than exposing a screen with provisional tokens. Missing or malformed values and read failures fall
+back to `system`, so persistence cannot prevent startup. A preference change updates in-memory theme
+state immediately and then writes it once. Write failures leave the new preference active for the
+current session and do not crash.
 
 Components access the current typed theme only through `useTheme()`. New code must not call
-`useColorScheme` independently to choose POS colors.
+`useColorScheme` independently to choose POS colors. A future Settings screen will consume
+`useThemePreference()` and must not call AsyncStorage or own theme state. Appearance preferences are
+local-only and are not synchronized through backend, Authentication, URL, or analytics state.
 
 ## Premium violet primary direction
 
@@ -83,9 +92,9 @@ build can discover them. Do not construct partial class names dynamically.
 
 NativeWind compiles class rules ahead of time, but the POS values referenced by those rules are CSS
 variables. `ThemeProvider` creates those variables from the current typed POS theme and applies them
-at the application root. It also synchronizes NativeWind's color-scheme setting from the same
-`light | dark | system` preference. This preserves one runtime owner and allows future explicit
-preferences without persistence in this milestone.
+at the application root. It also synchronizes NativeWind's color-scheme setting from the hydrated
+`light | dark | system` preference. A preference or system-appearance change resolves a complete
+semantic theme first, then updates NativeWind and all shared primitives from that same value.
 
 This variable adapter is the safest maintainable bridge for NativeWind v4: build-time Tailwind
 configuration cannot import the TypeScript runtime theme directly, and static light/dark copies in
@@ -178,10 +187,9 @@ Authentication UI rebuild milestone.
 The following remain deliberately deferred until an approved consumer requires them:
 
 - custom font loading and typography migration
-- persisted appearance preference
 - feature-specific composite components
 - MMKV
 
 Future approved feature work should consume the design system with visual and behavior tests.
-The provider's explicit appearance input exists for testing and future composition; user-facing
-appearance settings and persistence belong to the later 1.B Theme System milestone.
+The provider's explicit appearance prop remains available for deterministic tests and controlled
+composition. No user-facing appearance settings are implemented in this foundation milestone.

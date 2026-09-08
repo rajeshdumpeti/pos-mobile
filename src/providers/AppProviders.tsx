@@ -10,7 +10,7 @@ import { createQueryClient } from '@/lib/query/queryClient';
 
 export function AppProviders({
   children,
-  themePreference = 'system',
+  themePreference,
 }: React.PropsWithChildren<{ themePreference?: ThemePreference }>) {
   const [queryClient] = useState(createQueryClient);
 
