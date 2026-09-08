@@ -1,5 +1,6 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { AppText, Button, Stack } from '@/design-system/components';
 
 type Props = React.PropsWithChildren;
 type State = { error: Error | null };
@@ -27,40 +28,23 @@ export class AppErrorBoundary extends React.Component<Props, State> {
     }
 
     return (
-      <View accessible accessibilityRole="alert" style={styles.container}>
-        <Text accessibilityRole="header" style={styles.title}>
+      <Stack
+        accessible
+        accessibilityRole="alert"
+        align="center"
+        justify="center"
+        padding="xl"
+        style={{ flex: 1 }}
+      >
+        <AppText accessibilityRole="header" variant="title">
           POS could not finish starting
-        </Text>
-        <Text style={styles.message}>
-          Your local data was not reset. Try loading the app again.
-        </Text>
-        {__DEV__ ? <Text style={styles.diagnostic}>{this.state.error.message}</Text> : null}
-        <Pressable accessibilityRole="button" onPress={this.retry} style={styles.button}>
-          <Text style={styles.buttonLabel}>Try again</Text>
-        </Pressable>
-      </View>
+        </AppText>
+        <AppText color="secondary" style={{ textAlign: 'center' }}>
+          Try loading the app again.
+        </AppText>
+        {__DEV__ ? <AppText color="muted">{this.state.error.message}</AppText> : null}
+        <Button label="Try again" onPress={this.retry} />
+      </Stack>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
-    padding: 24,
-    backgroundColor: '#F6F5F1',
-  },
-  title: { fontSize: 22, lineHeight: 28, fontWeight: '700', color: '#16211C' },
-  message: { fontSize: 16, lineHeight: 24, textAlign: 'center', color: '#3C4842' },
-  diagnostic: { fontSize: 12, lineHeight: 17, color: '#68736D' },
-  button: {
-    minHeight: 48,
-    justifyContent: 'center',
-    borderRadius: 12,
-    paddingHorizontal: 20,
-    backgroundColor: '#315F4A',
-  },
-  buttonLabel: { fontSize: 16, fontWeight: '700', color: '#FFFFFF' },
-});

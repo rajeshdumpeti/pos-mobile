@@ -13,9 +13,6 @@ function ThemedRootNavigator() {
       <StatusBar style={theme.isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(app)" />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </>

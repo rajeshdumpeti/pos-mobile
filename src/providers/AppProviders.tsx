@@ -7,7 +7,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppErrorBoundary } from '@/components/feedback/AppErrorBoundary';
 import { ThemeProvider, ThemePreference } from '@/design-system/theme';
 import { createQueryClient } from '@/lib/query/queryClient';
-import { AppProvider } from '@/store/AppStore';
 
 export function AppProviders({
   children,
@@ -18,13 +17,11 @@ export function AppProviders({
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <AppErrorBoundary>
-          <ThemeProvider preference={themePreference}>
-            <QueryClientProvider client={queryClient}>
-              <AppProvider>{children}</AppProvider>
-            </QueryClientProvider>
-          </ThemeProvider>
-        </AppErrorBoundary>
+        <ThemeProvider preference={themePreference}>
+          <AppErrorBoundary>
+            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+          </AppErrorBoundary>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { render, waitFor } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 import { Text } from 'react-native';
 
 import { AppProviders } from '@/providers/AppProviders';
@@ -24,9 +24,7 @@ function QueryConsumer() {
   return <Text>{queryClient ? `providers ready:${theme.mode}` : 'missing providers'}</Text>;
 }
 
-test('renders application children with the React Query provider', async () => {
-  const fetchMock = jest.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('offline'));
-
+test('renders application children with the React Query provider', () => {
   const view = render(
     <AppProviders themePreference="dark">
       <QueryConsumer />
@@ -34,6 +32,4 @@ test('renders application children with the React Query provider', async () => {
   );
 
   expect(view.getByText('providers ready:dark')).toBeTruthy();
-  await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-  fetchMock.mockRestore();
 });

@@ -7,33 +7,30 @@ product behavior or final screen designs.
 
 ```text
 app/                         Expo Router layouts and thin route composition
-src/components/              shared, product-agnostic UI and feedback
+src/components/              shared, product-agnostic feedback infrastructure
 src/config/                  typed application configuration
 src/database/                future SQLite schema, migrations, repositories
-src/features/                vertically owned product or reference modules
+src/features/                vertically owned product modules and temporary foundation state
 src/lib/query/               shared React Query configuration
 src/providers/               app-wide provider composition
 src/services/                future shared transport/API primitives
-src/store/                   shared temporary client state only
-src/theme/                   existing semantic design tokens and theme helpers
+src/design-system/           semantic tokens, theme, NativeWind adapter, icons, and primitives
+src/store/                   future shared temporary client state only
 src/test/                    future cross-feature fixtures, helpers, and mocks
 src/types/                   truly shared types
 ```
 
-The existing `src/screens`, `src/components/ui.tsx`, `src/mock`, and
-`src/navigation/AppNavigator.tsx` contain the approved prototype/reference
-implementation. They are preserved during the foundation milestone. Expo Router
-replaces `AppNavigator` as the active navigation owner; new screens belong in a
-feature module, and shared UI should move into the relevant `components/ui`,
-`components/feedback`, or `components/layout` boundary when it is next changed.
+The obsolete prototype screens, routes, components, mock data, store, and React Navigation shell
+were removed in the legacy cleanup milestone. They are not approved product references. Expo Router
+is the navigation owner; new screens belong in a feature module and consume shared UI through the
+design system.
 
 ## Routes and features
 
-Files under `app/` select layouts, read route parameters, and compose a
-screen-level feature component. They do not fetch, validate, persist, or contain
-product business rules. `(auth)` reserves a route group without implementing
-authentication. `(app)` owns the application shell, `(tabs)` owns tab
-composition, and `modal` owns modal presentation.
+Files under `app/` select layouts, read route parameters, and compose a screen-level feature
+component. They do not fetch, validate, persist, or contain product business rules. During the
+temporary foundation state, the root route composes only `FoundationScreen`; route groups will be
+added with their first approved consumers.
 
 A future feature lives at `src/features/<feature>/` and may own its screens,
 components, hooks, queries, schemas, services, repositories, tests, state, and
@@ -60,16 +57,11 @@ Its order is deliberate:
 1. Gesture Handler owns the native gesture root.
 2. Safe Area exposes platform insets.
 3. The app error boundary provides accessible recovery without deleting data.
-4. React Query owns remote/server state and cache lifecycle.
-5. The preserved prototype provider supplies reference-only demo state.
+4. React Query owns future remote/server state and cache lifecycle.
 
 Database initialization may be added here only after a real schema and migration
 contract exists. Initialization errors must reach the recovery boundary; they
 must never trigger an automatic database or preference reset.
-
-The preserved prototype provider cancels its initialization request when it
-unmounts. Error recovery therefore cannot leave an earlier request active or
-allow it to update stale provider state.
 
 ## State ownership
 
@@ -117,9 +109,8 @@ invent an endpoint or contract before it is approved.
 5. Add a thin route that composes the screen and a focused behavior test.
 6. Run the full repository validation suite.
 
-Router tests verify redirect and recovery destinations, every legacy destination
-mapping, Quick Add parameters, back fallback, and explicit unknown-destination
-failure. Native presentation and device history still require an Expo Go smoke
+Router tests verify the minimal root, recovery, and not-found composition. New route behavior needs
+focused tests when approved screens are added. Native presentation still requires an Expo Go smoke
 test.
 
 ## Expo Go and native capability policy
@@ -132,7 +123,6 @@ document the need, compatibility and fallback, obtain separate approval, and
 move to an approved development-client workflow. Do not run prebuild or generate
 native projects as part of ordinary frontend work.
 
-Temporary assumptions: authentication and database initialization are not yet
-implemented; the current prototype data/provider remains reference material;
-NativeWind adoption should happen with approved design-system work rather than
-rewriting the existing visual prototype in this architecture milestone.
+Temporary assumptions: authentication and database initialization are not yet implemented. The
+foundation entry is a boot-safe placeholder and must be replaced by the first approved roadmap
+screen rather than expanded into product behavior.

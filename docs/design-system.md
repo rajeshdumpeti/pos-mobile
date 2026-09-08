@@ -51,9 +51,8 @@ decisions; it does not own them. `tailwind.config.js` exposes semantic names suc
 `bg-surface-primary`, `text-text-secondary`, `border-border`, `bg-accent`, `p-pos-md`, and
 `rounded-pos-md`. Screen-specific names and raw palette utilities are not approved for product UI.
 
-Tailwind scans active `app/` and `src/` code while excluding the preserved prototype and legacy
-theme directories. Classes must be present as complete strings so the build can discover them. Do
-not construct partial class names dynamically.
+Tailwind scans active `app/` and `src/` code. Classes must be present as complete strings so the
+build can discover them. Do not construct partial class names dynamically.
 
 NativeWind compiles class rules ahead of time, but the POS values referenced by those rules are CSS
 variables. `ThemeProvider` creates those variables from the current typed POS theme and applies them
@@ -106,10 +105,9 @@ export function ExampleScreen() {
 
 ## Icon rule
 
-`POSIcon` is the only approved icon-library boundary for new application code. Its controlled names
+`POSIcon` is the only approved icon-library boundary for application code. Its controlled names
 prevent vendor-specific names from spreading through features and allow the underlying library to
-change centrally. The existing frozen prototype may retain historical direct imports until a future
-approved screen migration. New direct `@expo/vector-icons` imports are not allowed outside
+change centrally. Direct `@expo/vector-icons` imports are not allowed outside
 `src/design-system/icons`.
 
 ## Accessibility baseline
@@ -131,5 +129,4 @@ The following remain deliberately deferred until an approved consumer requires t
 - feature-specific composite components
 - MMKV
 
-The preserved prototype is not migrated wholesale by this milestone. Future feature work should
-consume the new system screen by screen, with visual and behavior tests.
+Future approved feature work should consume the design system with visual and behavior tests.

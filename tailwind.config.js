@@ -1,18 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './app/**/*.{js,jsx,ts,tsx}',
-    './src/**/*.{js,jsx,ts,tsx}',
-    '!./src/components/ui.{js,jsx,ts,tsx}',
-    '!./src/components/ui.test.{js,jsx,ts,tsx}',
-    '!./src/features/focus/**/*.{js,jsx,ts,tsx}',
-    '!./src/features/prototype/**/*.{js,jsx,ts,tsx}',
-    '!./src/features/weight/**/*.{js,jsx,ts,tsx}',
-    '!./src/mock/**/*.{js,jsx,ts,tsx}',
-    '!./src/navigation/**/*.{js,jsx,ts,tsx}',
-    '!./src/screens/**/*.{js,jsx,ts,tsx}',
-    '!./src/theme/**/*.{js,jsx,ts,tsx}',
-  ],
+  content: ['./app/**/*.{js,jsx,ts,tsx}', './src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
   darkMode: 'class',
   theme: {

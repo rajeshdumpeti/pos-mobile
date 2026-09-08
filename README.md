@@ -1,8 +1,8 @@
 # POS Mobile
 
-POS Mobile is the Expo React Native frontend for the Personal Operating System.
-It is a UI-first local MVP with typed demo data and an optional connection to
-the independently managed POS mock backend.
+POS Mobile is the Expo React Native frontend for the Personal Operating System. The obsolete demo
+presentation has been removed. The app currently boots into a temporary foundation state until the
+first approved roadmap screen is implemented.
 
 ## Stack
 
@@ -66,9 +66,8 @@ Copy `.env.example` to `.env` only when overriding the local API URL. Expo
 variables prefixed with `EXPO_PUBLIC_` are included in the application bundle
 and must never contain secrets.
 
-The currently supported public variable is `EXPO_PUBLIC_API_URL`. When it is
-unset or the optional backend is unavailable, the prototype uses bundled demo
-data.
+The currently supported public variable is `EXPO_PUBLIC_API_URL`. No active product screen or
+backend request consumes it during the temporary foundation state.
 
 See `docs/repository-setup.md` for additional local-development and repository
 preparation guidance.
@@ -79,3 +78,6 @@ Expo Router owns navigation and route files only compose feature screens. The
 provider order, dependency rules, state ownership, offline storage policy, and
 feature-module convention are documented in
 [`docs/frontend-architecture.md`](docs/frontend-architecture.md).
+
+The removed presentation inventory and roadmap handoff are documented in
+[`docs/mobile-legacy-cleanup.md`](docs/mobile-legacy-cleanup.md).

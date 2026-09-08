@@ -1,24 +1,33 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+
+import { AppText, Screen, Stack as ContentStack } from '@/design-system';
+import { useTheme } from '@/design-system/theme';
 
 export default function NotFoundRoute() {
+  const theme = useTheme();
+
   return (
     <>
       <Stack.Screen options={{ title: 'Not found', headerShown: true }} />
-      <View style={styles.container}>
-        <Text accessibilityRole="header" style={styles.title}>
-          This page is unavailable
-        </Text>
-        <Link href="/(app)/(tabs)" accessibilityRole="link" style={styles.link}>
-          Return to POS
-        </Link>
-      </View>
+      <Screen scroll={false}>
+        <ContentStack align="center" justify="center" style={{ flex: 1 }}>
+          <AppText variant="title" accessibilityRole="header">
+            This page is unavailable
+          </AppText>
+          <Link
+            href="/"
+            accessibilityRole="link"
+            style={{
+              minHeight: theme.accessibility.minimumTouchTarget,
+              padding: theme.spacing.sm,
+              color: theme.colors.accentPrimary,
+              fontWeight: theme.fontWeights.bold,
+            }}
+          >
+            Return to the POS foundation
+          </Link>
+        </ContentStack>
+      </Screen>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 },
-  title: { fontSize: 22, fontWeight: '700' },
-  link: { minHeight: 44, padding: 12, color: '#315F4A', fontWeight: '700' },
-});
