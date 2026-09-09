@@ -19,6 +19,14 @@ export type AuthContractFailureCode =
   | 'invalid_credentials'
   | 'email_not_verified'
   | 'account_unavailable'
+  | 'account_already_exists'
+  | 'refresh_session_invalid'
+  | 'refresh_session_expired'
+  | 'refresh_session_replayed'
+  | 'refresh_idempotency_conflict'
+  | 'authentication_required'
+  | 'access_token_invalid'
+  | 'access_token_expired'
   | 'verification_flow_invalid'
   | 'verification_flow_expired'
   | 'verification_code_invalid'
@@ -52,7 +60,7 @@ export type AuthOperationFailure = {
 
 export type AuthTransportFailure = {
   kind: 'transport';
-  category: 'offline';
+  category: 'offline' | 'timeout' | 'cancelled';
   message: string;
 };
 

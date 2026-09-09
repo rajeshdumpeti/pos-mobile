@@ -136,3 +136,7 @@ uses accessible neutral progress without flashing public or protected content.
 ## Milestone 1.F typed API boundary
 
 The checked-in OpenAPI snapshot, generated TypeScript contract, framework-independent HTTP client, and typed Authentication service are documented in [api-architecture.md](api-architecture.md). Screens remain disconnected; React Query integration belongs to 1.G.
+
+## Milestone 1.G.1 secure credential composition
+
+Application-scoped Authentication integration composes SecureStore-backed refresh custody, memory-only access custody, safe bootstrap inspection, domain error mapping, and non-retrying sensitive mutation policy. See [authentication-integration.md](authentication-integration.md).

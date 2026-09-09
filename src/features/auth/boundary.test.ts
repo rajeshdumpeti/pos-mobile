@@ -13,7 +13,10 @@ function sources(dir: string): string[] {
         : [];
   });
 }
-const files = [...sources(path.join(root, 'app/(auth)')), ...sources(__dirname)];
+const files = [
+  ...sources(path.join(root, 'app/(auth)')),
+  ...sources(__dirname).filter((file) => !file.includes(`${path.sep}integration${path.sep}`)),
+];
 test.each(files)(
   '%s has no transport, persistent state, timers, or direct asset dependency',
   (file) => {

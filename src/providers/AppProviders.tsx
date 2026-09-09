@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppErrorBoundary } from '@/components/feedback/AppErrorBoundary';
 import { ThemeProvider, ThemePreference } from '@/design-system/theme';
 import { createQueryClient } from '@/lib/query/queryClient';
+import { AuthenticationIntegrationProvider } from '@/features/auth/integration';
 import {
   SessionNavigationAccess,
   SessionProvider,
@@ -24,9 +25,11 @@ export function AppProviders({
         <ThemeProvider preference={themePreference}>
           <AppErrorBoundary>
             <QueryClientProvider client={queryClient}>
-              <SessionProvider state={sessionState}>
-                <SessionNavigationAccess>{children}</SessionNavigationAccess>
-              </SessionProvider>
+              <AuthenticationIntegrationProvider>
+                <SessionProvider state={sessionState}>
+                  <SessionNavigationAccess>{children}</SessionNavigationAccess>
+                </SessionProvider>
+              </AuthenticationIntegrationProvider>
             </QueryClientProvider>
           </AppErrorBoundary>
         </ThemeProvider>
