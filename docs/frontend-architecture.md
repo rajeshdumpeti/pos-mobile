@@ -132,3 +132,7 @@ Temporary assumptions: authentication and database initialization are not yet im
 `NavigationAccessProvider` therefore defaults to signed out and contains no session state.
 Appearance restoration completes before navigation renders; a later access-checking state also
 uses accessible neutral progress without flashing public or protected content.
+
+## Milestone 1.F typed API boundary
+
+The checked-in OpenAPI snapshot, generated TypeScript contract, framework-independent HTTP client, and typed Authentication service are documented in [api-architecture.md](api-architecture.md). Screens remain disconnected; React Query integration belongs to 1.G.

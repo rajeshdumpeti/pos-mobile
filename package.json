@@ -16,7 +16,9 @@
     "test": "jest",
     "doctor": "expo-doctor",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "api:generate": "openapi-typescript src/api/contract/openapi.json --output src/api/generated/schema.ts && prettier --write src/api/generated/schema.ts",
+    "api:check": "node scripts/api-check.mjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -58,6 +60,7 @@
     "globals": "^16.5.0",
     "jest": "^29.7.0",
     "jest-expo": "~54.0.18",
+    "openapi-typescript": "^7.13.0",
     "prettier": "^3.7.4",
     "react-test-renderer": "19.1.0",
     "tailwindcss": "^3.4.19",
