@@ -1,9 +1,11 @@
 import { PropsWithChildren, ReactNode } from 'react';
 import { useWindowDimensions, View } from 'react-native';
-import { useRouter } from 'expo-router';
 import { AppText, IconButton, Screen, Stack } from '@/design-system';
 import { IllustrationFrame, IllustrationRole } from '@/design-system/illustrations';
 import { useTheme } from '@/design-system/theme';
+import { routes } from '@/navigation/routes';
+import type { SafeFallbackRoute } from '@/navigation/routes';
+import { useSafeNavigation } from '@/navigation/useSafeNavigation';
 import { AuthEntrance } from './AuthEntrance';
 
 export function AuthScaffold({
@@ -14,6 +16,7 @@ export function AuthScaffold({
   modal = false,
   children,
   footer,
+  backFallback,
 }: PropsWithChildren<{
   title: string;
   subtitle: string;
@@ -21,9 +24,10 @@ export function AuthScaffold({
   welcome?: boolean;
   modal?: boolean;
   footer?: ReactNode;
+  backFallback?: SafeFallbackRoute;
 }>) {
   const theme = useTheme();
-  const router = useRouter();
+  const { backOrReplace, dismissOrReplace } = useSafeNavigation();
   const { width } = useWindowDimensions();
   // Cap reading width on tablets; shrink artwork before it can crowd narrow phones.
   const contentWidth = Math.min(width - theme.spacing.xl * 2, theme.spacing.huge * 10);
@@ -47,9 +51,14 @@ export function AuthScaffold({
             <IconButton
               icon={modal ? 'close' : 'back'}
               accessibilityLabel={modal ? 'Close' : 'Back'}
-              onPress={() =>
-                router.canGoBack() ? router.back() : router.replace('/(auth)/welcome')
-              }
+              onPress={() => {
+                const fallback = backFallback ?? (modal ? routes.auth.signIn : routes.auth.welcome);
+                if (modal) {
+                  dismissOrReplace(fallback);
+                } else {
+                  backOrReplace(fallback);
+                }
+              }}
             />
           </View>
         )}

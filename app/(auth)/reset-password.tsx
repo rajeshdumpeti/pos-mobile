@@ -1,5 +1,5 @@
-import { ResetPasswordScreen } from '@/features/auth/screens/ResetPasswordScreen';
+import { ResetPasswordRouteBoundary } from '@/navigation';
 
 export default function Route() {
-  return <ResetPasswordScreen />;
+  return <ResetPasswordRouteBoundary />;
 }

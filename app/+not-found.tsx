@@ -1,10 +1,17 @@
-import { Link, Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 
-import { AppText, Screen, Stack as ContentStack } from '@/design-system';
-import { useTheme } from '@/design-system/theme';
+import { AppText, Button, Screen, Stack as ContentStack } from '@/design-system';
+import {
+  NavigationRestoringScreen,
+  resolveUnknownRouteDestination,
+  useNavigationAccess,
+} from '@/navigation';
 
 export default function NotFoundRoute() {
-  const theme = useTheme();
+  const access = useNavigationAccess();
+  const router = useRouter();
+  if (access === 'checking') return <NavigationRestoringScreen />;
+  const destination = resolveUnknownRouteDestination(access);
 
   return (
     <>
@@ -14,18 +21,11 @@ export default function NotFoundRoute() {
           <AppText variant="title" accessibilityRole="header">
             This page is unavailable
           </AppText>
-          <Link
-            href="/"
-            accessibilityRole="link"
-            style={{
-              minHeight: theme.accessibility.minimumTouchTarget,
-              padding: theme.spacing.sm,
-              color: theme.colors.accentPrimary,
-              fontWeight: theme.fontWeights.bold,
-            }}
-          >
-            Return to Welcome
-          </Link>
+          <AppText color="secondary">Return to a safe POS starting point.</AppText>
+          <Button
+            label={access === 'signedIn' ? 'Return to POS' : 'Return to Welcome'}
+            onPress={() => router.replace(destination)}
+          />
         </ContentStack>
       </Screen>
     </>

@@ -1,12 +1,13 @@
 import { useRouter } from 'expo-router';
 import { AppText } from '@/design-system';
+import { routes } from '@/navigation/routes';
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
 import { RetryPeriod } from '../components/RetryPeriod';
 
 function ReturnToSignIn() {
   const router = useRouter();
-  return <AuthAction label="Back to Sign In" onPress={() => router.replace('/(auth)/sign-in')} />;
+  return <AuthAction label="Back to Sign In" onPress={() => router.replace(routes.auth.signIn)} />;
 }
 export function ResetSentScreen() {
   return (

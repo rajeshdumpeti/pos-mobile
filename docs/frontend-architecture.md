@@ -28,9 +28,12 @@ design system.
 ## Routes and features
 
 Files under `app/` select layouts, read route parameters, and compose a screen-level feature
-component. They do not fetch, validate, persist, or contain product business rules. The root route redirects to Welcome in `app/(auth)/`. Authentication screens live in
-`src/features/auth/` and provide local presentation only; see [Authentication UI](authentication-ui.md).
-The temporary `FoundationScreen` remains available in source.
+component. They do not fetch, validate, persist, or contain product business rules. The root route
+uses the access decision in `src/navigation/`. Authentication screens live in
+`src/features/auth/` and provide local presentation only; see
+[Authentication UI](authentication-ui.md). The protected `app/(app)/` index may render the
+temporary `FoundationScreen` only after its layout boundary receives signed-in access. See
+[Navigation foundation](navigation-architecture.md).
 
 A future feature lives at `src/features/<feature>/` and may own its screens,
 components, hooks, queries, schemas, services, repositories, tests, state, and
@@ -125,6 +128,7 @@ document the need, compatibility and fallback, obtain separate approval, and
 move to an approved development-client workflow. Do not run prebuild or generate
 native projects as part of ordinary frontend work.
 
-Temporary assumptions: authentication and database initialization are not yet implemented. The
-first approved entry is the UI-only Authentication Welcome screen. Appearance restoration completes before that
-entry renders, using an accessible non-product progress state during the single storage read.
+Temporary assumptions: authentication and database initialization are not yet implemented.
+`NavigationAccessProvider` therefore defaults to signed out and contains no session state.
+Appearance restoration completes before navigation renders; a later access-checking state also
+uses accessible neutral progress without flashing public or protected content.

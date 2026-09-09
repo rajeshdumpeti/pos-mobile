@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { routes } from '@/navigation/routes';
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
 import { EmailField, PasswordField } from '../components/AuthFields';
@@ -23,7 +24,7 @@ export function SignInScreen() {
           <AuthAction
             label="Create Account"
             variant="ghost"
-            onPress={() => router.push('/(auth)/create-account')}
+            onPress={() => router.push(routes.auth.createAccount)}
           />
         </>
       }
@@ -39,7 +40,7 @@ export function SignInScreen() {
       <AuthAction
         label="Forgot Password?"
         variant="ghost"
-        onPress={() => router.push('/(auth)/forgot-password')}
+        onPress={() => router.navigate(routes.auth.forgotPassword)}
       />
     </AuthScaffold>
   );
