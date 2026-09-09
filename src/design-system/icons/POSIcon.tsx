@@ -13,6 +13,8 @@ const iconMap = {
   error: 'warning-outline',
   info: 'information-circle-outline',
   search: 'search-outline',
+  showPassword: 'eye-outline',
+  hidePassword: 'eye-off-outline',
 } as const satisfies Record<string, React.ComponentProps<typeof Ionicons>['name']>;
 
 export type POSIconName = keyof typeof iconMap;

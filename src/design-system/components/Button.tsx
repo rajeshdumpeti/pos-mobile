@@ -1,58 +1,67 @@
-import React from 'react';
-import { Pressable, PressableProps } from 'react-native';
+import React, { useState } from 'react';
+import { Pressable, PressableProps, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import { useTheme } from '@/design-system/theme';
-import { joinClassNames } from '@/design-system/nativewind';
 import { AppText } from './AppText';
+import { resolveButtonVisualStyle } from './buttonVisualStyle';
 import { LoadingIndicator } from './LoadingIndicator';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive';
-export type ButtonProps = Omit<PressableProps, 'children'> & {
+export type ButtonProps = Omit<PressableProps, 'children' | 'className' | 'style'> & {
   label: string;
   variant?: ButtonVariant;
   loading?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 export function Button({
   label,
   variant = 'primary',
   loading = false,
   disabled = false,
-  className,
   style,
+  onPressIn,
+  onPressOut,
+  testOnly_pressed = false,
   ...props
 }: ButtonProps) {
   const theme = useTheme();
+  const [pressed, setPressed] = useState(false);
   const unavailable = disabled || loading;
-  const background = {
-    primary: theme.colors.accentPrimary,
-    secondary: theme.colors.accentSoft,
-    ghost: 'transparent',
-    destructive: theme.colors.danger,
-  }[variant];
-  const textColor =
-    variant === 'primary' ? 'onAccent' : variant === 'destructive' ? 'inverse' : 'accent';
+  const active = pressed || Boolean(testOnly_pressed);
+  const visual = resolveButtonVisualStyle({
+    theme,
+    variant,
+    pressed: active,
+    disabled: Boolean(disabled),
+    loading,
+  });
   return (
     <Pressable
       {...props}
       accessibilityRole="button"
       accessibilityLabel={props.accessibilityLabel ?? label}
       accessibilityState={{ disabled: unavailable, busy: loading }}
-      className={joinClassNames('min-w-touch items-center justify-center', className)}
       disabled={unavailable}
-      style={(state) => [
+      onPressIn={(event) => {
+        setPressed(true);
+        onPressIn?.(event);
+      }}
+      onPressOut={(event) => {
+        setPressed(false);
+        onPressOut?.(event);
+      }}
+      testOnly_pressed={testOnly_pressed}
+      style={[
+        styles.container,
+        style,
         {
-          minHeight: theme.accessibility.minimumTouchTarget,
+          minHeight: theme.controlSizes.buttonHeight,
+          minWidth: theme.controlSizes.minimumTouchTarget,
           borderRadius: theme.radii.small,
           paddingHorizontal: theme.spacing.lg,
-          backgroundColor:
-            state.pressed && variant === 'primary' ? theme.colors.accentPressed : background,
-          opacity: unavailable
-            ? theme.opacity.disabled
-            : state.pressed && variant !== 'primary'
-              ? theme.opacity.pressed
-              : 1,
+          borderWidth: 1,
+          ...visual.container,
         },
-        typeof style === 'function' ? style(state) : style,
       ]}
     >
       {loading ? (
@@ -62,10 +71,17 @@ export function Button({
           onAccent={variant === 'primary'}
         />
       ) : (
-        <AppText variant="label" color={textColor}>
+        <AppText variant="label" color={visual.contentColor}>
           {label}
         </AppText>
       )}
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

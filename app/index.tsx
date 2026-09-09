@@ -1,5 +1,5 @@
-import { FoundationScreen } from '@/features/foundation/FoundationScreen';
+import { Redirect } from 'expo-router';
 
 export default function IndexRoute() {
-  return <FoundationScreen />;
+  return <Redirect href="/(auth)/welcome" />;
 }
