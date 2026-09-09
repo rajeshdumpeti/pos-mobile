@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pressable, PressableProps, StyleSheet } from 'react-native';
+import { Pressable, PressableProps, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import { useTheme } from '@/design-system/theme';
 import { AppText } from './AppText';
@@ -7,10 +7,11 @@ import { resolveButtonVisualStyle } from './buttonVisualStyle';
 import { LoadingIndicator } from './LoadingIndicator';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'destructive';
-export type ButtonProps = Omit<PressableProps, 'children' | 'className'> & {
+export type ButtonProps = Omit<PressableProps, 'children' | 'className' | 'style'> & {
   label: string;
   variant?: ButtonVariant;
   loading?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 export function Button({
   label,
@@ -52,7 +53,7 @@ export function Button({
       testOnly_pressed={testOnly_pressed}
       style={[
         styles.container,
-        typeof style === 'function' ? style({ pressed: active, hovered: false }) : style,
+        style,
         {
           minHeight: theme.controlSizes.buttonHeight,
           minWidth: theme.controlSizes.minimumTouchTarget,
