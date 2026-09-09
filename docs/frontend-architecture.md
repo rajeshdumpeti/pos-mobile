@@ -28,9 +28,9 @@ design system.
 ## Routes and features
 
 Files under `app/` select layouts, read route parameters, and compose a screen-level feature
-component. They do not fetch, validate, persist, or contain product business rules. During the
-temporary foundation state, the root route composes only `FoundationScreen`; route groups will be
-added with their first approved consumers.
+component. They do not fetch, validate, persist, or contain product business rules. The root route redirects to Welcome in `app/(auth)/`. Authentication screens live in
+`src/features/auth/` and provide local presentation only; see [Authentication UI](authentication-ui.md).
+The temporary `FoundationScreen` remains available in source.
 
 A future feature lives at `src/features/<feature>/` and may own its screens,
 components, hooks, queries, schemas, services, repositories, tests, state, and
@@ -103,8 +103,8 @@ invent an endpoint or contract before it is approved.
 ## Adding a feature
 
 1. Create `src/features/<feature>/` with only the needed ownership folders.
-2. Put validation beside the feature boundary and use React Hook Form for form
-   state when a form exists.
+2. Put validation beside the feature boundary. Authentication 1.C.1 uses local React
+   presentation state; form-library adoption and server validation remain deferred.
 3. Put remote cache behavior in React Query hooks and structured offline access
    behind a SQLite repository.
 4. Export a screen-level component with no dependency on `app/`.
@@ -126,6 +126,5 @@ move to an approved development-client workflow. Do not run prebuild or generate
 native projects as part of ordinary frontend work.
 
 Temporary assumptions: authentication and database initialization are not yet implemented. The
-foundation entry is a boot-safe placeholder and must be replaced by the first approved roadmap
-screen rather than expanded into product behavior. Appearance restoration completes before that
+first approved entry is the UI-only Authentication Welcome screen. Appearance restoration completes before that
 entry renders, using an accessible non-product progress state during the single storage read.

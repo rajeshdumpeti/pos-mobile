@@ -45,7 +45,8 @@ export function Screen({
       style={{ backgroundColor: theme.colors.backgroundPrimary }}
       contentContainerStyle={content}
       keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets={keyboardSafe}
+      // iOS keyboard padding is owned by KeyboardAvoidingView below.
+      automaticallyAdjustKeyboardInsets={false}
     >
       {children}
     </ScrollView>
@@ -69,4 +70,4 @@ export function Screen({
     body
   );
 }
-const styles = StyleSheet.create({ fill: { flex: 1 }, content: { minHeight: '100%' } });
+const styles = StyleSheet.create({ fill: { flex: 1 }, content: { flexGrow: 1 } });

@@ -1,5 +1,5 @@
 import { fireEvent, render } from '@testing-library/react-native';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { createTheme, ThemeProvider } from '@/design-system/theme';
 
@@ -43,7 +43,13 @@ test.each(['light', 'dark'] as const)(
     );
 
     const button = view.getByRole('button');
-    expect(button).toHaveStyle({ backgroundColor: colors.accentPrimary });
+    expect(StyleSheet.flatten(button.props.style)).toEqual(
+      expect.objectContaining({
+        backgroundColor: colors.accentPrimary,
+        borderColor: colors.accentPrimary,
+        opacity: 1,
+      }),
+    );
     expect(view.getByText('Continue')).toHaveStyle({ color: colors.onAccent });
 
     view.rerender(
@@ -59,5 +65,47 @@ test.each(['light', 'dark'] as const)(
       </ThemeProvider>,
     );
     expect(view.UNSAFE_getByType(ActivityIndicator).props.color).toBe(colors.onAccent);
+    expect(StyleSheet.flatten(view.getByRole('button').props.style)).toEqual(
+      expect.objectContaining({
+        backgroundColor: colors.accentPrimary,
+        borderColor: colors.accentPrimary,
+        opacity: 1,
+      }),
+    );
+  },
+);
+
+test('uses semantic control sizing independent of the spacing scale', () => {
+  const theme = createTheme('light');
+  const view = renderButton(<Button label="Continue" onPress={jest.fn()} />);
+  expect(StyleSheet.flatten(view.getByRole('button').props.style)).toEqual(
+    expect.objectContaining({
+      minHeight: theme.controlSizes.buttonHeight,
+      minWidth: theme.controlSizes.minimumTouchTarget,
+    }),
+  );
+  expect(theme.controlSizes.minimumTouchTarget).toBeGreaterThanOrEqual(44);
+});
+
+test.each(['light', 'dark'] as const)(
+  'flattens deterministic disabled primary container and content colors in %s',
+  (mode) => {
+    const colors = createTheme(mode).colors;
+    const view = render(
+      <ThemeProvider preference={mode}>
+        <Button label="Continue" disabled onPress={jest.fn()} />
+      </ThemeProvider>,
+    );
+    const button = view.getByRole('button', { name: 'Continue' });
+    expect(StyleSheet.flatten(button.props.style)).toEqual(
+      expect.objectContaining({
+        backgroundColor: colors.disabledSurface,
+        borderColor: colors.disabledBorder,
+        borderWidth: 1,
+        opacity: 1,
+      }),
+    );
+    expect(view.getByText('Continue')).toHaveStyle({ color: colors.disabledContent });
+    expect(button.props.accessibilityState.disabled).toBe(true);
   },
 );

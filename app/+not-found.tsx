@@ -24,7 +24,7 @@ export default function NotFoundRoute() {
               fontWeight: theme.fontWeights.bold,
             }}
           >
-            Return to the POS foundation
+            Return to Welcome
           </Link>
         </ContentStack>
       </Screen>

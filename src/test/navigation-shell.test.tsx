@@ -28,6 +28,8 @@ jest.mock('expo-router', () => {
     ReactModule.createElement(MockText, null, `screen:${name ?? 'configured'}`);
   return {
     Stack,
+    Redirect: ({ href }: { href: string }) =>
+      ReactModule.createElement(MockText, null, `redirect:${href}`),
     Link: ({ children, href }: React.PropsWithChildren<{ href: string }>) =>
       ReactModule.createElement(
         MockText,
@@ -41,19 +43,20 @@ import NotFoundRoute from '../../app/+not-found';
 import RootLayout from '../../app/_layout';
 import IndexRoute from '../../app/index';
 
-test('root route renders the temporary foundation', () => {
+test('root route redirects to Welcome', () => {
   const view = render(<IndexRoute />);
-  expect(view.getByText('temporary foundation')).toBeTruthy();
+  expect(view.getByText('redirect:/(auth)/welcome')).toBeTruthy();
 });
 
-test('root navigation contains only the foundation and not-found routes', () => {
+test('root navigation includes public auth and not-found routes', () => {
   const view = render(<RootLayout />);
   expect(view.getByText('screen:index')).toBeTruthy();
   expect(view.getByText('screen:+not-found')).toBeTruthy();
-  expect(view.queryByText(/screen:\((app|auth)\)|screen:modal/)).toBeNull();
+  expect(view.getByText('screen:(auth)')).toBeTruthy();
+  expect(view.queryByText('screen:(app)')).toBeNull();
 });
 
-test('not-found route gives an accessible way back to the foundation', () => {
+test('not-found route gives an accessible way back to Welcome', () => {
   const view = render(
     <SafeAreaProvider
       initialMetrics={{
@@ -65,7 +68,5 @@ test('not-found route gives an accessible way back to the foundation', () => {
     </SafeAreaProvider>,
   );
   expect(view.getByRole('header', { name: 'This page is unavailable' })).toBeTruthy();
-  expect(
-    view.getByRole('link', { name: 'Return to the POS foundation' }).props.accessibilityHint,
-  ).toBe('/');
+  expect(view.getByRole('link', { name: 'Return to Welcome' }).props.accessibilityHint).toBe('/');
 });

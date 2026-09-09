@@ -3,6 +3,7 @@ import { ActivityIndicator, ColorSchemeName, StyleSheet, useColorScheme, View } 
 
 import {
   accessibility,
+  controlSizes,
   darkColors,
   fontWeights,
   lightColors,
@@ -63,6 +64,7 @@ export function createTheme(mode: ResolvedAppearance): POSTheme {
     opacity,
     motionDuration,
     accessibility,
+    controlSizes,
   };
 }
 

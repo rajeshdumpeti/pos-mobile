@@ -49,6 +49,9 @@ export type SemanticColorTokens = {
   dangerSoft: string;
   info: string;
   infoSoft: string;
+  disabledSurface: string;
+  disabledContent: string;
+  disabledBorder: string;
 };
 
 export const lightColors: SemanticColorTokens = {
@@ -76,6 +79,9 @@ export const lightColors: SemanticColorTokens = {
   dangerSoft: palette.red100,
   info: palette.blue700,
   infoSoft: palette.blue100,
+  disabledSurface: palette.stone100,
+  disabledContent: palette.stone700,
+  disabledBorder: palette.stone200,
 };
 
 export const darkColors: SemanticColorTokens = {
@@ -103,6 +109,9 @@ export const darkColors: SemanticColorTokens = {
   dangerSoft: '#432421',
   info: '#9FC9D9',
   infoSoft: '#203740',
+  disabledSurface: '#2B3931',
+  disabledContent: '#98A79F',
+  disabledBorder: '#46564C',
 };
 
 export const spacing = {
@@ -158,6 +167,12 @@ export const shadows = {
 export const opacity = { disabled: 0.46, pressed: 0.72, muted: 0.64 } as const;
 export const motionDuration = { instant: 0, fast: 120, standard: 200, deliberate: 320 } as const;
 export const accessibility = { minimumTouchTarget: 44 } as const;
+export const controlSizes = {
+  minimumTouchTarget: 44,
+  buttonHeight: 52,
+  inputHeight: 48,
+  iconButton: 44,
+} as const;
 
 export type POSThemeTokens = {
   colors: SemanticColorTokens;
@@ -169,4 +184,5 @@ export type POSThemeTokens = {
   opacity: typeof opacity;
   motionDuration: typeof motionDuration;
   accessibility: typeof accessibility;
+  controlSizes: typeof controlSizes;
 };

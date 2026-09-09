@@ -113,6 +113,20 @@ React Native style values; platform-specific shadows and stateful calculations r
   unapproved visual variants. Shared reusable rules belong in the primitive rather than repeated
   feature strings.
 
+Stateful controls follow a one-owner-per-property rule. NativeWind owns reliable static layout and
+structural utilities; a shared primitive's runtime style owns theme-resolved color, border, opacity,
+pressed, disabled, loading, and variant behavior. A native element must not receive competing
+NativeWind and runtime values for the same state-critical property. Feature screens compose variants
+and layout only; they do not recreate control state styling or resolve semantic colors locally.
+
+`controlSizes` owns the minimum touch target and the current button, input, and icon-button dimensions.
+Spacing tokens do not own interactive dimensions, so future spacing changes cannot silently reduce an
+accessible target. Add control-size roles only when an existing shared primitive needs them.
+
+Stateful shared controls require both resolved-style tests and native visual verification. Tests flatten
+the final native style for supported themes and states; an iOS or Android render check confirms that the
+runtime renderer preserves the container, content, and interaction treatment.
+
 ## Components
 
 Feature code should import primitives through `@/design-system` or the narrow
@@ -170,8 +184,8 @@ restrained entrance or success motion later; artwork files contain no embedded m
 <IllustrationFrame role="welcome" decorative />
 ```
 
-Final Authentication illustrations and exact Authentication UI are deferred to the dedicated
-Authentication UI rebuild milestone.
+Authentication 1.C.1 consumes these original illustrations through the registry. See
+[Authentication UI](authentication-ui.md) for route, motion, and interaction boundaries.
 
 ## Accessibility baseline
 

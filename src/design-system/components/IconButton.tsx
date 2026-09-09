@@ -30,8 +30,8 @@ export function IconButton({
       hitSlop={4}
       style={(state) => [
         {
-          width: theme.accessibility.minimumTouchTarget,
-          height: theme.accessibility.minimumTouchTarget,
+          width: theme.controlSizes.iconButton,
+          height: theme.controlSizes.iconButton,
           borderRadius: theme.radii.pill,
           backgroundColor: state.pressed ? theme.colors.accentSoft : 'transparent',
           opacity: isDisabled ? theme.opacity.disabled : 1,
