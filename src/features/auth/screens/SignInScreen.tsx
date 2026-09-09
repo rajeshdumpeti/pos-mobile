@@ -1,15 +1,29 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import { routes } from '@/navigation/routes';
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
-import { EmailField, PasswordField } from '../components/AuthFields';
+import {
+  ControlledEmailField,
+  ControlledPasswordField,
+  signInSchema,
+  type SignInFormValues,
+} from '../forms';
+import { useAuthSubmissionIntent, type AuthSubmissionHandler } from '../domain';
 
-export function SignInScreen() {
+export function SignInScreen({
+  onSubmitIntent,
+}: {
+  onSubmitIntent?: AuthSubmissionHandler<SignInFormValues>;
+}) {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const ready = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) && Boolean(password);
+  const form = useForm<SignInFormValues>({
+    resolver: zodResolver(signInSchema),
+    mode: 'onTouched',
+    defaultValues: { email: '', password: '' },
+  });
+  const submit = useAuthSubmissionIntent(onSubmitIntent);
   return (
     <AuthScaffold
       title="Sign In"
@@ -18,8 +32,8 @@ export function SignInScreen() {
         <>
           <AuthAction
             label="Sign In"
-            disabled={!ready}
-            onPress={ready ? () => undefined : undefined}
+            disabled={!form.formState.isValid || form.formState.isSubmitting}
+            onPress={() => void form.handleSubmit(submit)()}
           />
           <AuthAction
             label="Create Account"
@@ -29,11 +43,11 @@ export function SignInScreen() {
         </>
       }
     >
-      <EmailField value={email} onChangeText={setEmail} />
-      <PasswordField
+      <ControlledEmailField control={form.control} name="email" />
+      <ControlledPasswordField
+        control={form.control}
+        name="password"
         label="Password"
-        value={password}
-        onChangeText={setPassword}
         autoComplete="current-password"
         textContentType="password"
       />

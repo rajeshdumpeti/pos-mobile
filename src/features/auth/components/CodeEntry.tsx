@@ -1,12 +1,25 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { TextInput as NativeTextInput, View, StyleSheet, useWindowDimensions } from 'react-native';
 import { AppText } from '@/design-system';
 import { useTheme } from '@/design-system/theme';
 
-export function CodeEntry() {
+export function CodeEntry({
+  value,
+  onChangeText,
+  onBlur,
+  error,
+  ref,
+}: {
+  value?: string;
+  onChangeText?: (value: string) => void;
+  onBlur?: () => void;
+  error?: string;
+  ref?: React.Ref<NativeTextInput>;
+}) {
   const theme = useTheme();
   const { fontScale } = useWindowDimensions();
-  const [code, setCode] = useState('');
+  const [localCode, setLocalCode] = useState('');
+  const code = value ?? localCode;
   const [focused, setFocused] = useState(false);
   return (
     <View style={{ gap: theme.spacing.sm }}>
@@ -43,18 +56,27 @@ export function CodeEntry() {
           ))}
         </View>
         <NativeTextInput
+          ref={ref}
           accessibilityLabel="Six-digit verification code"
           accessibilityHint="Enter six digits. You can paste a code or delete digits."
           accessibilityValue={{ text: `${code.length} of 6 digits entered` }}
           value={code}
-          onChangeText={(value) => setCode(value.replace(/[^0-9]/g, '').slice(0, 6))}
+          aria-invalid={Boolean(error)}
+          onChangeText={(nextValue) => {
+            const digits = nextValue.replace(/[^0-9]/g, '').slice(0, 6);
+            setLocalCode(digits);
+            onChangeText?.(digits);
+          }}
           keyboardType="number-pad"
           autoComplete="one-time-code"
           textContentType="oneTimeCode"
           autoCorrect={false}
           caretHidden
           onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onBlur={() => {
+            setFocused(false);
+            onBlur?.();
+          }}
           style={[
             StyleSheet.absoluteFillObject,
             {
@@ -65,6 +87,11 @@ export function CodeEntry() {
           ]}
         />
       </View>
+      {error ? (
+        <AppText accessibilityRole="alert" variant="caption" color="danger">
+          Error: {error}
+        </AppText>
+      ) : null}
     </View>
   );
 }

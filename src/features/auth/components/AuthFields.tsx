@@ -1,21 +1,26 @@
-import { useState } from 'react';
-import { Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { Pressable, TextInput as NativeTextInput } from 'react-native';
 import { TextInput, TextInputProps } from '@/design-system/components';
 import { POSIcon } from '@/design-system/icons';
 import { useTheme } from '@/design-system/theme';
 
-export function EmailField({
-  value,
-  onChangeText,
-}: {
-  value: string;
-  onChangeText: (value: string) => void;
-}) {
+type EmailFieldProps = Omit<
+  TextInputProps,
+  | 'label'
+  | 'secureTextEntry'
+  | 'autoCapitalize'
+  | 'autoCorrect'
+  | 'keyboardType'
+  | 'autoComplete'
+  | 'textContentType'
+> & { ref?: React.Ref<NativeTextInput> };
+
+export function EmailField({ ref, ...props }: EmailFieldProps) {
   return (
     <TextInput
+      {...props}
+      ref={ref}
       label="Email"
-      value={value}
-      onChangeText={onChangeText}
       autoCapitalize="none"
       autoCorrect={false}
       keyboardType="email-address"
@@ -26,12 +31,13 @@ export function EmailField({
   );
 }
 
-export function PasswordField({ label, ...props }: TextInputProps) {
+export function PasswordField({ label, ref, ...props }: TextInputProps) {
   const theme = useTheme();
   const [visible, setVisible] = useState(false);
   return (
     <TextInput
       {...props}
+      ref={ref}
       label={label}
       secureTextEntry={!visible}
       autoCapitalize="none"

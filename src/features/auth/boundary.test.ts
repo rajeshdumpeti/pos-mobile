@@ -32,7 +32,7 @@ test.each(files)(
       /services|storage|query|axios|linking|\.png|providers|database|store\//i,
     );
     expect(calls.join('\n')).not.toMatch(
-      /fetch|XMLHttpRequest|WebSocket|setInterval|setTimeout|useMutation|useQuery|setItem|session|token/i,
+      /fetch|XMLHttpRequest|WebSocket|setInterval|setTimeout|useMutation|useQuery|setItem|token/i,
     );
     expect(source).not.toMatch(/useLocalSearchParams|useGlobalSearchParams|https?:\/\/|\bBearer\b/);
   },

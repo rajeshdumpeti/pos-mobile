@@ -76,3 +76,7 @@ API integration will own transient verification/reset material and confirmation 
 credentials must use a platform secure-storage abstraction outside navigation. No API call,
 AsyncStorage token, session persistence, fake authenticated state, or product route is introduced
 by 1.D.
+
+## Milestone 1.E session access
+
+`SessionProvider` is now the single token-free owner of Authentication access status. `SessionNavigationAccess` derives `checking`, `signedOut`, or `signedIn` for the existing navigation policy; session code contains no redirects. Production starts signed out until future secure restoration exists. See [authentication-state.md](authentication-state.md).

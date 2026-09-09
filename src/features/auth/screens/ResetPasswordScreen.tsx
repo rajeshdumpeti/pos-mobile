@@ -1,20 +1,33 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AppText, Card } from '@/design-system';
 import { routes } from '@/navigation/routes';
 import { AuthAction } from '../components/AuthAction';
-import { PasswordField } from '../components/AuthFields';
 import { PasswordProgress } from '../components/PasswordProgress';
-
 import { AuthScaffold } from '../components/AuthScaffold';
+import {
+  ControlledPasswordField,
+  resetPasswordSchema,
+  type ResetPasswordFormValues,
+} from '../forms';
+import { useAuthSubmissionIntent, type AuthSubmissionHandler } from '../domain';
+import type { ResetPasswordIntent } from '../forms/schemas';
 
 export function ResetPasswordScreen({
   continuationAvailable = false,
+  onSubmitIntent,
 }: {
   continuationAvailable?: boolean;
+  onSubmitIntent?: AuthSubmissionHandler<ResetPasswordIntent>;
 }) {
-  const [password, setPassword] = useState('');
-  const [confirmation, setConfirmation] = useState('');
-  const ready = Boolean(continuationAvailable && password && password === confirmation);
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
+    mode: 'onTouched',
+    defaultValues: { password: '', confirmPassword: '' },
+  });
+  const submit = useAuthSubmissionIntent(onSubmitIntent);
+  const ready = continuationAvailable && form.formState.isValid;
+  const onValid = (values: ResetPasswordFormValues) => submit({ newPassword: values.password });
   return (
     <AuthScaffold
       backFallback={routes.auth.signIn}
@@ -23,8 +36,8 @@ export function ResetPasswordScreen({
       footer={
         <AuthAction
           label="Update Password"
-          disabled={!ready}
-          onPress={ready ? () => undefined : undefined}
+          disabled={!ready || form.formState.isSubmitting}
+          onPress={() => void form.handleSubmit(onValid)()}
         />
       }
     >
@@ -35,18 +48,18 @@ export function ResetPasswordScreen({
           </AppText>
         </Card>
       )}
-      <PasswordField
+      <ControlledPasswordField
+        control={form.control}
+        name="password"
         label="New password"
-        value={password}
-        onChangeText={setPassword}
         autoComplete="new-password"
         textContentType="newPassword"
       />
-      <PasswordProgress password={password} />
-      <PasswordField
+      <PasswordProgress password={form.watch('password')} />
+      <ControlledPasswordField
+        control={form.control}
+        name="confirmPassword"
         label="Confirm password"
-        value={confirmation}
-        onChangeText={setConfirmation}
         autoComplete="new-password"
         textContentType="newPassword"
       />

@@ -113,3 +113,7 @@ Reduce Motion. Check modal dismissal, iOS back swipe, Android hardware Back, foc
 visibility, pasted codes, password toggles, footer reachability, and loading visuals.
 Outcome routes should be mounted directly by the test harness, without wiring form
 actions to them. Confirm the unavailable actions never claim an outcome.
+
+## Milestone 1.E state integration
+
+The approved screens now use the ownership and privacy boundaries in [authentication-state.md](authentication-state.md). React Hook Form owns local interaction state, Zod owns immediate client feedback, and operation-specific submission intents are inert until a future controller is supplied. No screen creates a backend outcome or changes session state.
