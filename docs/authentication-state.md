@@ -50,3 +50,7 @@ Authentication can be declared complete only after all steps pass against a real
 15. The complete flow passes on iOS and Android.
 
 Afterward, deploy the authenticated build to staging and validate it end to end before the first POS product feature begins.
+
+## Milestone 1.G.1 credential integration
+
+The token-free session boundary now sits after the secure credential coordinator described in [authentication-integration.md](authentication-integration.md). Stored credential presence never changes presentation state without future authoritative backend validation.

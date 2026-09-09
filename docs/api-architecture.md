@@ -19,3 +19,7 @@ Success requires an expected status and valid content handling. Empty 204 respon
 The Authentication service exposes only OpenAPI-proven operations: registration policy, registration, verification, resend, unverified-email change, sign-in, refresh, current session, current/all-session deletion, reset request, and reset confirmation. It does not persist credentials, navigate, mutate session state, retry, or create fake responses.
 
 Milestone 1.G will connect `React Hook Form values → submission intent → React Query mutation → Authentication service → API result/error → Authentication domain mapping → session transition → navigation policy`. Secure storage, refresh coordination, real API calls from controllers, and the locked Authentication completion gate remain incomplete.
+
+## Milestone 1.G.1 integration boundary
+
+Authentication API errors are mapped into feature-domain failures outside the shared API layer. Per-request credentials come from the private credential vault through future controllers; the HTTP client does not own, persist, refresh, or expose them. See [authentication-integration.md](authentication-integration.md).
