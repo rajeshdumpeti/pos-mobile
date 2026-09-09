@@ -32,5 +32,5 @@ it('reads and trims the public API URL', () => {
 it('fails clearly in development when the public API URL is missing', () => {
   delete process.env.EXPO_PUBLIC_API_URL;
 
-  expect(() => loadAppConfig()).toThrow('EXPO_PUBLIC_API_URL is required for local development');
+  expect(() => loadAppConfig()).toThrow('The API base URL is required.');
 });
