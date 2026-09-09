@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 
 import { AppProviders } from '@/providers/AppProviders';
 import { useTheme } from '@/design-system/theme';
+import { useNavigationAccess } from '@/navigation/NavigationAccessProvider';
 
 jest.mock('react-native-gesture-handler', () => {
   const { View } = jest.requireActual<typeof import('react-native')>('react-native');
@@ -21,7 +22,10 @@ jest.mock('react-native-safe-area-context', () => {
 function QueryConsumer() {
   const queryClient = useQueryClient();
   const theme = useTheme();
-  return <Text>{queryClient ? `providers ready:${theme.mode}` : 'missing providers'}</Text>;
+  const access = useNavigationAccess();
+  return (
+    <Text>{queryClient ? `providers ready:${theme.mode}:${access}` : 'missing providers'}</Text>
+  );
 }
 
 test('renders application children with the React Query provider', () => {
@@ -31,5 +35,5 @@ test('renders application children with the React Query provider', () => {
     </AppProviders>,
   );
 
-  expect(view.getByText('providers ready:dark')).toBeTruthy();
+  expect(view.getByText('providers ready:dark:signedOut')).toBeTruthy();
 });

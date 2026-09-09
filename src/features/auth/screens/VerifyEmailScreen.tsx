@@ -1,3 +1,5 @@
+import { routes } from '@/navigation/routes';
+
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
 import { CodeEntry } from '../components/CodeEntry';
@@ -7,6 +9,7 @@ export function VerifyEmailScreen({ maskedEmail }: { maskedEmail?: string | null
   const destination = maskedEmail?.includes('*') ? maskedEmail.trim() : undefined;
   return (
     <AuthScaffold
+      backFallback={routes.auth.signIn}
       title="Verify your email"
       subtitle={
         destination

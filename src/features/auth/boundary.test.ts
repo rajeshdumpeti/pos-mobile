@@ -42,6 +42,6 @@ test('state outcome routes are never destinations of form actions', () => {
     .map((file) => fs.readFileSync(file, 'utf8'))
     .join('\n');
   expect(screens).not.toMatch(
-    /(?:push|replace|navigate)\(['"](?:\/\(auth\))?\/(?:verify-email|reset-sent|password-updated)/,
+    /(?:push|replace|navigate)\(['"](?:\/\(auth\))?\/(?:verify-email|reset-link-sent|password-updated)/,
   );
 });

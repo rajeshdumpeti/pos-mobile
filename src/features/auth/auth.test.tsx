@@ -15,18 +15,21 @@ import CreateAccount from '../../../app/(auth)/create-account';
 import SignIn from '../../../app/(auth)/sign-in';
 import VerifyEmail from '../../../app/(auth)/verify-email';
 import ForgotPassword from '../../../app/(auth)/forgot-password';
-import ResetSent from '../../../app/(auth)/reset-sent';
+import ResetSent from '../../../app/(auth)/reset-link-sent';
 import ResetPassword from '../../../app/(auth)/reset-password';
 import PasswordUpdated from '../../../app/(auth)/password-updated';
 import Offline from '../../../app/(auth)/offline';
-import RateLimited from '../../../app/(auth)/rate-limited';
-import Security from '../../../app/(auth)/security';
+import RateLimited from '../../../app/(auth)/too-many-attempts';
+import Security from '../../../app/(auth)/security-state';
 import AuthLayout from '../../../app/(auth)/_layout';
 
 const mockPush = jest.fn();
 const mockReplace = jest.fn();
+const mockNavigate = jest.fn();
 const mockBack = jest.fn();
+const mockDismiss = jest.fn();
 const mockCanGoBack = jest.fn(() => true);
+const mockCanDismiss = jest.fn(() => true);
 jest.mock('expo-router', () => {
   const { Text } = jest.requireActual('react-native');
   const Stack = ({
@@ -44,11 +47,17 @@ jest.mock('expo-router', () => {
     <Text testID={`route-${name}`} {...options} />
   );
   return {
+    Redirect: ({ href }: { href: string }) => <Text>{`redirect:${href}`}</Text>,
+    usePathname: () => '/welcome',
+    useLocalSearchParams: () => ({}),
     useRouter: () => ({
       push: mockPush,
       replace: mockReplace,
+      navigate: mockNavigate,
       back: mockBack,
+      dismiss: mockDismiss,
       canGoBack: mockCanGoBack,
+      canDismiss: mockCanDismiss,
     }),
     Stack,
   };
@@ -71,6 +80,7 @@ function wrap(children: React.ReactNode, preference: 'light' | 'dark' = 'light')
 beforeEach(() => {
   jest.clearAllMocks();
   mockCanGoBack.mockReturnValue(true);
+  mockCanDismiss.mockReturnValue(true);
 });
 const routes = [
   Welcome,
@@ -186,7 +196,7 @@ test('input focus has a semantic ring and forms remain editable without submitti
   fireEvent.press(view.getByRole('button', { name: 'Sign In' }));
   expect(mockPush).not.toHaveBeenCalled();
   fireEvent.press(view.getByRole('button', { name: 'Forgot Password?' }));
-  expect(mockPush).toHaveBeenCalledWith('/(auth)/forgot-password');
+  expect(mockNavigate).toHaveBeenCalledWith('/(auth)/forgot-password');
   await act(async () => {});
 });
 test('forgot password has modal navigation with a functional close and cold-entry fallback', async () => {
@@ -195,11 +205,31 @@ test('forgot password has modal navigation with a functional close and cold-entr
   layout.unmount();
   const view = render(wrap(<ForgotPassword />));
   fireEvent.press(view.getByRole('button', { name: 'Close' }));
-  expect(mockBack).toHaveBeenCalledTimes(1);
-  mockCanGoBack.mockReturnValue(false);
+  expect(mockDismiss).toHaveBeenCalledTimes(1);
+  mockCanDismiss.mockReturnValue(false);
   fireEvent.press(view.getByRole('button', { name: 'Close' }));
-  expect(mockReplace).toHaveBeenCalledWith('/(auth)/welcome');
+  expect(mockReplace).toHaveBeenCalledWith('/(auth)/sign-in');
   expect(view.queryByText(/24.hour/i)).toBeNull();
+  await act(async () => {});
+});
+test.each([
+  [SignIn, 'Sign In'],
+  [CreateAccount, 'Create Account'],
+] as const)('%p back falls safely to Welcome after direct entry', async (Route, heading) => {
+  mockCanGoBack.mockReturnValue(false);
+  const view = render(wrap(<Route />));
+  expect(view.getByRole('header', { name: heading })).toBeTruthy();
+  fireEvent.press(view.getByRole('button', { name: 'Back' }));
+  expect(mockReplace).toHaveBeenCalledWith('/(auth)/welcome');
+  expect(mockBack).not.toHaveBeenCalled();
+  await act(async () => {});
+});
+
+test('Forgot Password navigation uses one reusable modal destination', async () => {
+  const view = render(wrap(<SignIn />));
+  fireEvent.press(view.getByRole('button', { name: 'Forgot Password?' }));
+  expect(mockNavigate).toHaveBeenCalledWith('/(auth)/forgot-password');
+  expect(mockPush).not.toHaveBeenCalledWith('/(auth)/forgot-password');
   await act(async () => {});
 });
 test('reset acknowledgement remains conditional and never identifies an address', async () => {

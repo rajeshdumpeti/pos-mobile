@@ -2,7 +2,7 @@
 
 ## Boundary and evidence
 
-The root redirects to Welcome in `app/(auth)/`. Routes are thin compositions of
+The root navigation policy redirects signed-out access to Welcome in `app/(auth)/`. Routes are thin compositions of
 `src/features/auth/screens`; components own reusable fields, artwork framing,
 actions, and local presentation. Root providers, appearance persistence, React
 Query infrastructure, and the temporary `FoundationScreen` remain intact. The
@@ -26,19 +26,19 @@ No service was started or called, and no backend file was modified.
 
 ## Public routes
 
-| Path                | Presentation and working interaction                                                |
-| ------------------- | ----------------------------------------------------------------------------------- |
-| `/welcome`          | Original hero, email entry to Sign In, Create Account                               |
-| `/create-account`   | Name/email/password/confirmation editing, visibility, Sign In                       |
-| `/sign-in`          | Email/password editing, visibility, Create Account, Forgot Password                 |
-| `/verify-email`     | One native six-digit input with six decorative cells; paste/deletion/leading zeroes |
-| `/forgot-password`  | Native modal route, reusable email content, Close/back                              |
-| `/reset-sent`       | Conditional, privacy-safe reset instructions; return to Sign In                     |
-| `/reset-password`   | Editable passwords and a local length guide, not a security score                   |
-| `/password-updated` | Success presentation and return to Sign In                                          |
-| `/offline`          | Recoverable explanation, unavailable retry, Back                                    |
-| `/rate-limited`     | Temporary retry period; `— : —` when timing is absent                               |
-| `/security`         | Generic, non-revealing error; unavailable retry, Back                               |
+| Path                 | Presentation and working interaction                                                |
+| -------------------- | ----------------------------------------------------------------------------------- |
+| `/welcome`           | Original hero, email entry to Sign In, Create Account                               |
+| `/create-account`    | Name/email/password/confirmation editing, visibility, Sign In                       |
+| `/sign-in`           | Email/password editing, visibility, Create Account, Forgot Password                 |
+| `/verify-email`      | One native six-digit input with six decorative cells; paste/deletion/leading zeroes |
+| `/forgot-password`   | Native modal route, reusable email content, Close/back                              |
+| `/reset-link-sent`   | Conditional, privacy-safe reset instructions; return to Sign In                     |
+| `/reset-password`    | Editable passwords and a local length guide, not a security score                   |
+| `/password-updated`  | Success presentation and return to Sign In                                          |
+| `/offline`           | Recoverable explanation, unavailable retry, Back                                    |
+| `/too-many-attempts` | Temporary retry period; `— : —` when timing is absent                               |
+| `/security-state`    | Generic, non-revealing error; unavailable retry, Back                               |
 
 No form navigates to an outcome route. Outcome routes can be mounted independently
 for presentation review; future integration must show them only after real outcomes.
@@ -93,9 +93,11 @@ registration policy must arrive before enabling registration. Password length is
 local feedback only; server validation and final policy messaging remain deferred.
 
 Typed API binding, mutations, request state, authoritative verification/rate-limit
-timing, reset-link extraction, secure storage, session restoration/refresh/logout,
-protected navigation and deep links remain later milestones. No URL parameter is
-read by Authentication. Appearance storage remains existing theme infrastructure.
+timing, secure storage, and session restoration/refresh/logout remain later milestones.
+Navigation 1.D now validates the backend-authorized opaque reset `token` at the route boundary
+without exposing it to presentation or calling an API. See
+[Navigation foundation](navigation-architecture.md). Appearance storage remains existing theme
+infrastructure.
 
 ## Manual verification
 

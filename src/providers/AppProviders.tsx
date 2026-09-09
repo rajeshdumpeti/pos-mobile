@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppErrorBoundary } from '@/components/feedback/AppErrorBoundary';
 import { ThemeProvider, ThemePreference } from '@/design-system/theme';
 import { createQueryClient } from '@/lib/query/queryClient';
+import { NavigationAccessProvider } from '@/navigation/NavigationAccessProvider';
 
 export function AppProviders({
   children,
@@ -19,7 +20,9 @@ export function AppProviders({
       <SafeAreaProvider>
         <ThemeProvider preference={themePreference}>
           <AppErrorBoundary>
-            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+            <QueryClientProvider client={queryClient}>
+              <NavigationAccessProvider>{children}</NavigationAccessProvider>
+            </QueryClientProvider>
           </AppErrorBoundary>
         </ThemeProvider>
       </SafeAreaProvider>

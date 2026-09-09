@@ -1,6 +1,10 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { NavigationAccessProvider, routes } from '@/navigation';
+
+const mockReplace = jest.fn();
 
 jest.mock('@/providers/AppProviders', () => ({
   AppProviders: ({ children }: React.PropsWithChildren) => children,
@@ -28,14 +32,12 @@ jest.mock('expo-router', () => {
     ReactModule.createElement(MockText, null, `screen:${name ?? 'configured'}`);
   return {
     Stack,
+    Slot: () => ReactModule.createElement(MockText, null, 'slot'),
     Redirect: ({ href }: { href: string }) =>
       ReactModule.createElement(MockText, null, `redirect:${href}`),
-    Link: ({ children, href }: React.PropsWithChildren<{ href: string }>) =>
-      ReactModule.createElement(
-        MockText,
-        { accessibilityRole: 'link', accessibilityHint: href },
-        children,
-      ),
+    useRouter: () => ({ replace: mockReplace }),
+    usePathname: () => '/welcome',
+    useLocalSearchParams: () => ({}),
   };
 });
 
@@ -43,30 +45,58 @@ import NotFoundRoute from '../../app/+not-found';
 import RootLayout from '../../app/_layout';
 import IndexRoute from '../../app/index';
 
-test('root route redirects to Welcome', () => {
-  const view = render(<IndexRoute />);
-  expect(view.getByText('redirect:/(auth)/welcome')).toBeTruthy();
+const metrics = {
+  frame: { x: 0, y: 0, width: 390, height: 844 },
+  insets: { top: 47, right: 0, bottom: 34, left: 0 },
+};
+
+function wrap(
+  children: React.ReactNode,
+  status: 'checking' | 'signedOut' | 'signedIn' = 'signedOut',
+) {
+  return (
+    <SafeAreaProvider initialMetrics={metrics}>
+      <NavigationAccessProvider status={status}>{children}</NavigationAccessProvider>
+    </SafeAreaProvider>
+  );
+}
+
+beforeEach(() => {
+  jest.clearAllMocks();
 });
 
-test('root navigation includes public auth and not-found routes', () => {
-  const view = render(<RootLayout />);
+test.each([
+  ['signedOut', `redirect:${routes.auth.welcome}`],
+  ['signedIn', `redirect:${routes.app.index}`],
+] as const)('root entry resolves %s deterministically', (status, expected) => {
+  const view = render(wrap(<IndexRoute />, status));
+  expect(view.getByText(expected)).toBeTruthy();
+});
+
+test('root entry does not flash a destination while access is checking', () => {
+  const view = render(wrap(<IndexRoute />, 'checking'));
+  expect(view.getByRole('progressbar', { name: 'Restoring access' })).toBeTruthy();
+  expect(view.queryByText(/redirect:/)).toBeNull();
+});
+
+test('root navigation includes public auth, protected app, and not-found routes', () => {
+  const view = render(wrap(<RootLayout />));
   expect(view.getByText('screen:index')).toBeTruthy();
   expect(view.getByText('screen:+not-found')).toBeTruthy();
   expect(view.getByText('screen:(auth)')).toBeTruthy();
-  expect(view.queryByText('screen:(app)')).toBeNull();
+  expect(view.getByText('screen:(app)')).toBeTruthy();
 });
 
-test('not-found route gives an accessible way back to Welcome', () => {
-  const view = render(
-    <SafeAreaProvider
-      initialMetrics={{
-        frame: { x: 0, y: 0, width: 390, height: 844 },
-        insets: { top: 47, right: 0, bottom: 34, left: 0 },
-      }}
-    >
-      <NotFoundRoute />
-    </SafeAreaProvider>,
-  );
-  expect(view.getByRole('header', { name: 'This page is unavailable' })).toBeTruthy();
-  expect(view.getByRole('link', { name: 'Return to Welcome' }).props.accessibilityHint).toBe('/');
-});
+test.each([
+  ['signedOut', 'Return to Welcome', routes.auth.welcome],
+  ['signedIn', 'Return to POS', routes.app.index],
+] as const)(
+  'unknown-route recovery respects %s access without echoing a path',
+  (status, label, destination) => {
+    const view = render(wrap(<NotFoundRoute />, status));
+    expect(view.getByRole('header', { name: 'This page is unavailable' })).toBeTruthy();
+    expect(view.queryByText(/token=|unknown path|requested URL/i)).toBeNull();
+    fireEvent.press(view.getByRole('button', { name: label }));
+    expect(mockReplace).toHaveBeenCalledWith(destination);
+  },
+);

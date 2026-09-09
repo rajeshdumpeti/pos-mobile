@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { TextInput } from '@/design-system';
+import { routes } from '@/navigation/routes';
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
 import { EmailField, PasswordField } from '../components/AuthFields';
@@ -28,7 +29,7 @@ export function CreateAccountScreen() {
           <AuthAction
             label="Sign In"
             variant="ghost"
-            onPress={() => router.replace('/(auth)/sign-in')}
+            onPress={() => router.replace(routes.auth.signIn)}
           />
         </>
       }

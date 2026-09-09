@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { AppText } from '@/design-system';
+import { routes } from '@/navigation/routes';
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
 
@@ -13,14 +14,14 @@ export function WelcomeScreen() {
       illustration="welcome"
       footer={
         <>
-          <AuthAction label="Continue with Email" onPress={() => router.push('/(auth)/sign-in')} />
+          <AuthAction label="Continue with Email" onPress={() => router.push(routes.auth.signIn)} />
           <AppText variant="caption" color="secondary" style={{ textAlign: 'center' }}>
             New to POS?
           </AppText>
           <AuthAction
             label="Create Account"
             variant="secondary"
-            onPress={() => router.push('/(auth)/create-account')}
+            onPress={() => router.push(routes.auth.createAccount)}
           />
         </>
       }
