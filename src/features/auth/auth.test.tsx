@@ -10,6 +10,8 @@ import { AuthScaffold } from './components/AuthScaffold';
 import { PasswordProgress } from './components/PasswordProgress';
 import { useAuthReducedMotion } from './presentation/useAuthMotion';
 import { VerifyEmailScreen } from './screens/VerifyEmailScreen';
+import { CreateAccountScreen } from './screens/CreateAccountScreen';
+import { ResetPasswordScreen } from './screens/ResetPasswordScreen';
 import Welcome from '../../../app/(auth)/welcome';
 import CreateAccount from '../../../app/(auth)/create-account';
 import SignIn from '../../../app/(auth)/sign-in';
@@ -354,7 +356,7 @@ test('Forgot Password request CTA is visible, locally email-gated, and never cal
   fireEvent.changeText(email, 'tester');
   expect(action).toBeDisabled();
   fireEvent.changeText(email, 'tester@example.com');
-  expect(action).toBeEnabled();
+  await waitFor(() => expect(action).toBeEnabled());
   expect(action).toHaveStyle({
     backgroundColor: createTheme('light').colors.accentPrimary,
     borderColor: createTheme('light').colors.accentPrimary,
@@ -374,7 +376,7 @@ test('Sign In local validation gates its primary action without submitting', asy
   fireEvent.changeText(view.getByLabelText('Password'), 'local-password');
   expect(action).toBeDisabled();
   fireEvent.changeText(view.getByLabelText('Email'), 'tester@example.com');
-  expect(action).toBeEnabled();
+  await waitFor(() => expect(action).toBeEnabled());
   expect(action).toHaveStyle({ backgroundColor: createTheme('light').colors.accentPrimary });
   fireEvent.press(action);
   expect(mockPush).not.toHaveBeenCalled();
@@ -388,13 +390,62 @@ test('form CTA becomes the filled-board primary treatment only after local field
   expect(action).toBeDisabled();
   fireEvent.changeText(view.getByLabelText('Full name'), 'POS Tester');
   fireEvent.changeText(view.getByLabelText('Email'), 'tester@example.com');
-  fireEvent.changeText(view.getByLabelText('Password'), 'local-password');
-  fireEvent.changeText(view.getByLabelText('Confirm password'), 'local-password');
-  expect(action).toBeEnabled();
+  fireEvent.changeText(view.getByLabelText('Password'), 'local-password-1');
+  fireEvent.changeText(view.getByLabelText('Confirm password'), 'local-password-1');
+  await waitFor(() => expect(action).toBeEnabled());
   expect(action).toHaveStyle({ backgroundColor: createTheme('light').colors.accentPrimary });
   fireEvent.press(action);
   expect(mockPush).not.toHaveBeenCalled();
   await act(async () => {});
+});
+
+test('field errors wait for interaction and corrected fields revalidate', async () => {
+  const view = render(wrap(<SignIn />));
+  expect(view.queryByText('Enter a valid email address.')).toBeNull();
+  const email = view.getByLabelText('Email');
+  fireEvent.changeText(email, 'invalid');
+  expect(view.queryByText('Enter a valid email address.')).toBeNull();
+  fireEvent(email, 'blur');
+  await waitFor(() => expect(view.getByRole('alert')).toBeTruthy());
+  fireEvent.changeText(email, 'tester@example.com');
+  fireEvent(email, 'blur');
+  await waitFor(() => expect(view.queryByRole('alert')).toBeNull());
+});
+
+test('verification and reset readiness are schema-derived and preserve leading zero', async () => {
+  const verify = jest.fn();
+  const codeView = render(wrap(<VerifyEmailScreen onSubmitIntent={verify} />));
+  const continueAction = codeView.getByRole('button', { name: 'Continue' });
+  fireEvent.changeText(codeView.getByLabelText('Six-digit verification code'), '012345');
+  await waitFor(() => expect(continueAction).toBeEnabled());
+  fireEvent.press(continueAction);
+  await waitFor(() => expect(verify).toHaveBeenCalledWith({ code: '012345' }));
+  codeView.unmount();
+
+  const reset = render(wrap(<ResetPasswordScreen continuationAvailable />));
+  const update = reset.getByRole('button', { name: 'Update Password' });
+  fireEvent.changeText(reset.getByLabelText('New password'), 'fifteen-characters');
+  fireEvent.changeText(reset.getByLabelText('Confirm password'), 'fifteen-characters');
+  await waitFor(() => expect(update).toBeEnabled());
+});
+
+test('create-account intent excludes the UI-only confirmation password', async () => {
+  const handler = jest.fn();
+  const view = render(wrap(<CreateAccountScreen onSubmitIntent={handler} />));
+  fireEvent.changeText(view.getByLabelText('Full name'), 'POS Tester');
+  fireEvent.changeText(view.getByLabelText('Email'), 'tester@example.com');
+  fireEvent.changeText(view.getByLabelText('Password'), 'fifteen-characters');
+  fireEvent.changeText(view.getByLabelText('Confirm password'), 'fifteen-characters');
+  const action = view.getByRole('button', { name: 'Create Account' });
+  await waitFor(() => expect(action).toBeEnabled());
+  fireEvent.press(action);
+  await waitFor(() =>
+    expect(handler).toHaveBeenCalledWith({
+      displayName: 'POS Tester',
+      email: 'tester@example.com',
+      password: 'fifteen-characters',
+    }),
+  );
 });
 
 test('system reduced motion removes navigation and artwork entrance animations', async () => {

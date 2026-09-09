@@ -1,20 +1,34 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import { TextInput } from '@/design-system';
 import { routes } from '@/navigation/routes';
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
-import { EmailField, PasswordField } from '../components/AuthFields';
 import { LegalBoundary } from '../components/LegalBoundary';
+import {
+  ControlledEmailField,
+  ControlledPasswordField,
+  ControlledTextField,
+  createAccountSchema,
+  type CreateAccountFormValues,
+} from '../forms';
+import { useAuthSubmissionIntent, type AuthSubmissionHandler } from '../domain';
+import type { CreateAccountIntent } from '../forms/schemas';
 
-export function CreateAccountScreen() {
+export function CreateAccountScreen({
+  onSubmitIntent,
+}: {
+  onSubmitIntent?: AuthSubmissionHandler<CreateAccountIntent>;
+}) {
   const router = useRouter();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmation, setConfirmation] = useState('');
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const ready = Boolean(name.trim() && validEmail && password && password === confirmation);
+  const form = useForm<CreateAccountFormValues>({
+    resolver: zodResolver(createAccountSchema),
+    mode: 'onTouched',
+    defaultValues: { displayName: '', email: '', password: '', confirmPassword: '' },
+  });
+  const submit = useAuthSubmissionIntent(onSubmitIntent);
+  const onValid = (values: CreateAccountFormValues) =>
+    submit({ displayName: values.displayName, email: values.email, password: values.password });
   return (
     <AuthScaffold
       title="Create Account"
@@ -23,8 +37,8 @@ export function CreateAccountScreen() {
         <>
           <AuthAction
             label="Create Account"
-            disabled={!ready}
-            onPress={ready ? () => undefined : undefined}
+            disabled={!form.formState.isValid || form.formState.isSubmitting}
+            onPress={() => void form.handleSubmit(onValid)()}
           />
           <AuthAction
             label="Sign In"
@@ -34,26 +48,26 @@ export function CreateAccountScreen() {
         </>
       }
     >
-      <TextInput
+      <ControlledTextField
+        control={form.control}
+        name="displayName"
         label="Full name"
-        value={name}
-        onChangeText={setName}
         autoComplete="name"
         textContentType="name"
         autoCapitalize="words"
       />
-      <EmailField value={email} onChangeText={setEmail} />
-      <PasswordField
+      <ControlledEmailField control={form.control} name="email" />
+      <ControlledPasswordField
+        control={form.control}
+        name="password"
         label="Password"
-        value={password}
-        onChangeText={setPassword}
         autoComplete="new-password"
         textContentType="newPassword"
       />
-      <PasswordField
+      <ControlledPasswordField
+        control={form.control}
+        name="confirmPassword"
         label="Confirm password"
-        value={confirmation}
-        onChangeText={setConfirmation}
         autoComplete="new-password"
         textContentType="newPassword"
       />

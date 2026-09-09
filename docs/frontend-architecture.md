@@ -77,15 +77,15 @@ must never trigger an automatic database or preference reset.
 | Appearance preference                   | Theme-owned AsyncStorage adapter                |
 | Other durable non-sensitive preferences | Add an approved adapter with its first contract |
 | Structured offline/domain records       | Expo SQLite repository, once installed          |
-| Form state                              | React Hook Form, once installed                 |
-| Validation                              | Zod schema owned by the feature, once installed |
+| Form state                              | React Hook Form in Authentication features      |
+| Validation                              | Feature-owned Zod schemas                       |
 
 Never copy server responses into Zustand. Do not put secrets in MMKV. UI and
 route files never call SQLite directly. New SQLite access belongs behind a
 repository in `src/database/` or a feature repository that depends on shared
 database infrastructure. No domain tables exist yet.
 
-Zustand, React Hook Form, Zod, and Expo SQLite are intentionally not installed
+Zustand and Expo SQLite are intentionally not installed
 until their first approved runtime consumer is implemented. The ownership rules
 remain fixed while avoiding dormant direct dependencies.
 
@@ -107,7 +107,7 @@ invent an endpoint or contract before it is approved.
 
 1. Create `src/features/<feature>/` with only the needed ownership folders.
 2. Put validation beside the feature boundary. Authentication 1.C.1 uses local React
-   presentation state; form-library adoption and server validation remain deferred.
+   presentation state; backend validation and server integration remain deferred.
 3. Put remote cache behavior in React Query hooks and structured offline access
    behind a SQLite repository.
 4. Export a screen-level component with no dependency on `app/`.

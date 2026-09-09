@@ -15,6 +15,7 @@ export type TextInputProps = NativeTextInputProps & {
   error?: string;
   disabled?: boolean;
   trailingAccessory?: React.ReactNode;
+  ref?: React.Ref<NativeTextInput>;
 };
 export function TextInput({
   label,
@@ -23,6 +24,7 @@ export function TextInput({
   disabled = false,
   accessibilityLabel,
   trailingAccessory,
+  ref,
   className,
   style,
   ...props
@@ -36,10 +38,12 @@ export function TextInput({
       <AppText variant="label">{label}</AppText>
       <View style={{ position: 'relative' }}>
         <NativeTextInput
+          ref={ref}
           {...props}
           accessibilityLabel={accessibilityLabel ?? label}
           accessibilityHint={error ?? hint}
           accessibilityState={{ disabled }}
+          aria-invalid={Boolean(error)}
           className={className}
           editable={!disabled}
           placeholderTextColor={theme.colors.textMuted}

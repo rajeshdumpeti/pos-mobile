@@ -1,12 +1,26 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AppText, Card } from '@/design-system';
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
-import { EmailField } from '../components/AuthFields';
+import {
+  ControlledEmailField,
+  forgotPasswordSchema,
+  type ForgotPasswordFormValues,
+} from '../forms';
+import { useAuthSubmissionIntent, type AuthSubmissionHandler } from '../domain';
 
-export function ForgotPasswordScreen() {
-  const [email, setEmail] = useState('');
-  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+export function ForgotPasswordScreen({
+  onSubmitIntent,
+}: {
+  onSubmitIntent?: AuthSubmissionHandler<ForgotPasswordFormValues>;
+}) {
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    mode: 'onTouched',
+    defaultValues: { email: '' },
+  });
+  const submit = useAuthSubmissionIntent(onSubmitIntent);
   return (
     <AuthScaffold
       modal
@@ -15,12 +29,12 @@ export function ForgotPasswordScreen() {
       footer={
         <AuthAction
           label="Request Reset Instructions"
-          disabled={!validEmail}
-          onPress={validEmail ? () => undefined : undefined}
+          disabled={!form.formState.isValid || form.formState.isSubmitting}
+          onPress={() => void form.handleSubmit(submit)()}
         />
       }
     >
-      <EmailField value={email} onChangeText={setEmail} />
+      <ControlledEmailField control={form.control} name="email" />
       <Card>
         <AppText color="secondary">If that address is eligible, instructions will be sent.</AppText>
       </Card>
