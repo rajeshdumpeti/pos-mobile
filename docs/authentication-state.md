@@ -8,7 +8,7 @@ This milestone defines typed, token-free state boundaries. It does not authentic
 | ---------------------------------------------------- | -------------------------------------------- |
 | Field values, touched/dirty state, client validation | React Hook Form                              |
 | Client validation schemas                            | Zod                                          |
-| Backend request/cache state                          | React Query in 1.G                           |
+| Backend request/cache state                          | React Query                                  |
 | Authentication operation state                       | Typed Authentication domain/controller model |
 | Session lifecycle and identity boundary              | `SessionProvider`                            |
 | Sensitive access/refresh credentials                 | Future secure-storage adapter                |
@@ -19,15 +19,15 @@ This milestone defines typed, token-free state boundaries. It does not authentic
 
 Forms keep passwords, confirmation values, codes, and email values local. Typed controlled adapters connect RHF to the existing fields without coupling the design system to RHF. Zod schemas mirror contract shape and length constraints, preserve leading zeroes in codes, and do not transform email input. Confirmation fields are omitted from submission intents.
 
-`AuthOperationState` is a discriminated union of idle, submitting, succeeded, and failed. Its reducer cannot represent simultaneous outcomes. Production screens do not dispatch success. `mapAuthFailure` is the single future mapping boundary: it accepts known contract codes and validated diagnostic metadata, then returns fixed presentation copy. Raw payload text is discarded.
+`AuthOperationState` is a discriminated union of idle, submitting, succeeded, and failed. Its reducer cannot represent simultaneous outcomes. `mapAuthFailure` accepts known contract codes and validated diagnostic metadata, then returns fixed presentation copy. Raw payload text is discarded.
 
 `SessionState` has restoring, signedOut, and signedIn variants. Signed-in carries only account id, optional display name, and onboarding need. `SessionNavigationAccess` maps restoring to checking and otherwise maps status directly; navigation continues to own redirects and route policy. Production has no restoration source yet and therefore starts deterministically signed out. Tests and future integration may inject controlled state. Consumers receive read-only state.
 
-Context is sufficient for this narrow lifecycle boundary, so Zustand is deferred. There is no global form state, mutation state, persistence, or mutable store API. React Query remains installed and owns future mutations; this milestone adds no mutation or HTTP implementation. The 1.G connection is:
+Context is sufficient for this narrow lifecycle boundary, so Zustand is deferred. There is no global form state or persistence. React Query owns request state, while the registration workflow keeps only the active opaque verification token in a closure outside presentation Context. The connection is:
 
 `Form → Authentication controller → React Query mutation → typed API service → backend → mapped domain result → session transition/navigation`
 
-Milestone 1.F will supply typed transport contracts. Milestone 1.G will pass operation-specific handlers into the submission boundary. The boundary ignores absent handlers and suppresses concurrent duplicate intents. Expo SecureStore is deferred until real credentials exist; AsyncStorage is never a credential store. Passwords, verification codes, reset tokens, raw backend errors, and Authentication form values must not enter logs, analytics, route parameters, Context, or persistence.
+The boundary ignores absent handlers and suppresses concurrent duplicate intents. Milestone 1.G.2 connects registration, verification, resend, and pre-verification email changes to generated transport types. Expo SecureStore is deferred until session credentials exist; AsyncStorage is never a credential store. Passwords, verification codes, verification/reset tokens, raw backend errors, and Authentication form values must not enter logs, analytics, route parameters, Context, or persistence.
 
 ## Authentication completion gate
 

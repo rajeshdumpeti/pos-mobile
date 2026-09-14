@@ -37,6 +37,9 @@ export type AuthContractFailureCode =
   | 'reset_token_expired'
   | 'password_rejected'
   | 'legal_acceptance_outdated'
+  | 'legal_consent_required'
+  | 'legal_consent_not_applicable'
+  | 'authentication_configuration_unavailable'
   | 'dependency_unavailable'
   | 'internal_server_error'
   | 'rate_limited';

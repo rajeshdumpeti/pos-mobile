@@ -96,7 +96,10 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Get current registration legal versions */
+    /**
+     * Get the backend-authoritative registration legal policy
+     * @description Fetch before registration. When consent is required, show both returned documents and submit explicit acceptance with the returned versions. When deferred_nonproduction, omit all four legal consent request fields. Refetch after legal_acceptance_outdated.
+     */
     get: operations['get_authentication_registration_policy'];
     put?: never;
     post?: never;
@@ -115,7 +118,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Create an email registration */
+    /**
+     * Create an email registration
+     * @description Legal consent fields are required only when the current registration policy requires consent, and must be omitted when policy is deferred_nonproduction. After legal_acceptance_outdated, refetch the policy before retrying.
+     */
     post: operations['create_email_registration'];
     delete?: never;
     options?: never;
@@ -504,15 +510,41 @@ export interface components {
        */
       refresh_token: string;
     };
-    /** RegistrationPolicyResponse */
+    /**
+     * RegistrationPolicyResponse
+     * @example {
+     *       "legal_consent_required": true,
+     *       "legal_policy_status": "active",
+     *       "privacy_url": "https://legal.pos.example/privacy",
+     *       "privacy_version": "approved-privacy-version",
+     *       "terms_url": "https://legal.pos.example/terms",
+     *       "terms_version": "approved-terms-version"
+     *     }
+     * @example {
+     *       "legal_consent_required": false,
+     *       "legal_policy_status": "deferred_nonproduction"
+     *     }
+     */
     RegistrationPolicyResponse: {
+      /** Legal Consent Required */
+      legal_consent_required: boolean;
+      /**
+       * Legal Policy Status
+       * @enum {string}
+       */
+      legal_policy_status: 'active' | 'deferred_nonproduction';
+      /** Privacy Url */
+      privacy_url: string | null;
       /** Privacy Version */
-      privacy_version: string;
+      privacy_version: string | null;
+      /** Terms Url */
+      terms_url: string | null;
       /** Terms Version */
-      terms_version: string;
+      terms_version: string | null;
     };
     /**
      * RegistrationRequest
+     * @description Registration input; legal fields are conditional on the current policy.
      * @example {
      *       "display_name": "POS Tester",
      *       "email": "tester@example.com",
@@ -533,14 +565,26 @@ export interface components {
        * Format: password
        */
       password: string;
-      /** Privacy Accepted */
-      privacy_accepted: boolean;
-      /** Privacy Version */
-      privacy_version: string;
-      /** Terms Accepted */
-      terms_accepted: boolean;
-      /** Terms Version */
-      terms_version: string;
+      /**
+       * Privacy Accepted
+       * @description Required and true only when legal_consent_required is true; otherwise omit.
+       */
+      privacy_accepted?: boolean | null;
+      /**
+       * Privacy Version
+       * @description Current backend-provided Privacy version when consent is required; otherwise omit.
+       */
+      privacy_version?: string | null;
+      /**
+       * Terms Accepted
+       * @description Required and true only when legal_consent_required is true; otherwise omit.
+       */
+      terms_accepted?: boolean | null;
+      /**
+       * Terms Version
+       * @description Current backend-provided Terms version when consent is required; otherwise omit.
+       */
+      terms_version?: string | null;
     };
     /**
      * ResendVerificationRequest

@@ -12,4 +12,8 @@ Stored refresh presence means only “requires authoritative validation.” `ins
 
 Authentication mutation keys are centralized and contain operation names only. The policy is `retry: false`, `networkMode: always`, and `gcTime: 0`. Authentication submissions are immediate explicit user intents. If offline, they fail safely and require a new user action. They are never queued for reconnect replay. Future controllers must transfer success credentials directly into the vault and immediately reset sensitive mutation state. Authentication mutation state is not persisted or dehydrated.
 
-Milestones 1.G.2–1.G.5 will connect operation-specific form intents to controllers, React Query mutations, typed services, credential custody, safe session transitions, and navigation policy. Registration, verification, sign-in, restoration/refresh, sign-out, and password recovery remain disconnected. This milestone satisfies none of the 15 real-backend Authentication completion-gate conditions.
+Milestone 1.G.2 connects registration policy, registration, verification, resend,
+and unverified-email change through the private transient workflow in
+[the 1.G.2 handoff](auth-registration-verification.md). Later milestones connect
+sign-in, restoration/refresh, sign-out, and password recovery. Real-backend
+completion gates remain subject to founder validation.

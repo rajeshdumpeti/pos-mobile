@@ -416,22 +416,89 @@
         "type": "object"
       },
       "RegistrationPolicyResponse": {
+        "examples": [
+          {
+            "legal_consent_required": true,
+            "legal_policy_status": "active",
+            "privacy_url": "https://legal.pos.example/privacy",
+            "privacy_version": "approved-privacy-version",
+            "terms_url": "https://legal.pos.example/terms",
+            "terms_version": "approved-terms-version"
+          },
+          {
+            "legal_consent_required": false,
+            "legal_policy_status": "deferred_nonproduction"
+          }
+        ],
         "properties": {
-          "privacy_version": {
-            "title": "Privacy Version",
+          "legal_consent_required": {
+            "title": "Legal Consent Required",
+            "type": "boolean"
+          },
+          "legal_policy_status": {
+            "enum": ["active", "deferred_nonproduction"],
+            "title": "Legal Policy Status",
             "type": "string"
           },
+          "privacy_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Privacy Url"
+          },
+          "privacy_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Privacy Version"
+          },
+          "terms_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Terms Url"
+          },
           "terms_version": {
-            "title": "Terms Version",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Terms Version"
           }
         },
-        "required": ["terms_version", "privacy_version"],
+        "required": [
+          "legal_consent_required",
+          "legal_policy_status",
+          "terms_version",
+          "terms_url",
+          "privacy_version",
+          "privacy_url"
+        ],
         "title": "RegistrationPolicyResponse",
         "type": "object"
       },
       "RegistrationRequest": {
         "additionalProperties": false,
+        "description": "Registration input; legal fields are conditional on the current policy.",
         "example": {
           "display_name": "POS Tester",
           "email": "tester@example.com",
@@ -463,35 +530,59 @@
             "writeOnly": true
           },
           "privacy_accepted": {
-            "title": "Privacy Accepted",
-            "type": "boolean"
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required and true only when legal_consent_required is true; otherwise omit.",
+            "title": "Privacy Accepted"
           },
           "privacy_version": {
-            "maxLength": 64,
-            "minLength": 1,
-            "title": "Privacy Version",
-            "type": "string"
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Current backend-provided Privacy version when consent is required; otherwise omit.",
+            "title": "Privacy Version"
           },
           "terms_accepted": {
-            "title": "Terms Accepted",
-            "type": "boolean"
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required and true only when legal_consent_required is true; otherwise omit.",
+            "title": "Terms Accepted"
           },
           "terms_version": {
-            "maxLength": 64,
-            "minLength": 1,
-            "title": "Terms Version",
-            "type": "string"
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Current backend-provided Terms version when consent is required; otherwise omit.",
+            "title": "Terms Version"
           }
         },
-        "required": [
-          "display_name",
-          "email",
-          "password",
-          "terms_accepted",
-          "privacy_accepted",
-          "terms_version",
-          "privacy_version"
-        ],
+        "required": ["display_name", "email", "password"],
         "title": "RegistrationRequest",
         "type": "object"
       },
@@ -1603,6 +1694,7 @@
     },
     "/api/v1/auth/registration-policy": {
       "get": {
+        "description": "Fetch before registration. When consent is required, show both returned documents and submit explicit acceptance with the returned versions. When deferred_nonproduction, omit all four legal consent request fields. Refetch after legal_acceptance_outdated.",
         "operationId": "get_authentication_registration_policy",
         "responses": {
           "200": {
@@ -1768,12 +1860,13 @@
             }
           }
         },
-        "summary": "Get current registration legal versions",
+        "summary": "Get the backend-authoritative registration legal policy",
         "tags": ["Authentication"]
       }
     },
     "/api/v1/auth/registrations": {
       "post": {
+        "description": "Legal consent fields are required only when the current registration policy requires consent, and must be omitted when policy is deferred_nonproduction. After legal_acceptance_outdated, refetch the policy before retrying.",
         "operationId": "create_email_registration",
         "requestBody": {
           "content": {
@@ -3363,5 +3456,5 @@
       }
     }
   },
-  "x-pos-authentication-contract-version": "1.0.0"
+  "x-pos-authentication-contract-version": "1.1.0"
 }

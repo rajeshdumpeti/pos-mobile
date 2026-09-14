@@ -2,6 +2,7 @@ export * from './AppText';
 export * from './Box';
 export * from './Button';
 export * from './Card';
+export * from './Checkbox';
 export * from './Divider';
 export * from './EmptyState';
 export * from './ErrorState';

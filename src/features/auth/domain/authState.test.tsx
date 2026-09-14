@@ -58,7 +58,7 @@ test('submission intent suppresses rapid duplicate invocation', async () => {
   });
   const handler = jest.fn(() => pending);
   const { result } = renderHook(() => useAuthSubmissionIntent(handler));
-  let first!: Promise<void>;
+  let first!: Promise<void | boolean | undefined>;
   await act(async () => {
     first = result.current({ email: 'a@b.co' });
     void result.current({ email: 'a@b.co' });

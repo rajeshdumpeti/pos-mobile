@@ -66,8 +66,8 @@ Copy `.env.example` to `.env` only when overriding the local API URL. Expo
 variables prefixed with `EXPO_PUBLIC_` are included in the application bundle
 and must never contain secrets.
 
-The currently supported public variable is `EXPO_PUBLIC_API_URL`. No active product screen or
-backend request consumes it during the temporary foundation state.
+The currently supported public variable is `EXPO_PUBLIC_API_URL`. Connected Authentication
+screens use it through the typed transport boundary; it must contain only a public API base URL.
 
 See `docs/repository-setup.md` for additional local-development and repository
 preparation guidance.

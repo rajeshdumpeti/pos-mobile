@@ -2,6 +2,7 @@ import React from 'react';
 import { AccessibilityInfo, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { act, fireEvent, render, renderHook, waitFor } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme } from '@/design-system/theme';
 import { CodeEntry } from './components/CodeEntry';
 import { PasswordField } from './components/AuthFields';
@@ -24,6 +25,8 @@ import Offline from '../../../app/(auth)/offline';
 import RateLimited from '../../../app/(auth)/too-many-attempts';
 import Security from '../../../app/(auth)/security-state';
 import AuthLayout from '../../../app/(auth)/_layout';
+import { createQueryClient } from '@/lib/query/queryClient';
+import { AuthenticationIntegrationProvider, createRegistrationWorkflow } from './integration';
 
 const mockPush = jest.fn();
 const mockReplace = jest.fn();
@@ -72,10 +75,37 @@ const metrics = {
   frame: { x: 0, y: 0, width: 390, height: 844 },
   insets: { top: 47, right: 0, bottom: 34, left: 0 },
 };
+const registration = createRegistrationWorkflow({
+  getRegistrationPolicy: jest.fn(async () => ({
+    legal_consent_required: false,
+    legal_policy_status: 'deferred_nonproduction' as const,
+    terms_version: null,
+    terms_url: null,
+    privacy_version: null,
+    privacy_url: null,
+  })),
+  register: jest.fn(),
+  verifyEmail: jest.fn(),
+  resendVerification: jest.fn(),
+  changeUnverifiedEmail: jest.fn(),
+} as never);
+const queryClient = createQueryClient();
 function wrap(children: React.ReactNode, preference: 'light' | 'dark' = 'light') {
   return (
     <SafeAreaProvider initialMetrics={metrics}>
-      <ThemeProvider preference={preference}>{children}</ThemeProvider>
+      <ThemeProvider preference={preference}>
+        <QueryClientProvider client={queryClient}>
+          <AuthenticationIntegrationProvider
+            capabilities={{
+              inspectBootstrap: jest.fn(),
+              clearCredentials: jest.fn(),
+              registration,
+            }}
+          >
+            {children}
+          </AuthenticationIntegrationProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }
@@ -109,6 +139,12 @@ test.each(routes)('%p renders safely in both themes without excluded controls', 
     ).toBeNull();
     expect(view.UNSAFE_getByType(KeyboardAvoidingView)).toBeTruthy();
     expect(view.UNSAFE_getByType(ScrollView).props.keyboardShouldPersistTaps).toBe('handled');
+    if (Route === CreateAccount) {
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      });
+      expect(view.queryByText('Loading registration policy…')).toBeNull();
+    }
     await act(async () => {});
     view.unmount();
   }
@@ -431,7 +467,14 @@ test('verification and reset readiness are schema-derived and preserve leading z
 
 test('create-account intent excludes the UI-only confirmation password', async () => {
   const handler = jest.fn();
-  const view = render(wrap(<CreateAccountScreen onSubmitIntent={handler} />));
+  const view = render(
+    wrap(
+      <CreateAccountScreen
+        onSubmitIntent={handler}
+        policy={{ mode: 'deferred', legalConsentRequired: false }}
+      />,
+    ),
+  );
   fireEvent.changeText(view.getByLabelText('Full name'), 'POS Tester');
   fireEvent.changeText(view.getByLabelText('Email'), 'tester@example.com');
   fireEvent.changeText(view.getByLabelText('Password'), 'fifteen-characters');
@@ -446,6 +489,40 @@ test('create-account intent excludes the UI-only confirmation password', async (
       password: 'fifteen-characters',
     }),
   );
+});
+
+test('required policy presents separate unchecked consent controls and gates registration', async () => {
+  const view = render(
+    wrap(
+      <CreateAccountScreen
+        onSubmitIntent={jest.fn()}
+        policy={{
+          mode: 'required',
+          legalConsentRequired: true,
+          termsVersion: 'terms-v1',
+          termsUrl: 'https://legal.example.test/terms',
+          privacyVersion: 'privacy-v1',
+          privacyUrl: 'https://legal.example.test/privacy',
+        }}
+      />,
+    ),
+  );
+  const terms = view.getByRole('checkbox', { name: 'I accept the Terms of Service' });
+  const privacy = view.getByRole('checkbox', { name: 'I accept the Privacy Policy' });
+  expect(terms.props.accessibilityState.checked).toBe(false);
+  expect(privacy.props.accessibilityState.checked).toBe(false);
+  expect(view.getByRole('button', { name: 'Terms of Service' })).toBeEnabled();
+  expect(view.getByRole('button', { name: 'Privacy Policy' })).toBeEnabled();
+  fireEvent.changeText(view.getByLabelText('Full name'), 'POS Tester');
+  fireEvent.changeText(view.getByLabelText('Email'), 'tester@example.com');
+  fireEvent.changeText(view.getByLabelText('Password'), 'fifteen-characters');
+  fireEvent.changeText(view.getByLabelText('Confirm password'), 'fifteen-characters');
+  const create = view.getByRole('button', { name: 'Create Account' });
+  await waitFor(() => expect(create).toBeDisabled());
+  fireEvent.press(terms);
+  expect(create).toBeDisabled();
+  fireEvent.press(privacy);
+  await waitFor(() => expect(create).toBeEnabled());
 });
 
 test('system reduced motion removes navigation and artwork entrance animations', async () => {

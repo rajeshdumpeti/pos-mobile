@@ -4,7 +4,7 @@ The dependency direction is `feature controller → React Query (1.G) → typed 
 
 ## Contract provenance
 
-`src/api/contract/openapi.json` was generated from backend `origin/develop` commit `b95173109eff21cac297ca274a2a704d5f663794`, API **POS Local Mock API 0.1.0**, Authentication Contract **1.0.0**. It contains no backend environment values or secrets. `npm run api:generate` deterministically creates the marked generated TypeScript schema; `npm run api:check` regenerates into a temporary file and fails on drift. To refresh, archive/check out the reviewed backend commit outside this repository, generate `create_app().openapi()`, replace the snapshot and metadata together, then run both commands and review the contract diff. Mobile runtime never accesses the backend repository.
+`src/api/contract/openapi.json` was generated from backend `origin/develop` commit `c2f2ddeb20e03fca32062119fb59845892a46224`, API **POS Local Mock API 0.1.0**, Authentication Contract **1.1.0**. It contains no backend environment values or secrets. `npm run api:generate` deterministically creates the marked generated TypeScript schema; `npm run api:check` regenerates into a temporary file and fails on drift. To refresh, archive/check out the reviewed backend commit outside this repository, generate `create_app().openapi()`, replace the snapshot and metadata together, then run both commands and review the contract diff. Mobile runtime never accesses the backend repository.
 
 ## Configuration and transport
 

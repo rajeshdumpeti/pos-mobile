@@ -1,6 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { AppText } from '@/design-system';
 import { routes } from '@/navigation/routes';
 import { AuthScaffold } from '../components/AuthScaffold';
 import { AuthAction } from '../components/AuthAction';
@@ -11,11 +13,14 @@ import {
   type SignInFormValues,
 } from '../forms';
 import { useAuthSubmissionIntent, type AuthSubmissionHandler } from '../domain';
+import { useAuthenticationCapabilities } from '../integration';
 
 export function SignInScreen({
   onSubmitIntent,
+  verificationSucceeded = false,
 }: {
   onSubmitIntent?: AuthSubmissionHandler<SignInFormValues>;
+  verificationSucceeded?: boolean;
 }) {
   const router = useRouter();
   const form = useForm<SignInFormValues>({
@@ -43,6 +48,11 @@ export function SignInScreen({
         </>
       }
     >
+      {verificationSucceeded ? (
+        <AppText accessibilityRole="alert" color="accent">
+          Email verified—sign in to continue.
+        </AppText>
+      ) : null}
       <ControlledEmailField control={form.control} name="email" />
       <ControlledPasswordField
         control={form.control}
@@ -58,4 +68,10 @@ export function SignInScreen({
       />
     </AuthScaffold>
   );
+}
+
+export function ConnectedSignInScreen() {
+  const { registration } = useAuthenticationCapabilities();
+  const [verificationSucceeded] = useState(registration.takeVerificationSuccess);
+  return <SignInScreen verificationSucceeded={verificationSucceeded} />;
 }

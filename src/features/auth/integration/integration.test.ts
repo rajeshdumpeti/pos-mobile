@@ -3,7 +3,13 @@ import { MutationObserver, QueryClient, onlineManager } from '@tanstack/react-qu
 import { createQueryClient } from '@/lib/query/queryClient';
 import { mapApiErrorToAuthFailure } from './mapApiFailure';
 import { inspectSessionBootstrap } from './sessionBootstrap';
-import { authMutationKeys, authMutationPolicy, clearSensitiveMutation } from './authQueryPolicy';
+import {
+  authMutationKeys,
+  authMutationPolicy,
+  authQueryKeys,
+  authQueryPolicy,
+  clearSensitiveMutation,
+} from './authQueryPolicy';
 test.each([
   ['network', 'offline'],
   ['timeout', 'timeout'],
@@ -56,6 +62,9 @@ test.each([
   'reset_token_expired',
   'password_rejected',
   'legal_acceptance_outdated',
+  'legal_consent_required',
+  'legal_consent_not_applicable',
+  'authentication_configuration_unavailable',
   'dependency_unavailable',
   'internal_server_error',
   'rate_limited',
@@ -78,7 +87,15 @@ test.each([
 });
 test('query policy has PII-free keys, no retry, immediate execution and cleanup', () => {
   expect(authMutationPolicy).toEqual({ retry: false, networkMode: 'always', gcTime: 0 });
-  expect(JSON.stringify(authMutationKeys)).not.toMatch(/@|Bearer|example|[A-Za-z0-9]{40}/);
+  expect(authQueryPolicy).toEqual({
+    retry: false,
+    networkMode: 'always',
+    gcTime: 0,
+    staleTime: 0,
+  });
+  expect(JSON.stringify({ authMutationKeys, authQueryKeys })).not.toMatch(
+    /@|Bearer|example|[A-Za-z0-9]{40}/,
+  );
   const reset = jest.fn();
   clearSensitiveMutation({ reset });
   expect(reset).toHaveBeenCalledTimes(1);

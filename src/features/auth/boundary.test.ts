@@ -35,16 +35,14 @@ test.each(files)(
       /services|storage|query|axios|linking|\.png|providers|database|store\//i,
     );
     expect(calls.join('\n')).not.toMatch(
-      /fetch|XMLHttpRequest|WebSocket|setInterval|setTimeout|useMutation|useQuery|setItem|token/i,
+      /\bfetch\b|XMLHttpRequest|WebSocket|setInterval|setTimeout|useMutation|useQuery|setItem|token/i,
     );
     expect(source).not.toMatch(/useLocalSearchParams|useGlobalSearchParams|https?:\/\/|\bBearer\b/);
   },
 );
-test('state outcome routes are never destinations of form actions', () => {
+test('navigation never embeds Authentication values in route parameters', () => {
   const screens = sources(path.join(__dirname, 'screens'))
     .map((file) => fs.readFileSync(file, 'utf8'))
     .join('\n');
-  expect(screens).not.toMatch(
-    /(?:push|replace|navigate)\(['"](?:\/\(auth\))?\/(?:verify-email|reset-link-sent|password-updated)/,
-  );
+  expect(screens).not.toMatch(/(?:push|replace|navigate)\(\s*\{|params:|query:/);
 });

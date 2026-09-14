@@ -7,16 +7,19 @@ import {
   type CredentialVault,
 } from './credentials';
 import { inspectSessionBootstrap, type SessionBootstrapResult } from './sessionBootstrap';
+import { createRegistrationWorkflow, type RegistrationWorkflow } from './registrationWorkflow';
 export type AuthenticationCapabilities = {
   inspectBootstrap(): Promise<SessionBootstrapResult>;
   clearCredentials(): ReturnType<CredentialVault['clear']>;
+  registration: RegistrationWorkflow;
 };
 function createDependencies(): AuthenticationCapabilities {
   const vault = createCredentialVault(createSecureCredentialStorage());
-  createAuthenticationService(createHttpClient({ baseUrl: appConfig.apiUrl }));
+  const service = createAuthenticationService(createHttpClient({ baseUrl: appConfig.apiUrl }));
   return {
     inspectBootstrap: () => inspectSessionBootstrap(vault),
     clearCredentials: () => vault.clear(),
+    registration: createRegistrationWorkflow(service),
   };
 }
 const Context = createContext<AuthenticationCapabilities | undefined>(undefined);
