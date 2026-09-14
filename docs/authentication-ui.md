@@ -14,11 +14,11 @@ spacing and quiet motion inform the UI. Excluded controls, legal text, example
 identities, obsolete password rules and success-to-product navigation were omitted.
 The boards are not shipped as assets.
 
-Read-only backend reference: local `origin/develop`
-`b95173109eff21cac297ca274a2a704d5f663794`. Reviewed the consolidated
+Read-only backend reference: `origin/develop`
+`c2f2ddeb20e03fca32062119fb59845892a46224`. Reviewed the consolidated
 `docs/frontend-authentication-handoff.md`, historical registration/session/security/
 recovery handoffs, and locally generated OpenAPI from `create_app(load_settings({}))`.
-The authoritative contract is v1.0.0 (`x-pos-authentication-contract-version`).
+The authoritative contract is v1.1.0 (`x-pos-authentication-contract-version`).
 Sign-in contains only email/password; registration policy supplies legal versions;
 reset requests return `instructions_if_eligible`; reset confirmation returns 204
 and creates no session. Historical handoffs are superseded where they differ.
@@ -40,11 +40,11 @@ No service was started or called, and no backend file was modified.
 | `/too-many-attempts` | Temporary retry period; `— : —` when timing is absent                               |
 | `/security-state`    | Generic, non-revealing error; unavailable retry, Back                               |
 
-No form navigates to an outcome route. Outcome routes can be mounted independently
-for presentation review; future integration must show them only after real outcomes.
-Mutation/resend/change-email/retry buttons have no callback and are disabled. There
-are no fake requests, successes, timers or loading delays. `AuthAction` reuses the
-shared loading/busy visual boundary without starting a request.
+Registration navigates to verification only after an authoritative pending-verification
+response. Verification, resend, and pre-verification email changes are connected through
+the typed integration boundary; other outcome routes remain gated by their real outcomes.
+There are no fake requests, successes, timers, or loading delays. `AuthAction` reuses the
+shared loading/busy visual boundary.
 
 ## Visual, motion, and accessibility decisions
 
@@ -87,13 +87,14 @@ Email/password only: Apple, Google, Remember Me, biometrics, MFA, passkeys, acco
 linking, account-lock/permission-denied UI, Quick Access, Contact Support, and the
 five-step progress UI remain excluded.
 
-Legal consent is informational only; no checkbox, acceptance, policy version/date,
-or final Terms/Privacy content is invented. Approved legal content and server-supplied
-registration policy must arrive before enabling registration. Password length is
-local feedback only; server validation and final policy messaging remain deferred.
+Legal presentation is driven only by the server policy. Deferred mode renders no legal
+controls or legal request fields. Required mode presents independent Terms and Privacy
+acceptance controls and sends the exact server versions after both are accepted.
+Password length remains local feedback only; server validation is authoritative.
 
-Typed API binding, mutations, request state, authoritative verification/rate-limit
-timing, secure storage, and session restoration/refresh/logout remain later milestones.
+Sign-in, password recovery, session restoration/refresh/logout, and session secure storage
+remain later milestones. Registration verification state is memory-only and is cleared at
+terminal boundaries.
 Navigation 1.D now validates the backend-authorized opaque reset `token` at the route boundary
 without exposing it to presentation or calling an API. See
 [Navigation foundation](navigation-architecture.md). Appearance storage remains existing theme
@@ -111,8 +112,7 @@ On iOS and Android, review all routes at narrow and large phone sizes, light/dar
 system appearance, maximum Dynamic Type, keyboard open, VoiceOver/TalkBack, and
 Reduce Motion. Check modal dismissal, iOS back swipe, Android hardware Back, focus
 visibility, pasted codes, password toggles, footer reachability, and loading visuals.
-Outcome routes should be mounted directly by the test harness, without wiring form
-actions to them. Confirm the unavailable actions never claim an outcome.
+Confirm unavailable actions never claim an outcome and exercise both registration-policy modes.
 
 ## Milestone 1.E state integration
 

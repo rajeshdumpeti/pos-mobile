@@ -1,5 +1,5 @@
-import { CreateAccountScreen } from '@/features/auth/screens/CreateAccountScreen';
+import { ConnectedCreateAccountScreen } from '@/features/auth/screens/CreateAccountScreen';
 
 export default function Route() {
-  return <CreateAccountScreen />;
+  return <ConnectedCreateAccountScreen />;
 }

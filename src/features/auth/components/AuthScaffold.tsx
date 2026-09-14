@@ -17,6 +17,7 @@ export function AuthScaffold({
   children,
   footer,
   backFallback,
+  onBack,
 }: PropsWithChildren<{
   title: string;
   subtitle: string;
@@ -25,6 +26,7 @@ export function AuthScaffold({
   modal?: boolean;
   footer?: ReactNode;
   backFallback?: SafeFallbackRoute;
+  onBack?: () => void;
 }>) {
   const theme = useTheme();
   const { backOrReplace, dismissOrReplace } = useSafeNavigation();
@@ -52,6 +54,7 @@ export function AuthScaffold({
               icon={modal ? 'close' : 'back'}
               accessibilityLabel={modal ? 'Close' : 'Back'}
               onPress={() => {
+                onBack?.();
                 const fallback = backFallback ?? (modal ? routes.auth.signIn : routes.auth.welcome);
                 if (modal) {
                   dismissOrReplace(fallback);

@@ -28,6 +28,9 @@ const knownCodes = [
   'reset_token_expired',
   'password_rejected',
   'legal_acceptance_outdated',
+  'legal_consent_required',
+  'legal_consent_not_applicable',
+  'authentication_configuration_unavailable',
   'dependency_unavailable',
   'internal_server_error',
   'rate_limited',
@@ -109,6 +112,18 @@ const presentations: Record<
   legal_acceptance_outdated: {
     category: 'securityDenied',
     message: 'The registration terms have changed.',
+  },
+  legal_consent_required: {
+    category: 'securityDenied',
+    message: 'Review and accept the current Terms and Privacy Policy.',
+  },
+  legal_consent_not_applicable: {
+    category: 'securityDenied',
+    message: 'Registration policy changed. Review the current form and try again.',
+  },
+  authentication_configuration_unavailable: {
+    category: 'serverUnavailable',
+    message: 'Registration is temporarily unavailable.',
   },
   dependency_unavailable: {
     category: 'serverUnavailable',

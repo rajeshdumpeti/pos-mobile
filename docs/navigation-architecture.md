@@ -53,7 +53,7 @@ The app owns the `pos` custom scheme for local Router testing. Universal links, 
 domains, Android App Links, and the deployed reset base URL remain deferred until founder-owned
 domain evidence exists.
 
-Backend commit `b95173109eff21cac297ca274a2a704d5f663794`, Authentication Contract `1.0.0`,
+Backend commit `c2f2ddeb20e03fca32062119fb59845892a46224`, Authentication Contract `1.1.0`,
 defines the reset destination as a configured base URL with exactly one query parameter named
 `token`. Navigation accepts one 32–256 character string, preserves it as opaque data, rejects
 missing/repeated/unexpected values, and passes only continuation availability to presentation.

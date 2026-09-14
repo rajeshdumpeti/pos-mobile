@@ -90,3 +90,5 @@ export function createAuthenticationService(request: Request) {
       }),
   };
 }
+
+export type AuthenticationService = ReturnType<typeof createAuthenticationService>;
