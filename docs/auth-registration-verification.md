@@ -44,7 +44,7 @@ tokens, passwords, or codes into source control or reports.
    backend-owned email provider in its ignored local environment.
 2. For local testing without production legal documents, configure backend
    policy as `deferred_nonproduction`; confirm policy returns null legal fields.
-3. Set mobile `EXPO_PUBLIC_API_URL` to the reachable backend origin in an ignored
+3. Set mobile `EXPO_PUBLIC_API_BASE_URL` to the reachable backend origin in an ignored
    local file. Never place secrets in an `EXPO_PUBLIC_` variable.
 4. Start the backend with its documented secure command and start Expo with
    `npm start` without generating native projects.

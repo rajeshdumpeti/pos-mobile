@@ -3,6 +3,7 @@ import type { AuthenticationService } from '@/api/services/authenticationService
 
 type Schemas = components['schemas'];
 type Pending = Schemas['PendingVerificationResponse'];
+type Continuation = Schemas['VerificationFlowContinuation'];
 
 export type RegistrationPolicy =
   | {
@@ -114,6 +115,15 @@ export function createRegistrationWorkflow(service: AuthenticationService) {
     publish();
     return safe;
   };
+  const captureContinuation = (value: Continuation) =>
+    capture({
+      status: 'registration_pending',
+      flow_token: value.flow_token,
+      masked_email: value.masked_email,
+      verification_expires_at: value.expires_at,
+      flow_expires_at: value.expires_at,
+      resend_available_at: value.resend_available_at,
+    });
   const requireFlow = () => {
     if (!flowToken) throw new Error('Verification context is unavailable.');
     return flowToken;
@@ -144,6 +154,7 @@ export function createRegistrationWorkflow(service: AuthenticationService) {
       capture(
         await service.changeUnverifiedEmail({ flow_token: requireFlow(), new_email: newEmail }),
       ),
+    replaceVerificationContinuation: captureContinuation,
     getVerificationPresentation: () => presentation,
     subscribe: (listener: () => void) => {
       listeners.add(listener);

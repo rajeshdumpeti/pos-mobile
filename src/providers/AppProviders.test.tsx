@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { render } from '@testing-library/react-native';
+import { render, waitFor } from '@testing-library/react-native';
 import { Text } from 'react-native';
 
 import { AppProviders } from '@/providers/AppProviders';
@@ -28,12 +28,13 @@ function QueryConsumer() {
   );
 }
 
-test('renders application children with the React Query provider', () => {
+test('renders application children with the React Query provider', async () => {
   const view = render(
     <AppProviders themePreference="dark">
       <QueryConsumer />
     </AppProviders>,
   );
 
-  expect(view.getByText('providers ready:dark:signedOut')).toBeTruthy();
+  expect(view.getByText('providers ready:dark:checking')).toBeTruthy();
+  await waitFor(() => expect(view.getByText('providers ready:dark:signedOut')).toBeTruthy());
 });

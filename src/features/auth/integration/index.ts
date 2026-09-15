@@ -2,6 +2,8 @@ export * from './AuthenticationIntegrationProvider';
 export * from './registrationWorkflow';
 export * from './useRegistration';
 export * from './useVerification';
+export * from './sessionWorkflow';
+export * from './useSignIn';
 export * from './authQueryPolicy';
 export * from './mapApiFailure';
 export * from './sessionBootstrap';

@@ -50,6 +50,7 @@ export function createSecureCredentialStorage(
         return { ok: false, reason: 'readFailed' };
       }
       if (raw === null) return { ok: true, status: 'missing' };
+      if (typeof raw !== 'string') return { ok: false, reason: 'malformed' };
       if (utf8ByteLength(raw) > SECURE_STORE_VALUE_MAX_BYTES)
         return { ok: false, reason: 'malformed' };
       try {

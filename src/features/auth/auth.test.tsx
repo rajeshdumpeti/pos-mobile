@@ -12,6 +12,7 @@ import { PasswordProgress } from './components/PasswordProgress';
 import { useAuthReducedMotion } from './presentation/useAuthMotion';
 import { VerifyEmailScreen } from './screens/VerifyEmailScreen';
 import { CreateAccountScreen } from './screens/CreateAccountScreen';
+import { SignInScreen } from './screens/SignInScreen';
 import { ResetPasswordScreen } from './screens/ResetPasswordScreen';
 import Welcome from '../../../app/(auth)/welcome';
 import CreateAccount from '../../../app/(auth)/create-account';
@@ -100,6 +101,15 @@ function wrap(children: React.ReactNode, preference: 'light' | 'dark' = 'light')
               inspectBootstrap: jest.fn(),
               clearCredentials: jest.fn(),
               registration,
+              session: {
+                getState: () => ({ status: 'signedOut' as const }),
+                subscribe: () => () => undefined,
+                initialize: jest.fn(async () => undefined),
+                signIn: jest.fn(),
+                refresh: jest.fn(),
+                logout: jest.fn(),
+                clear: jest.fn(),
+              },
             }}
           >
             {children}
@@ -418,6 +428,27 @@ test('Sign In local validation gates its primary action without submitting', asy
   expect(mockPush).not.toHaveBeenCalled();
   expect(mockReplace).not.toHaveBeenCalled();
   await act(async () => {});
+});
+
+test('Sign In submits once while pending and clears the password after completion', async () => {
+  let finish: ((value: boolean) => void) | undefined;
+  const handler = jest.fn(() => new Promise<boolean>((resolve) => void (finish = resolve)));
+  const view = render(wrap(<SignInScreen onSubmitIntent={handler} />));
+  fireEvent.changeText(view.getByLabelText('Email'), 'person@example.test');
+  fireEvent.changeText(view.getByLabelText('Password'), 'user-entered-value');
+  const action = view.getByRole('button', { name: 'Sign In' });
+  await waitFor(() => expect(action).toBeEnabled());
+  fireEvent.press(action);
+  fireEvent.press(action);
+  await waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+  await act(async () => finish?.(true));
+  await waitFor(() => expect(view.getByLabelText('Password').props.value).toBe(''));
+});
+
+test('Sign In presents only fixed generic credential failure copy', () => {
+  const view = render(wrap(<SignInScreen failureMessage="Email or password is incorrect." />));
+  expect(view.getByRole('alert')).toHaveTextContent('Email or password is incorrect.');
+  expect(view.queryByText(/account exists|unknown email/i)).toBeNull();
 });
 
 test('form CTA becomes the filled-board primary treatment only after local fields are ready', async () => {

@@ -1,8 +1,14 @@
+import React from 'react';
+import { render } from '@testing-library/react-native';
 import { ApiError } from '@/api';
 import { MutationObserver, QueryClient, onlineManager } from '@tanstack/react-query';
 import { createQueryClient } from '@/lib/query/queryClient';
 import { mapApiErrorToAuthFailure } from './mapApiFailure';
 import { inspectSessionBootstrap } from './sessionBootstrap';
+import {
+  AuthenticationIntegrationProvider,
+  useAuthenticationCapabilities,
+} from './AuthenticationIntegrationProvider';
 import {
   authMutationKeys,
   authMutationPolicy,
@@ -100,6 +106,23 @@ test('query policy has PII-free keys, no retry, immediate execution and cleanup'
   clearSensitiveMutation({ reset });
   expect(reset).toHaveBeenCalledTimes(1);
   expect(createQueryClient().getDefaultOptions().queries?.retry).toBe(1);
+});
+test('provider rerenders retain the same session workflow instance', () => {
+  const sessions: object[] = [];
+  function CaptureSession() {
+    sessions.push(useAuthenticationCapabilities().session);
+    return null;
+  }
+  const tree = () =>
+    React.createElement(
+      AuthenticationIntegrationProvider,
+      null,
+      React.createElement(CaptureSession),
+    );
+  const view = render(tree());
+  view.rerender(tree());
+  expect(sessions.length).toBeGreaterThanOrEqual(2);
+  expect(sessions.at(-1)).toBe(sessions[0]);
 });
 test('offline Authentication intent fails immediately and reconnect does not replay it', async () => {
   const client = new QueryClient();
