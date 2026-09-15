@@ -22,3 +22,7 @@ Milestone 1.G.3 connects email sign-in and session lifecycle as documented in
 [the canonical mobile handoff](auth-sign-in-session.md). Access credentials remain
 memory-only, refresh credentials remain SecureStore-only, and presentation Context
 contains only validated account facts and restoration state.
+
+Milestone 1.G.4 connects password recovery through a separate ephemeral custody boundary documented
+in [the password recovery handoff](auth-password-recovery.md). Reset credentials never enter the
+session vault, forms, routes, query keys, or Context values.

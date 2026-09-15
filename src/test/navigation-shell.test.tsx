@@ -10,6 +10,10 @@ jest.mock('@/providers/AppProviders', () => ({
   AppProviders: ({ children }: React.PropsWithChildren) => children,
 }));
 
+jest.mock('@/features/auth/integration', () => ({
+  PasswordResetLinkIngress: () => null,
+}));
+
 jest.mock('@/design-system/theme', () => {
   const actual =
     jest.requireActual<typeof import('@/design-system/theme')>('@/design-system/theme');

@@ -5,7 +5,6 @@ import { renderHook } from '@testing-library/react-native';
 
 import { NavigationAccessProvider, useNavigationAccess } from './NavigationAccessProvider';
 import {
-  normalizeResetToken,
   resolveEntryDestination,
   resolveUnknownRouteDestination,
   shouldRedirectAuthRoute,
@@ -47,18 +46,6 @@ test('unknown routes recover only to allow-listed internal destinations', () => 
   expect(resolveUnknownRouteDestination('signedIn')).toBe(routes.app.index);
   expect(Object.values(routes.auth).every((route) => route.startsWith('/(auth)/'))).toBe(true);
   expect(routes.app.index.startsWith('/(app)')).toBe(true);
-});
-
-test('reset continuation accepts one backend-authorized opaque token without transforming it', () => {
-  const token = ' A'.repeat(16);
-  expect(normalizeResetToken(token)).toBe(token);
-  expect(normalizeResetToken(undefined)).toBeNull();
-  expect(normalizeResetToken('short')).toBeNull();
-  expect(normalizeResetToken('x'.repeat(257))).toBeNull();
-  expect(normalizeResetToken(['x'.repeat(32)])).toBeNull();
-  expect(normalizeResetToken(['x'.repeat(32), 'y'.repeat(32)])).toBeNull();
-  expect(normalizeResetToken(42)).toBeNull();
-  expect(normalizeResetToken({ token: 'x'.repeat(32) })).toBeNull();
 });
 
 test('route inventory contains only the authorized root, auth, and protected files', () => {

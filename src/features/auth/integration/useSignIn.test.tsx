@@ -27,6 +27,15 @@ test('authenticated route unmount does not clear the newly established session',
           clearCredentials: jest.fn(),
           registration: { clear: jest.fn() } as never,
           session,
+          passwordRecovery: {
+            request: jest.fn(),
+            acceptToken: jest.fn(() => true),
+            confirm: jest.fn(),
+            finishTerminalFailure: jest.fn(),
+            clear: jest.fn(),
+            getState: () => 'missing',
+            subscribe: () => () => undefined,
+          },
         }}
       >
         {children}

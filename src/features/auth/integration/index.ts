@@ -8,3 +8,7 @@ export * from './authQueryPolicy';
 export * from './mapApiFailure';
 export * from './sessionBootstrap';
 export * from './credentials';
+export * from './passwordRecoveryWorkflow';
+export * from './passwordResetLink';
+export * from './usePasswordRecovery';
+export * from './PasswordResetLinkIngress';

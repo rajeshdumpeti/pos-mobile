@@ -1,5 +1,5 @@
-import { ForgotPasswordScreen } from '@/features/auth/screens/ForgotPasswordScreen';
+import { ConnectedForgotPasswordScreen } from '@/features/auth/screens/ForgotPasswordScreen';
 
 export default function Route() {
-  return <ForgotPasswordScreen />;
+  return <ConnectedForgotPasswordScreen />;
 }

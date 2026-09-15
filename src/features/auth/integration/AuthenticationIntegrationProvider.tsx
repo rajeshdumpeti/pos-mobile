@@ -9,11 +9,16 @@ import {
 import { inspectSessionBootstrap, type SessionBootstrapResult } from './sessionBootstrap';
 import { createRegistrationWorkflow, type RegistrationWorkflow } from './registrationWorkflow';
 import { createSessionWorkflow, type SessionWorkflow } from './sessionWorkflow';
+import {
+  createPasswordRecoveryWorkflow,
+  type PasswordRecoveryWorkflow,
+} from './passwordRecoveryWorkflow';
 export type AuthenticationCapabilities = {
   inspectBootstrap(): Promise<SessionBootstrapResult>;
   clearCredentials(): ReturnType<CredentialVault['clear']>;
   registration: RegistrationWorkflow;
   session: SessionWorkflow;
+  passwordRecovery: PasswordRecoveryWorkflow;
 };
 function createDependencies(): AuthenticationCapabilities {
   const vault = createCredentialVault(createSecureCredentialStorage());
@@ -24,6 +29,7 @@ function createDependencies(): AuthenticationCapabilities {
     clearCredentials: () => vault.clear(),
     registration,
     session: createSessionWorkflow(service, vault, registration),
+    passwordRecovery: createPasswordRecoveryWorkflow(service),
   };
 }
 const Context = createContext<AuthenticationCapabilities | undefined>(undefined);

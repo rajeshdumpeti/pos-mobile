@@ -24,9 +24,3 @@ export function resolveUnknownRouteDestination(status: NavigationAccessStatus) {
 export function shouldRedirectAuthRoute(status: NavigationAccessStatus, pathname: string): boolean {
   return status === 'signedIn' && signedInRestrictedAuthEntries.has(pathname);
 }
-
-// Backend Authentication Contract 1.0.0 authorizes exactly one opaque "token" value.
-export function normalizeResetToken(value: unknown): string | null {
-  if (typeof value !== 'string' || value.length < 32 || value.length > 256) return null;
-  return value;
-}
