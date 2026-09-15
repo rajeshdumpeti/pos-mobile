@@ -32,7 +32,7 @@ test('integration has no AsyncStorage, logging, token decoding or persisted quer
     .join('\n');
   expect(text).not.toMatch(/AsyncStorage|console\.|jwt|atob|persistQueryClient/);
   for (const file of sources(path.join(__dirname))) {
-    if (/use(?:Registration|Verification|SignIn)\.tsx?$/.test(file)) continue;
+    if (/use(?:Registration|Verification|SignIn|PasswordRecovery)\.tsx?$/.test(file)) continue;
     expect(fs.readFileSync(file, 'utf8')).not.toMatch(/useMutation|useQuery/);
   }
 });

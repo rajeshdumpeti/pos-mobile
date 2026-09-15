@@ -5,11 +5,13 @@ import { StatusBar } from 'expo-status-bar';
 
 import { useTheme } from '@/design-system/theme';
 import { AppProviders } from '@/providers/AppProviders';
+import { PasswordResetLinkIngress } from '@/features/auth/integration';
 
 function ThemedRootNavigator() {
   const theme = useTheme();
   return (
     <>
+      <PasswordResetLinkIngress />
       <StatusBar style={theme.isDark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />

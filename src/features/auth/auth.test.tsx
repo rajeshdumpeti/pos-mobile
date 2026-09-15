@@ -27,7 +27,11 @@ import RateLimited from '../../../app/(auth)/too-many-attempts';
 import Security from '../../../app/(auth)/security-state';
 import AuthLayout from '../../../app/(auth)/_layout';
 import { createQueryClient } from '@/lib/query/queryClient';
-import { AuthenticationIntegrationProvider, createRegistrationWorkflow } from './integration';
+import {
+  AuthenticationIntegrationProvider,
+  authQueryKeys,
+  createRegistrationWorkflow,
+} from './integration';
 
 const mockPush = jest.fn();
 const mockReplace = jest.fn();
@@ -91,6 +95,15 @@ const registration = createRegistrationWorkflow({
   changeUnverifiedEmail: jest.fn(),
 } as never);
 const queryClient = createQueryClient();
+const passwordRecovery = {
+  request: jest.fn(),
+  acceptToken: jest.fn(() => true),
+  confirm: jest.fn(),
+  finishTerminalFailure: jest.fn(),
+  clear: jest.fn(),
+  getState: () => 'missing' as const,
+  subscribe: () => () => undefined,
+};
 function wrap(children: React.ReactNode, preference: 'light' | 'dark' = 'light') {
   return (
     <SafeAreaProvider initialMetrics={metrics}>
@@ -110,6 +123,7 @@ function wrap(children: React.ReactNode, preference: 'light' | 'dark' = 'light')
                 logout: jest.fn(),
                 clear: jest.fn(),
               },
+              passwordRecovery,
             }}
           >
             {children}
@@ -117,6 +131,11 @@ function wrap(children: React.ReactNode, preference: 'light' | 'dark' = 'light')
         </QueryClientProvider>
       </ThemeProvider>
     </SafeAreaProvider>
+  );
+}
+async function awaitRegistrationPolicy() {
+  await waitFor(() =>
+    expect(queryClient.isFetching({ queryKey: authQueryKeys.registrationPolicy })).toBe(0),
   );
 }
 beforeEach(() => {
@@ -150,9 +169,7 @@ test.each(routes)('%p renders safely in both themes without excluded controls', 
     expect(view.UNSAFE_getByType(KeyboardAvoidingView)).toBeTruthy();
     expect(view.UNSAFE_getByType(ScrollView).props.keyboardShouldPersistTaps).toBe('handled');
     if (Route === CreateAccount) {
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 20));
-      });
+      await awaitRegistrationPolicy();
       expect(view.queryByText('Loading registration policy…')).toBeNull();
     }
     await act(async () => {});
@@ -195,6 +212,7 @@ test('password visibility control has an inset trailing margin and back uses an 
     ),
   );
   expect(view.getAllByRole('button', { name: 'Back' }).length).toBeGreaterThan(0);
+  await awaitRegistrationPolicy();
   const eye = view.getAllByRole('switch', { name: 'Password visibility' })[0];
   expect(eye).toBeTruthy();
   expect(view.getAllByLabelText('Password')[0]).toHaveStyle({
@@ -266,6 +284,9 @@ test.each([
 ] as const)('%p back falls safely to Welcome after direct entry', async (Route, heading) => {
   mockCanGoBack.mockReturnValue(false);
   const view = render(wrap(<Route />));
+  if (Route === CreateAccount) {
+    await awaitRegistrationPolicy();
+  }
   expect(view.getByRole('header', { name: heading })).toBeTruthy();
   fireEvent.press(view.getByRole('button', { name: 'Back' }));
   expect(mockReplace).toHaveBeenCalledWith('/(auth)/welcome');
@@ -358,6 +379,9 @@ test.each([
   [ResetPassword, 'Update Password'],
 ] as const)('submission remains unavailable on %p', async (Route, label) => {
   const view = render(wrap(<Route />));
+  if (Route === CreateAccount) {
+    await awaitRegistrationPolicy();
+  }
   const action = view.getByRole('button', { name: label });
   expect(action).toBeDisabled();
   fireEvent.press(action);
@@ -453,6 +477,7 @@ test('Sign In presents only fixed generic credential failure copy', () => {
 
 test('form CTA becomes the filled-board primary treatment only after local fields are ready', async () => {
   const view = render(wrap(<CreateAccount />));
+  await awaitRegistrationPolicy();
   const action = view.getByRole('button', { name: 'Create Account' });
   expect(action).toBeDisabled();
   fireEvent.changeText(view.getByLabelText('Full name'), 'POS Tester');

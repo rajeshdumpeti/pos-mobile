@@ -9,11 +9,18 @@ import {
   type ForgotPasswordFormValues,
 } from '../forms';
 import { useAuthSubmissionIntent, type AuthSubmissionHandler } from '../domain';
+import { useRouter } from 'expo-router';
+import { routes } from '@/navigation/routes';
+import { useForgotPasswordController } from '../integration';
 
 export function ForgotPasswordScreen({
   onSubmitIntent,
+  submitting = false,
+  failureMessage,
 }: {
   onSubmitIntent?: AuthSubmissionHandler<ForgotPasswordFormValues>;
+  submitting?: boolean;
+  failureMessage?: string;
 }) {
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -29,15 +36,44 @@ export function ForgotPasswordScreen({
       footer={
         <AuthAction
           label="Request Reset Instructions"
-          disabled={!form.formState.isValid || form.formState.isSubmitting}
-          onPress={() => void form.handleSubmit(submit)()}
+          loading={submitting}
+          disabled={!form.formState.isValid || form.formState.isSubmitting || submitting}
+          onPress={() =>
+            void form.handleSubmit(async (values) => {
+              const accepted = await submit(values);
+              if (accepted !== false) form.reset();
+            })()
+          }
         />
       }
     >
-      <ControlledEmailField control={form.control} name="email" />
+      {failureMessage ? (
+        <AppText accessibilityRole="alert" color="danger">
+          {failureMessage}
+        </AppText>
+      ) : null}
+      <ControlledEmailField control={form.control} name="email" editable={!submitting} />
       <Card>
         <AppText color="secondary">If that address is eligible, instructions will be sent.</AppText>
       </Card>
     </AuthScaffold>
+  );
+}
+
+export function ConnectedForgotPasswordScreen() {
+  const router = useRouter();
+  const controller = useForgotPasswordController({
+    onAccepted: () => router.replace(routes.auth.resetLinkSent),
+  });
+  return (
+    <ForgotPasswordScreen
+      onSubmitIntent={controller.submit}
+      submitting={controller.isSubmitting}
+      failureMessage={
+        controller.failure && 'message' in controller.failure
+          ? controller.failure.message
+          : undefined
+      }
+    />
   );
 }

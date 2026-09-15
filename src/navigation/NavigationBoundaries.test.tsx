@@ -27,11 +27,7 @@ jest.mock('expo-router', () => ({
 }));
 
 jest.mock('@/features/auth/screens/ResetPasswordScreen', () => ({
-  ResetPasswordScreen: ({ continuationAvailable }: { continuationAvailable: boolean }) => (
-    <MockText>
-      {continuationAvailable ? 'reset continuation ready' : 'reset continuation unavailable'}
-    </MockText>
-  ),
+  ConnectedResetPasswordScreen: () => <MockText>private reset continuation boundary</MockText>,
 }));
 
 import {
@@ -140,18 +136,18 @@ test('signed-in entry routes redirect while recovery routes remain available', (
   expect(recovery.getByText('Reset Password')).toBeTruthy();
 });
 
-test('reset-link parameters fail closed for missing, malformed, and repeated values', () => {
+test('reset route ignores all URL parameters and delegates to private memory custody', () => {
   const missing = render(wrap(<ResetPasswordRouteBoundary />, 'signedOut'));
-  expect(missing.getByText('reset continuation unavailable')).toBeTruthy();
+  expect(missing.getByText('private reset continuation boundary')).toBeTruthy();
 
   mockParams = { token: ['x'.repeat(32), 'y'.repeat(32)] };
   const repeated = render(wrap(<ResetPasswordRouteBoundary />, 'signedOut'));
-  expect(repeated.getByText('reset continuation unavailable')).toBeTruthy();
+  expect(repeated.getByText('private reset continuation boundary')).toBeTruthy();
 
   const token = 'x'.repeat(32);
   mockParams = { token };
   const valid = render(wrap(<ResetPasswordRouteBoundary />, 'signedOut'));
-  expect(valid.getByText('reset continuation ready')).toBeTruthy();
+  expect(valid.getByText('private reset continuation boundary')).toBeTruthy();
   expect(JSON.stringify(valid.toJSON())).not.toContain(token);
 });
 

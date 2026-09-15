@@ -1,13 +1,13 @@
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { Redirect, useLocalSearchParams, usePathname } from 'expo-router';
+import { Redirect, usePathname } from 'expo-router';
 
 import { AppText, Screen } from '@/design-system';
 import { useTheme } from '@/design-system/theme';
-import { ResetPasswordScreen } from '@/features/auth/screens/ResetPasswordScreen';
+import { ConnectedResetPasswordScreen } from '@/features/auth/screens/ResetPasswordScreen';
 
 import { useNavigationAccess } from './NavigationAccessProvider';
-import { normalizeResetToken, shouldRedirectAuthRoute } from './navigationPolicy';
+import { shouldRedirectAuthRoute } from './navigationPolicy';
 import { routes } from './routes';
 
 export function NavigationRestoringScreen() {
@@ -45,7 +45,5 @@ export function ProtectedAppBoundary({ children }: React.PropsWithChildren) {
 }
 
 export function ResetPasswordRouteBoundary() {
-  const params = useLocalSearchParams<{ token?: string | string[] }>();
-  const token = normalizeResetToken(params.token);
-  return <ResetPasswordScreen continuationAvailable={token !== null} />;
+  return <ConnectedResetPasswordScreen />;
 }
