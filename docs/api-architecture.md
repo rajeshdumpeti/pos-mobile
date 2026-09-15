@@ -8,7 +8,7 @@ The dependency direction is `feature controller → React Query (1.G) → typed 
 
 ## Configuration and transport
 
-`EXPO_PUBLIC_API_URL` contains an origin only and is public configuration, never a secret. HTTPS is required for staging and production. Development HTTP is limited to loopback, `10.0.2.2`, and private-network addresses. iOS Simulator commonly reaches a host service through `127.0.0.1`; Android Emulator commonly uses `10.0.2.2`. Physical devices need a reachable private-network host. No production fallback exists.
+`EXPO_PUBLIC_API_BASE_URL` contains an origin only and is public configuration, never a secret. HTTPS is required for staging and production. Development HTTP is limited to loopback, `10.0.2.2`, and private-network addresses. iOS Simulator commonly reaches a host service through `127.0.0.1`; Android Emulator commonly uses `10.0.2.2`. Physical devices need a reachable private-network host. No production fallback exists.
 
 The client allow-lists Authentication and health paths, prohibits query strings and absolute request paths, sends JSON headers only when appropriate, uses `credentials: omit` and `redirect: error`, and sends a backend-compatible request ID. A supplied valid ID is preserved; invalid IDs are replaced by the injected factory. A per-request bearer seam validates credentials and never stores or logs them.
 

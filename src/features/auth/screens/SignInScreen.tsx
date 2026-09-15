@@ -13,14 +13,18 @@ import {
   type SignInFormValues,
 } from '../forms';
 import { useAuthSubmissionIntent, type AuthSubmissionHandler } from '../domain';
-import { useAuthenticationCapabilities } from '../integration';
+import { useAuthenticationCapabilities, useSignInController } from '../integration';
 
 export function SignInScreen({
   onSubmitIntent,
   verificationSucceeded = false,
+  submitting = false,
+  failureMessage,
 }: {
   onSubmitIntent?: AuthSubmissionHandler<SignInFormValues>;
   verificationSucceeded?: boolean;
+  submitting?: boolean;
+  failureMessage?: string;
 }) {
   const router = useRouter();
   const form = useForm<SignInFormValues>({
@@ -37,12 +41,19 @@ export function SignInScreen({
         <>
           <AuthAction
             label="Sign In"
-            disabled={!form.formState.isValid || form.formState.isSubmitting}
-            onPress={() => void form.handleSubmit(submit)()}
+            loading={submitting}
+            disabled={!form.formState.isValid || form.formState.isSubmitting || submitting}
+            onPress={() =>
+              void form.handleSubmit(async (values) => {
+                await submit(values);
+                form.resetField('password');
+              })()
+            }
           />
           <AuthAction
             label="Create Account"
             variant="ghost"
+            disabled={submitting}
             onPress={() => router.push(routes.auth.createAccount)}
           />
         </>
@@ -53,17 +64,24 @@ export function SignInScreen({
           Email verified—sign in to continue.
         </AppText>
       ) : null}
-      <ControlledEmailField control={form.control} name="email" />
+      {failureMessage ? (
+        <AppText accessibilityRole="alert" color="danger">
+          {failureMessage}
+        </AppText>
+      ) : null}
+      <ControlledEmailField control={form.control} name="email" editable={!submitting} />
       <ControlledPasswordField
         control={form.control}
         name="password"
         label="Password"
         autoComplete="current-password"
         textContentType="password"
+        editable={!submitting}
       />
       <AuthAction
         label="Forgot Password?"
         variant="ghost"
+        disabled={submitting}
         onPress={() => router.navigate(routes.auth.forgotPassword)}
       />
     </AuthScaffold>
@@ -73,5 +91,21 @@ export function SignInScreen({
 export function ConnectedSignInScreen() {
   const { registration } = useAuthenticationCapabilities();
   const [verificationSucceeded] = useState(registration.takeVerificationSuccess);
-  return <SignInScreen verificationSucceeded={verificationSucceeded} />;
+  const router = useRouter();
+  const controller = useSignInController({
+    onAuthenticated: () => router.replace(routes.app.index),
+    onVerificationRequired: () => router.replace(routes.auth.verifyEmail),
+  });
+  return (
+    <SignInScreen
+      verificationSucceeded={verificationSucceeded}
+      onSubmitIntent={controller.submit}
+      submitting={controller.isSubmitting}
+      failureMessage={
+        controller.failure && 'message' in controller.failure
+          ? controller.failure.message
+          : undefined
+      }
+    />
+  );
 }

@@ -47,7 +47,8 @@ export function PasswordField({ label, ref, ...props }: TextInputProps) {
           accessibilityRole="switch"
           accessibilityLabel={`${label} visibility`}
           accessibilityHint={visible ? 'Turn off to hide password' : 'Turn on to show password'}
-          accessibilityState={{ checked: visible }}
+          accessibilityState={{ checked: visible, disabled: props.editable === false }}
+          disabled={props.editable === false}
           onPress={() => setVisible((value) => !value)}
           style={({ pressed }) => ({
             minHeight: theme.controlSizes.iconButton,

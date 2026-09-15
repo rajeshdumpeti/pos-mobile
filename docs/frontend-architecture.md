@@ -97,7 +97,7 @@ state. Other preference storage requires an approved contract rather than reuse 
 ## API and environment boundaries
 
 `src/config/env.ts` is the only module that reads `process.env`. Consumers use
-its typed `appConfig` export. `EXPO_PUBLIC_API_URL` is public bundle
+its typed `appConfig` export. `EXPO_PUBLIC_API_BASE_URL` is public bundle
 configuration and must never contain credentials or secrets. Future transport
 primitives belong under `src/services/api/`; endpoint queries, mutations, and
 response schemas normally belong to the feature that owns the behavior. Do not

@@ -1,0 +1,164 @@
+import { ApiError } from '@/api';
+import { createSessionWorkflow } from './sessionWorkflow';
+
+const tokenResponse = () => ({
+  access_token: 'opaque-access-value',
+  refresh_token: 'opaque-refresh-value',
+  token_type: 'Bearer' as const,
+  access_expires_at: '2026-09-14T12:10:00Z',
+  refresh_expires_at: '2026-09-21T12:00:00Z',
+  account_id: '00000000-0000-4000-8000-000000000001',
+  session_id: '00000000-0000-4000-8000-000000000002',
+  onboarding_required: true,
+});
+
+function setup(stored = false) {
+  let refresh = stored ? 'stored-refresh-value' : undefined;
+  let access: string | undefined;
+  const vault = {
+    commit: jest.fn(async (pair) => {
+      access = pair.accessCredential;
+      refresh = pair.refreshCredential;
+      return { ok: true as const };
+    }),
+    rotate: jest.fn(async (pair) => {
+      access = pair.accessCredential;
+      refresh = pair.refreshCredential;
+      return { ok: true as const };
+    }),
+    getAccessCredential: () => access,
+    readRefreshForValidation: jest.fn(async () =>
+      refresh
+        ? ({ ok: true, status: 'available', refreshCredential: refresh } as const)
+        : ({ ok: true, status: 'missing' } as const),
+    ),
+    clear: jest.fn(async () => {
+      access = undefined;
+      refresh = undefined;
+      return { ok: true as const };
+    }),
+  };
+  const service = {
+    signIn: jest.fn(async () => tokenResponse()),
+    refresh: jest.fn(async () => tokenResponse()),
+    getCurrentSession: jest.fn(async () => ({
+      account_id: tokenResponse().account_id,
+      session_id: tokenResponse().session_id,
+      display_name: 'POS Tester',
+      onboarding_required: true,
+    })),
+    signOut: jest.fn(async () => undefined),
+  };
+  const registration = {
+    replaceVerificationContinuation: jest.fn(),
+    clear: jest.fn(),
+  };
+  return {
+    workflow: createSessionWorkflow(service as never, vault as never, registration as never),
+    service,
+    vault,
+    registration,
+  };
+}
+
+test('verified sign-in commits secure credentials and publishes a token-free session', async () => {
+  const { workflow, service, vault } = setup();
+  await expect(workflow.signIn('person@example.test', 'user-entered-value')).resolves.toEqual({
+    kind: 'authenticated',
+  });
+  expect(service.signIn).toHaveBeenCalledTimes(1);
+  expect(vault.commit).toHaveBeenCalledTimes(1);
+  expect(workflow.getState()).toEqual({
+    status: 'signedIn',
+    account: { accountId: tokenResponse().account_id, onboardingRequired: true },
+  });
+  expect(JSON.stringify(workflow.getState())).not.toMatch(/access|refresh|password/i);
+});
+
+test('secure-storage failure clears partial session state and fails closed', async () => {
+  const { workflow, vault } = setup();
+  vault.commit.mockResolvedValueOnce({ ok: false, reason: 'writeFailed' } as never);
+  await expect(workflow.signIn('person@example.test', 'user-entered-value')).rejects.toThrow(
+    'Secure session storage is unavailable.',
+  );
+  expect(vault.clear).toHaveBeenCalled();
+  expect(workflow.getState()).toEqual({ status: 'signedOut' });
+});
+
+test('unverified sign-in transfers only the continuation to transient registration state', async () => {
+  const { workflow, service, registration, vault } = setup();
+  service.signIn.mockResolvedValueOnce({
+    code: 'email_not_verified',
+    message: 'Email verification is required',
+    request_id: 'safe-request',
+    actions: ['verify_email'],
+    verification_flow: {
+      flow_token: 'opaque-flow-value',
+      masked_email: 'p***@example.test',
+      expires_at: '2026-09-14T12:30:00Z',
+      resend_available_at: '2026-09-14T12:01:00Z',
+    },
+  } as never);
+  await expect(workflow.signIn('person@example.test', 'user-entered-value')).resolves.toEqual({
+    kind: 'verificationRequired',
+  });
+  expect(registration.replaceVerificationContinuation).toHaveBeenCalledTimes(1);
+  expect(vault.commit).not.toHaveBeenCalled();
+});
+
+test('restoration and concurrent refresh use one rotation then current-session lookup', async () => {
+  const { workflow, service } = setup(true);
+  const first = workflow.initialize();
+  const second = workflow.initialize();
+  expect(first).toBe(second);
+  await first;
+  expect(service.refresh).toHaveBeenCalledTimes(1);
+  expect(service.getCurrentSession).toHaveBeenCalledTimes(1);
+  expect(workflow.getState().status).toBe('signedIn');
+});
+
+test('stale restoration cannot overwrite a newer authenticated session', async () => {
+  const { workflow, service, vault } = setup(true);
+  let finishRead:
+    ((value: Awaited<ReturnType<typeof vault.readRefreshForValidation>>) => void) | undefined;
+  vault.readRefreshForValidation.mockImplementationOnce(
+    () => new Promise((resolve) => void (finishRead = resolve)),
+  );
+
+  const restoration = workflow.initialize();
+  await workflow.signIn('person@example.test', 'user-entered-value');
+  finishRead?.({ ok: true, status: 'available', refreshCredential: 'stale-refresh-value' });
+  await restoration;
+
+  expect(service.refresh).not.toHaveBeenCalled();
+  expect(vault.clear).not.toHaveBeenCalled();
+  expect(workflow.getState()).toEqual({
+    status: 'signedIn',
+    account: { accountId: tokenResponse().account_id, onboardingRequired: true },
+  });
+});
+
+test('terminal refresh clears credentials while a network failure preserves them signed out', async () => {
+  const terminal = setup(true);
+  terminal.service.refresh.mockRejectedValueOnce(
+    new ApiError('http', 'safe', { code: 'refresh_session_expired' }),
+  );
+  await expect(terminal.workflow.refresh()).rejects.toBeInstanceOf(ApiError);
+  expect(terminal.vault.clear).toHaveBeenCalled();
+
+  const recoverable = setup(true);
+  recoverable.service.refresh.mockRejectedValueOnce(new ApiError('network', 'safe'));
+  await expect(recoverable.workflow.refresh()).rejects.toBeInstanceOf(ApiError);
+  expect(recoverable.vault.clear).not.toHaveBeenCalled();
+  expect(recoverable.workflow.getState()).toEqual({ status: 'signedOut' });
+});
+
+test('logout clears locally even when the backend is unavailable', async () => {
+  const { workflow, service, vault, registration } = setup();
+  await workflow.signIn('person@example.test', 'user-entered-value');
+  service.signOut.mockRejectedValueOnce(new ApiError('network', 'safe'));
+  await expect(workflow.logout()).resolves.toBeUndefined();
+  expect(vault.clear).toHaveBeenCalled();
+  expect(registration.clear).toHaveBeenCalled();
+  expect(workflow.getState()).toEqual({ status: 'signedOut' });
+});

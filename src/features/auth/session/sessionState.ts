@@ -16,7 +16,7 @@ export type SessionEvent =
   | { type: 'sessionEstablished'; account: SessionSummary }
   | { type: 'sessionEnded' };
 
-export const productionSessionState: SessionState = { status: 'signedOut' };
+export const productionSessionState: SessionState = { status: 'restoring' };
 
 export function reduceSession(_state: SessionState, event: SessionEvent): SessionState {
   if (event.type === 'sessionEstablished') return { status: 'signedIn', account: event.account };

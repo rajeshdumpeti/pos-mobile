@@ -42,13 +42,16 @@ export function ControlledTextField<TValues extends FieldValues>({
 export function ControlledEmailField<TValues extends FieldValues>({
   control,
   name,
-}: ControlledFieldProps<TValues>) {
+  ...props
+}: ControlledFieldProps<TValues> &
+  Omit<TextInputProps, 'value' | 'onChangeText' | 'onBlur' | 'error' | 'label'>) {
   return (
     <Controller
       control={control}
       name={name}
       render={({ field, fieldState }) => (
         <EmailField
+          {...props}
           ref={field.ref}
           value={typeof field.value === 'string' ? field.value : ''}
           onChangeText={field.onChange}

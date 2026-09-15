@@ -17,3 +17,8 @@ and unverified-email change through the private transient workflow in
 [the 1.G.2 handoff](auth-registration-verification.md). Later milestones connect
 sign-in, restoration/refresh, sign-out, and password recovery. Real-backend
 completion gates remain subject to founder validation.
+
+Milestone 1.G.3 connects email sign-in and session lifecycle as documented in
+[the canonical mobile handoff](auth-sign-in-session.md). Access credentials remain
+memory-only, refresh credentials remain SecureStore-only, and presentation Context
+contains only validated account facts and restoration state.

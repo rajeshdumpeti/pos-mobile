@@ -32,7 +32,7 @@ test('uses exact contract operations and does not add confirmation fields', asyn
     ['POST', '/api/v1/auth/email-verifications/confirm', [201]],
     ['POST', '/api/v1/auth/email-verifications/resend', [202]],
     ['PATCH', '/api/v1/auth/email-verifications/email', [202]],
-    ['POST', '/api/v1/auth/sessions', [200]],
+    ['POST', '/api/v1/auth/sessions', [200, 403]],
     ['POST', '/api/v1/auth/sessions/refresh', [200]],
     ['GET', '/api/v1/auth/session', [200]],
     ['DELETE', '/api/v1/auth/session', [204]],

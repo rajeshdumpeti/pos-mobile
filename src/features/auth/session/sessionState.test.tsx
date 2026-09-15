@@ -8,14 +8,14 @@ function Consumer() {
   const state = useSession();
   return <Text>{state.status}</Text>;
 }
-test('production session starts deterministically signed out', () => {
-  expect(productionSessionState).toEqual({ status: 'signedOut' });
+test('production session starts deterministically in the checking boundary', () => {
+  expect(productionSessionState).toEqual({ status: 'restoring' });
   expect(
     render(
-      <SessionProvider>
+      <SessionProvider state={productionSessionState}>
         <Consumer />
       </SessionProvider>,
-    ).getByText('signedOut'),
+    ).getByText('restoring'),
   ).toBeTruthy();
 });
 test('session maps to navigation access and supports controlled integration injection', () => {

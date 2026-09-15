@@ -27,5 +27,5 @@ export function createApiConfig(value: string | undefined, environment: ApiEnvir
 export function loadApiConfig(
   environment: ApiEnvironment = __DEV__ ? 'development' : 'production',
 ) {
-  return createApiConfig(process.env.EXPO_PUBLIC_API_URL, environment);
+  return createApiConfig(process.env.EXPO_PUBLIC_API_BASE_URL, environment);
 }

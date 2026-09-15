@@ -39,11 +39,11 @@ export function createAuthenticationService(request: Request) {
         expectedStatuses: [202],
       }),
     signIn: (body: S['SignInRequest']) =>
-      request<S['SessionTokenResponse'], S['SignInRequest']>({
+      request<S['SessionTokenResponse'] | S['EmailNotVerifiedResponse'], S['SignInRequest']>({
         path: '/api/v1/auth/sessions',
         method: 'POST',
         body,
-        expectedStatuses: [200],
+        expectedStatuses: [200, 403],
       }),
     refresh: (body: S['RefreshSessionRequest'], idempotencyKey: string) =>
       request<S['SessionTokenResponse'], S['RefreshSessionRequest']>({

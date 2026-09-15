@@ -26,7 +26,7 @@ signing credentials, and service configuration are ignored.
 
 ## Local backend connection
 
-The app reads `EXPO_PUBLIC_API_URL` through the typed `appConfig` exported by
+The app reads `EXPO_PUBLIC_API_BASE_URL` through the typed `appConfig` exported by
 `src/config/env.ts`. No other application module should access environment
 variables directly. Copy `.env.example` to `.env` to override the default local
 address. A physical device must use an address that can reach the development
