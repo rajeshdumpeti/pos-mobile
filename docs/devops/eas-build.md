@@ -14,12 +14,13 @@ workflow reproducible and satisfies Expo Doctor's dependency guidance.
 
 ## Build profiles and environments
 
-| EAS profile   | EAS environment | Intended use                                                                   |
-| ------------- | --------------- | ------------------------------------------------------------------------------ |
-| `development` | `development`   | Developer-owned physical-device development client distributed internally      |
-| `preview`     | `preview`       | Internal shareable validation build using non-production preview configuration |
-| `staging`     | `preview`       | Internally distributed, production-like release-candidate validation           |
-| `production`  | `production`    | Future official store-ready build; no build or submission is configured        |
+| EAS profile             | EAS environment | Intended use                                                                   |
+| ----------------------- | --------------- | ------------------------------------------------------------------------------ |
+| `development`           | `development`   | Developer-owned physical-device development client distributed internally      |
+| `development-simulator` | `development`   | iOS Simulator-only development client; no device signing required              |
+| `preview`               | `preview`       | Internal shareable validation build using non-production preview configuration |
+| `staging`               | `preview`       | Internally distributed, production-like release-candidate validation           |
+| `production`            | `production`    | Future official store-ready build; no build or submission is configured        |
 
 The development profile enables a development client. Development, preview,
 and staging use internal distribution. The production profile intentionally
@@ -101,7 +102,7 @@ npm start
 Prepare Metro for an already installed development client:
 
 ```bash
-npx expo start --dev-client
+npm run start:dev-client
 ```
 
 Inspect the public Expo configuration:
@@ -113,7 +114,7 @@ npx expo config --type public
 Validate a build profile locally without starting a build:
 
 ```bash
-npx eas-cli@21.7.0 config --platform ios --profile development
+npx eas-cli@21.7.0 config --platform ios --profile development-simulator
 ```
 
 The following release steps are **NOT YET CONFIGURED**:
