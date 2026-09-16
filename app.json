@@ -6,16 +6,22 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/brand/app-icon.png",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.personaloperatingsystem.mobile",
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.personaloperatingsystem.mobile",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#F4F3EF"
+        "foregroundImage": "./assets/brand/adaptive-icon-foreground.png",
+        "monochromeImage": "./assets/brand/adaptive-icon-monochrome.png",
+        "backgroundColor": "#302344"
       }
     },
     "web": {
@@ -29,6 +35,7 @@
       "typedRoutes": true
     },
     "splash": {
+      "image": "./assets/brand/splash-icon.png",
       "backgroundColor": "#F4F3EF",
       "resizeMode": "contain"
     },

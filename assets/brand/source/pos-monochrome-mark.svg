@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">POS monochrome launcher mark</title>
+  <desc id="desc">A single-color circular POS mark for Android themed icons.</desc>
+  <circle cx="512" cy="512" r="294" fill="none" stroke="#FFFFFF" stroke-width="56"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round" stroke-linejoin="round" transform="translate(92.16 92.16) scale(.82)">
+    <path d="M 265 630 V 402 H 335 C 371 402 390 422 390 458 C 390 494 371 516 335 516 H 265"/>
+    <ellipse cx="500" cy="512" rx="65" ry="112"/>
+    <path d="M 762 416 C 730 392 678 391 650 420 C 620 451 638 484 676 493 C 710 501 752 503 763 537 C 776 574 744 620 698 625 C 661 628 632 612 614 593"/>
+  </g>
+</svg>
