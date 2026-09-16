@@ -42,7 +42,10 @@ export type AuthContractFailureCode =
   | 'authentication_configuration_unavailable'
   | 'dependency_unavailable'
   | 'internal_server_error'
-  | 'rate_limited';
+  | 'rate_limited'
+  | 'request_validation_failed'
+  | 'request_too_large'
+  | 'unsupported_media_type';
 
 export type AuthOperationFailure = {
   kind: 'operation';
@@ -59,6 +62,10 @@ export type AuthOperationFailure = {
   code?: AuthContractFailureCode;
   requestId?: string;
   retryAfterSeconds?: number;
+  retryAt?: string;
+  actions?: ReadonlyArray<
+    'verify_email' | 'refresh_registration_policy' | 'sign_in' | 'forgot_password'
+  >;
 };
 
 export type AuthTransportFailure = {

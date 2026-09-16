@@ -48,6 +48,7 @@ function setup(stored = false) {
       onboarding_required: true,
     })),
     signOut: jest.fn(async () => undefined),
+    signOutAll: jest.fn(async () => undefined),
   };
   const registration = {
     replaceVerificationContinuation: jest.fn(),
@@ -153,6 +154,26 @@ test('terminal refresh clears credentials while a network failure preserves them
   expect(recoverable.workflow.getState()).toEqual({ status: 'signedOut' });
 });
 
+test('ambiguous refresh retry reuses the same credential and idempotency key', async () => {
+  const { workflow, service } = setup(true);
+  service.refresh.mockRejectedValueOnce(new ApiError('network', 'safe'));
+  await expect(workflow.refresh()).rejects.toBeInstanceOf(ApiError);
+  await expect(workflow.refresh()).resolves.toBe(true);
+  expect(service.refresh).toHaveBeenCalledTimes(2);
+  expect(service.refresh.mock.calls[1]).toEqual(service.refresh.mock.calls[0]);
+});
+
+test('offline restoration preserves credentials and explicit retry reuses the refresh attempt', async () => {
+  const { workflow, service, vault } = setup(true);
+  service.refresh.mockRejectedValueOnce(new ApiError('network', 'safe'));
+  await workflow.initialize();
+  expect(workflow.getState()).toEqual({ status: 'restorationFailed', reason: 'offline' });
+  expect(vault.clear).not.toHaveBeenCalled();
+  await workflow.retryRestoration();
+  expect(workflow.getState().status).toBe('signedIn');
+  expect(service.refresh.mock.calls[1]).toEqual(service.refresh.mock.calls[0]);
+});
+
 test('logout clears locally even when the backend is unavailable', async () => {
   const { workflow, service, vault, registration } = setup();
   await workflow.signIn('person@example.test', 'user-entered-value');
@@ -161,4 +182,31 @@ test('logout clears locally even when the backend is unavailable', async () => {
   expect(vault.clear).toHaveBeenCalled();
   expect(registration.clear).toHaveBeenCalled();
   expect(workflow.getState()).toEqual({ status: 'signedOut' });
+});
+
+test('logout makes local state inaccessible before remote revocation finishes', async () => {
+  const { workflow, service } = setup();
+  await workflow.signIn('person@example.test', 'user-entered-value');
+  let finish: ((value: undefined) => void) | undefined;
+  service.signOut.mockImplementationOnce(
+    () => new Promise<undefined>((resolve) => void (finish = resolve)),
+  );
+  const logout = workflow.logout();
+  for (let turn = 0; turn < 5 && !finish; turn += 1) await Promise.resolve();
+  expect(workflow.getState()).toEqual({ status: 'signedOut' });
+  finish?.(undefined);
+  await logout;
+});
+
+test('all-session logout reports remote confirmation without restoring local state', async () => {
+  const confirmed = setup();
+  await confirmed.workflow.signIn('person@example.test', 'user-entered-value');
+  await expect(confirmed.workflow.logoutAll()).resolves.toBe(true);
+  expect(confirmed.workflow.getState()).toEqual({ status: 'signedOut' });
+
+  const unconfirmed = setup();
+  await unconfirmed.workflow.signIn('person@example.test', 'user-entered-value');
+  unconfirmed.service.signOutAll.mockRejectedValueOnce(new ApiError('network', 'safe'));
+  await expect(unconfirmed.workflow.logoutAll()).resolves.toBe(false);
+  expect(unconfirmed.workflow.getState()).toEqual({ status: 'signedOut' });
 });

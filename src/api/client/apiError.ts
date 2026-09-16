@@ -10,6 +10,8 @@ export class ApiError extends Error {
       code?: string;
       requestId?: string;
       retryAfterSeconds?: number;
+      retryAt?: string;
+      actions?: ReadonlyArray<string>;
       fields?: ReadonlyArray<{ field: string; message: string }>;
     } = {},
   ) {

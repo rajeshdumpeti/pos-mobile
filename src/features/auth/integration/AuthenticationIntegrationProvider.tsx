@@ -13,12 +13,14 @@ import {
   createPasswordRecoveryWorkflow,
   type PasswordRecoveryWorkflow,
 } from './passwordRecoveryWorkflow';
+import { createConnectivityObserver, type ConnectivityObserver } from './connectivity';
 export type AuthenticationCapabilities = {
   inspectBootstrap(): Promise<SessionBootstrapResult>;
   clearCredentials(): ReturnType<CredentialVault['clear']>;
   registration: RegistrationWorkflow;
   session: SessionWorkflow;
   passwordRecovery: PasswordRecoveryWorkflow;
+  connectivity: ConnectivityObserver;
 };
 function createDependencies(): AuthenticationCapabilities {
   const vault = createCredentialVault(createSecureCredentialStorage());
@@ -30,6 +32,7 @@ function createDependencies(): AuthenticationCapabilities {
     registration,
     session: createSessionWorkflow(service, vault, registration),
     passwordRecovery: createPasswordRecoveryWorkflow(service),
+    connectivity: createConnectivityObserver(),
   };
 }
 const Context = createContext<AuthenticationCapabilities | undefined>(undefined);

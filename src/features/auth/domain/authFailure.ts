@@ -34,6 +34,9 @@ const knownCodes = [
   'dependency_unavailable',
   'internal_server_error',
   'rate_limited',
+  'request_validation_failed',
+  'request_too_large',
+  'unsupported_media_type',
 ] as const satisfies readonly AuthContractFailureCode[];
 
 const failureEnvelope = z
@@ -42,10 +45,19 @@ const failureEnvelope = z
     request_id: z
       .string()
       .min(1)
-      .max(128)
-      .regex(/^[A-Za-z0-9._-]+$/)
+      .max(64)
+      .regex(/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/)
       .optional(),
     retry_after_seconds: z.number().int().min(1).max(3600).optional(),
+    retry_at: z
+      .string()
+      .max(64)
+      .refine((value) => Number.isFinite(Date.parse(value)))
+      .optional(),
+    actions: z
+      .array(z.enum(['verify_email', 'refresh_registration_policy', 'sign_in', 'forgot_password']))
+      .max(4)
+      .optional(),
   })
   .passthrough();
 
@@ -137,10 +149,55 @@ const presentations: Record<
     category: 'rateLimited',
     message: 'Please wait before trying again.',
   },
+  request_validation_failed: {
+    category: 'unexpected',
+    message: 'Review the information and try again.',
+  },
+  request_too_large: {
+    category: 'unexpected',
+    message: 'We could not complete that request.',
+  },
+  unsupported_media_type: {
+    category: 'unexpected',
+    message: 'We could not complete that request.',
+  },
 };
 
 export function mapAuthFailure(input: unknown): AuthOperationFailure {
-  const parsed = failureEnvelope.safeParse(input);
+  const raw = input && typeof input === 'object' ? (input as Record<string, unknown>) : {};
+  const requestId =
+    typeof raw.request_id === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(raw.request_id)
+      ? raw.request_id
+      : undefined;
+  const retryAfterSeconds =
+    typeof raw.retry_after_seconds === 'number' &&
+    Number.isInteger(raw.retry_after_seconds) &&
+    raw.retry_after_seconds >= 1 &&
+    raw.retry_after_seconds <= 3600
+      ? raw.retry_after_seconds
+      : undefined;
+  const retryAt =
+    typeof raw.retry_at === 'string' &&
+    raw.retry_at.length <= 64 &&
+    Number.isFinite(Date.parse(raw.retry_at))
+      ? raw.retry_at
+      : undefined;
+  const allowedActions = [
+    'verify_email',
+    'refresh_registration_policy',
+    'sign_in',
+    'forgot_password',
+  ];
+  const actions = Array.isArray(raw.actions)
+    ? raw.actions.filter((action) => typeof action === 'string' && allowedActions.includes(action))
+    : undefined;
+  const parsed = failureEnvelope.safeParse({
+    code: raw.code,
+    request_id: requestId,
+    retry_after_seconds: retryAfterSeconds,
+    retry_at: retryAt,
+    actions,
+  });
   if (!parsed.success) {
     return {
       kind: 'operation',
@@ -157,6 +214,8 @@ export function mapAuthFailure(input: unknown): AuthOperationFailure {
     ...(parsed.data.retry_after_seconds
       ? { retryAfterSeconds: parsed.data.retry_after_seconds }
       : {}),
+    ...(parsed.data.retry_at ? { retryAt: parsed.data.retry_at } : {}),
+    ...(parsed.data.actions ? { actions: parsed.data.actions } : {}),
   };
 }
 

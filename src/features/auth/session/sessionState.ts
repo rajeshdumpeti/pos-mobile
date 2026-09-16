@@ -8,6 +8,7 @@ export type SessionSummary = {
 
 export type SessionState =
   | { status: 'restoring' }
+  | { status: 'restorationFailed'; reason: 'offline' | 'timeout' | 'unavailable' }
   | { status: 'signedOut' }
   | { status: 'signedIn'; account: SessionSummary };
 
@@ -25,5 +26,6 @@ export function reduceSession(_state: SessionState, event: SessionEvent): Sessio
 
 export function sessionToNavigationAccess(state: SessionState): NavigationAccessStatus {
   if (state.status === 'restoring') return 'checking';
+  if (state.status === 'restorationFailed') return 'signedOut';
   return state.status;
 }

@@ -5,6 +5,7 @@ import type { AuthFailure } from '../domain';
 import { useAuthenticationCapabilities } from './AuthenticationIntegrationProvider';
 import { authMutationKeys, authMutationPolicy, clearSensitiveMutation } from './authQueryPolicy';
 import { mapApiErrorToAuthFailure } from './mapApiFailure';
+import { retryDeadline } from './authResilience';
 
 export function useVerificationController({ onVerified }: { onVerified: () => void }) {
   const { registration } = useAuthenticationCapabilities();
@@ -15,6 +16,7 @@ export function useVerificationController({ onVerified }: { onVerified: () => vo
   );
   const [failure, setFailure] = useState<AuthFailure>();
   const [notice, setNotice] = useState<string>();
+  const [retryDeadlineMs, setRetryDeadlineMs] = useState<number>();
   const active = useRef({ verify: false, resend: false, change: false });
   const verify = useMutation({
     mutationKey: authMutationKeys.verifyEmail,
@@ -74,6 +76,7 @@ export function useVerificationController({ onVerified }: { onVerified: () => vo
     active.current.resend = true;
     setFailure(undefined);
     setNotice(undefined);
+    setRetryDeadlineMs(undefined);
     try {
       await resend.mutateAsync();
       setNotice('A new verification code was requested.');
@@ -81,6 +84,9 @@ export function useVerificationController({ onVerified }: { onVerified: () => vo
     } catch (error) {
       const safe = mapApiErrorToAuthFailure(error);
       setFailure(safe);
+      if (safe.kind === 'operation' && safe.code === 'resend_cooldown_active') {
+        setRetryDeadlineMs(retryDeadline(safe));
+      }
       if (
         safe.kind === 'operation' &&
         [
@@ -136,11 +142,12 @@ export function useVerificationController({ onVerified }: { onVerified: () => vo
     isVerifying: verify.isPending,
     isResending: resend.isPending,
     isChangingEmail: change.isPending,
+    retryDeadlineMs,
     clear: registration.clear,
   };
 }
 
-export function useAuthoritativeDeadline(value?: string) {
+export function useAuthoritativeDeadline(value?: string | number) {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     const refresh = () => setNow(Date.now());
@@ -153,7 +160,7 @@ export function useAuthoritativeDeadline(value?: string) {
       subscription.remove();
     };
   }, []);
-  const deadline = value ? Date.parse(value) : Number.NaN;
+  const deadline = typeof value === 'number' ? value : value ? Date.parse(value) : Number.NaN;
   const remainingSeconds = Number.isFinite(deadline)
     ? Math.max(0, Math.ceil((deadline - now) / 1000))
     : undefined;

@@ -11,11 +11,13 @@ test('authenticated route unmount does not clear the newly established session',
     getState: () => ({ status: 'signedOut' as const }),
     subscribe: () => () => undefined,
     initialize: jest.fn(async () => undefined),
+    retryRestoration: jest.fn(async () => undefined),
     signIn: jest.fn(
       () => new Promise<{ kind: 'authenticated' }>((resolve) => void (finish = resolve)),
     ),
     refresh: jest.fn(),
     logout: jest.fn(),
+    logoutAll: jest.fn(),
     clear: jest.fn(async () => undefined),
   };
   const queryClient = createQueryClient();
@@ -34,6 +36,10 @@ test('authenticated route unmount does not clear the newly established session',
             finishTerminalFailure: jest.fn(),
             clear: jest.fn(),
             getState: () => 'missing',
+            subscribe: () => () => undefined,
+          },
+          connectivity: {
+            getState: () => 'unknown',
             subscribe: () => () => undefined,
           },
         }}

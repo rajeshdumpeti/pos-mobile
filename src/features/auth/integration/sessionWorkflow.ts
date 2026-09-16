@@ -56,6 +56,7 @@ export function createSessionWorkflow(
   let state: SessionState = { status: 'restoring' };
   let bootstrap: Promise<void> | undefined;
   let refreshing: Promise<boolean> | undefined;
+  let retryableRefresh: { credential: string; idempotencyKey: string } | undefined;
   let sequence = 0;
   let revision = 0;
   const listeners = new Set<() => void>();
@@ -65,9 +66,11 @@ export function createSessionWorkflow(
   };
   const clear = async () => {
     revision += 1;
-    await vault.clear();
+    retryableRefresh = undefined;
+    const secureDeletion = vault.clear();
     registration.clear();
     publish({ status: 'signedOut' });
+    await secureDeletion;
   };
   const establish = async (value: Schemas['SessionTokenResponse']) => {
     const account = summary(value);
@@ -81,21 +84,31 @@ export function createSessionWorkflow(
   const refresh = (expectedRevision = revision) => {
     if (refreshing) return refreshing;
     refreshing = (async () => {
-      const stored = await vault.readRefreshForValidation();
-      if (expectedRevision !== revision) return false;
-      if (!stored.ok || stored.status !== 'available') {
-        await clear();
-        return false;
+      let attempt = retryableRefresh;
+      if (!attempt) {
+        const stored = await vault.readRefreshForValidation();
+        if (expectedRevision !== revision) return false;
+        if (!stored.ok || stored.status !== 'available') {
+          await clear();
+          return false;
+        }
+        attempt = {
+          credential: stored.refreshCredential,
+          idempotencyKey: `mobile-refresh-${Date.now().toString(36)}-${++sequence}`,
+        };
       }
-      const key = `mobile-refresh-${Date.now().toString(36)}-${++sequence}`;
       try {
-        const value = await service.refresh({ refresh_token: stored.refreshCredential }, key);
+        const value = await service.refresh(
+          { refresh_token: attempt.credential },
+          attempt.idempotencyKey,
+        );
         if (expectedRevision !== revision) return false;
         const rotated = await vault.rotate(credentials(value));
         if (!rotated.ok) throw new Error('Secure session storage is unavailable.');
         const current = await service.getCurrentSession(value.access_token);
         if (expectedRevision !== revision) return false;
         publish({ status: 'signedIn', account: summary(current) });
+        retryableRefresh = undefined;
         return true;
       } catch (error) {
         if (expectedRevision !== revision) return false;
@@ -104,15 +117,41 @@ export function createSessionWorkflow(
           !(error instanceof ApiError) ||
           error.category === 'invalidResponse' ||
           terminalCodes.has(code ?? '')
-        )
+        ) {
+          retryableRefresh = undefined;
           await clear();
-        else publish({ status: 'signedOut' });
+        } else {
+          retryableRefresh = attempt;
+          publish({ status: 'signedOut' });
+        }
         throw error;
       } finally {
         refreshing = undefined;
       }
     })();
     return refreshing;
+  };
+  const initialize = () => {
+    if (!bootstrap)
+      bootstrap = (async () => {
+        const expectedRevision = revision;
+        const stored = await vault.readRefreshForValidation();
+        if (expectedRevision !== revision) return;
+        if (!stored.ok || stored.status === 'missing') return clear();
+        try {
+          await refresh(expectedRevision);
+        } catch (error) {
+          if (expectedRevision !== revision || !(error instanceof ApiError)) return;
+          const reason =
+            error.category === 'network'
+              ? 'offline'
+              : error.category === 'timeout'
+                ? 'timeout'
+                : 'unavailable';
+          publish({ status: 'restorationFailed', reason });
+        }
+      })();
+    return bootstrap;
   };
   return {
     getState: () => state,
@@ -122,23 +161,15 @@ export function createSessionWorkflow(
         listeners.delete(listener);
       };
     },
-    initialize: () => {
-      if (!bootstrap)
-        bootstrap = (async () => {
-          const expectedRevision = revision;
-          const stored = await vault.readRefreshForValidation();
-          if (expectedRevision !== revision) return;
-          if (!stored.ok || stored.status === 'missing') return clear();
-          try {
-            await refresh(expectedRevision);
-          } catch {
-            // Refresh owns the safe terminal versus recoverable transition.
-          }
-        })();
-      return bootstrap;
+    initialize,
+    retryRestoration: () => {
+      if (state.status !== 'signedOut' && state.status !== 'restorationFailed') return initialize();
+      bootstrap = undefined;
+      return initialize();
     },
     signIn: async (email: string, password: string): Promise<SignInResult> => {
       revision += 1;
+      retryableRefresh = undefined;
       const value = await service.signIn({ email, password });
       if ('code' in value) {
         if (value.code !== 'email_not_verified' || !value.actions.includes('verify_email'))
@@ -152,12 +183,22 @@ export function createSessionWorkflow(
     refresh,
     logout: async () => {
       const access = vault.getAccessCredential();
+      await clear();
       try {
         if (access) await service.signOut(access);
       } catch {
         // Local credential destruction is authoritative for offline logout.
-      } finally {
-        await clear();
+      }
+    },
+    logoutAll: async () => {
+      const access = vault.getAccessCredential();
+      await clear();
+      if (!access) return false;
+      try {
+        await service.signOutAll(access);
+        return true;
+      } catch {
+        return false;
       }
     },
     clear,

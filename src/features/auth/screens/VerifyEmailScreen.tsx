@@ -147,7 +147,9 @@ export function ConnectedVerifyEmailScreen() {
   const controller = useVerificationController({
     onVerified: () => router.replace(routes.auth.signIn),
   });
-  const deadline = useAuthoritativeDeadline(controller.presentation?.resendAvailableAt);
+  const deadline = useAuthoritativeDeadline(
+    controller.retryDeadlineMs ?? controller.presentation?.resendAvailableAt,
+  );
   return (
     <VerifyEmailScreen
       maskedEmail={controller.presentation?.maskedEmail}
