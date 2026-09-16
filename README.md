@@ -38,7 +38,7 @@ be used where supported.
 For local Metro development with an already installed development client:
 
 ```bash
-npx expo start --dev-client
+npm run start:dev-client
 ```
 
 The repository includes local EAS build profiles for future development,
@@ -71,6 +71,16 @@ screens use it through the typed transport boundary; it must contain only a publ
 
 See `docs/repository-setup.md` for additional local-development and repository
 preparation guidance.
+
+Repository-owned Authentication acceptance prerequisites can be checked without external access:
+
+```bash
+npm run auth:readiness
+```
+
+This does not validate accounts, devices, builds, backend services, email, or real Authentication.
+Use [`docs/authentication-acceptance-runbook.md`](docs/authentication-acceptance-runbook.md) for the
+founder-controlled 1.H process.
 
 ## Frontend architecture
 
