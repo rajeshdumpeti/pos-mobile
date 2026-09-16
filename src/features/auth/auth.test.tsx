@@ -118,12 +118,18 @@ function wrap(children: React.ReactNode, preference: 'light' | 'dark' = 'light')
                 getState: () => ({ status: 'signedOut' as const }),
                 subscribe: () => () => undefined,
                 initialize: jest.fn(async () => undefined),
+                retryRestoration: jest.fn(async () => undefined),
                 signIn: jest.fn(),
                 refresh: jest.fn(),
                 logout: jest.fn(),
+                logoutAll: jest.fn(),
                 clear: jest.fn(),
               },
               passwordRecovery,
+              connectivity: {
+                getState: () => 'unknown',
+                subscribe: () => () => undefined,
+              },
             }}
           >
             {children}

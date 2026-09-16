@@ -46,6 +46,22 @@ test('maps documented backend metadata without raw content', () => {
     mapApiErrorToAuthFailure(new ApiError('http', 'secret', { code: 'unknown' })),
   ).toMatchObject({ category: 'unexpected' });
 });
+test('discards malformed request IDs and unsafe retry metadata', () => {
+  const mapped = mapApiErrorToAuthFailure(
+    new ApiError('http', 'raw', {
+      code: 'rate_limited',
+      requestId: '-invalid',
+      retryAfterSeconds: 3601,
+      retryAt: 'not-a-date',
+      actions: ['verify_email', 'untrusted'],
+    }),
+  );
+  expect(mapped).toMatchObject({ code: 'rate_limited' });
+  expect(mapped).not.toHaveProperty('requestId');
+  expect(mapped).not.toHaveProperty('retryAfterSeconds');
+  expect(mapped).not.toHaveProperty('retryAt');
+  expect(mapped).toMatchObject({ actions: ['verify_email'] });
+});
 test.each([
   'invalid_credentials',
   'email_not_verified',

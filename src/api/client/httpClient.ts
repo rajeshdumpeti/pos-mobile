@@ -36,6 +36,21 @@ function safeEnvelope(value: unknown) {
     v.retry_after_seconds <= 3600
       ? v.retry_after_seconds
       : undefined;
+  const retryAt =
+    typeof v.retry_at === 'string' &&
+    v.retry_at.length <= 64 &&
+    Number.isFinite(Date.parse(v.retry_at))
+      ? v.retry_at
+      : undefined;
+  const actions = Array.isArray(v.actions)
+    ? v.actions.filter(
+        (action): action is string =>
+          typeof action === 'string' &&
+          ['verify_email', 'refresh_registration_policy', 'sign_in', 'forgot_password'].includes(
+            action,
+          ),
+      )
+    : undefined;
   const fields = Array.isArray(v.details)
     ? v.details.flatMap((d) => {
         if (!d || typeof d !== 'object') return [];
@@ -45,7 +60,7 @@ function safeEnvelope(value: unknown) {
           : [];
       })
     : undefined;
-  return { requestId, code, retryAfterSeconds: retry, fields };
+  return { requestId, code, retryAfterSeconds: retry, retryAt, actions, fields };
 }
 export function createHttpClient({
   baseUrl,
@@ -121,11 +136,20 @@ export function createHttpClient({
       }
       if (!input.expectedStatuses.includes(response.status)) {
         const safe = safeEnvelope(data);
+        const retryHeader = response.headers.get('retry-after');
+        const headerSeconds =
+          retryHeader && /^\d{1,4}$/.test(retryHeader) ? Number(retryHeader) : undefined;
+        const retryAfterSeconds =
+          headerSeconds !== undefined && headerSeconds >= 1 && headerSeconds <= 3600
+            ? headerSeconds
+            : safe.retryAfterSeconds;
         throw new ApiError('http', 'The API request was not accepted.', {
           status: response.status,
           code: safe.code,
           requestId: safe.requestId ?? validHeaderId,
-          retryAfterSeconds: safe.retryAfterSeconds,
+          retryAfterSeconds,
+          retryAt: safe.retryAt,
+          actions: safe.actions,
           fields: safe.fields,
         });
       }

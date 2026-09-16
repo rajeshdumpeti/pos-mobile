@@ -26,3 +26,7 @@ contains only validated account facts and restoration state.
 Milestone 1.G.4 connects password recovery through a separate ephemeral custody boundary documented
 in [the password recovery handoff](auth-password-recovery.md). Reset credentials never enter the
 session vault, forms, routes, query keys, or Context values.
+
+Milestone 1.G.5 centralizes connectivity hints, retry timing, explicit recovery, ambiguous refresh
+retry, immediate local sign-out, and safe transport diagnostics in
+[the resilience handoff](authentication-resilience.md).

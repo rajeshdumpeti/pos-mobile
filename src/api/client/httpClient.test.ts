@@ -74,10 +74,17 @@ test('handles JSON, 204, backend errors and invalid content safely', async () =>
         code: 'rate_limited',
         request_id: 'req-1',
         retry_after_seconds: 30,
+        retry_at: '2026-09-15T12:00:30Z',
+        actions: ['verify_email', 'untrusted_action'],
         details: [{ field: 'email', message: 'Invalid' }],
         raw: 'secret',
       },
       429,
+      {
+        'content-type': 'application/json',
+        'x-request-id': 'server-1',
+        'retry-after': '45',
+      },
     ),
     new Response('<html>secret</html>', { status: 502, headers: { 'content-type': 'text/html' } }),
   ];
@@ -93,7 +100,14 @@ test('handles JSON, 204, backend errors and invalid content safely', async () =>
     request({ path: '/api/v1/auth/sessions', method: 'POST', expectedStatuses: [200] }),
   ).rejects.toMatchObject({
     category: 'http',
-    metadata: { status: 429, code: 'rate_limited', requestId: 'req-1', retryAfterSeconds: 30 },
+    metadata: {
+      status: 429,
+      code: 'rate_limited',
+      requestId: 'req-1',
+      retryAfterSeconds: 45,
+      retryAt: '2026-09-15T12:00:30Z',
+      actions: ['verify_email'],
+    },
   });
   const error = await request({ path: '/health', method: 'GET', expectedStatuses: [200] }).catch(
     (e) => e,

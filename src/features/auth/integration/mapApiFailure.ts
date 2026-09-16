@@ -22,5 +22,7 @@ export function mapApiErrorToAuthFailure(error: unknown): AuthFailure {
     code: error.metadata.code,
     request_id: error.metadata.requestId,
     retry_after_seconds: error.metadata.retryAfterSeconds,
+    retry_at: error.metadata.retryAt,
+    actions: error.metadata.actions,
   });
 }
