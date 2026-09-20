@@ -510,7 +510,7 @@ test('field errors wait for interaction and corrected fields revalidate', async 
   await waitFor(() => expect(view.queryByRole('alert')).toBeNull());
 });
 
-test('verification and reset readiness are schema-derived and preserve leading zero', async () => {
+test('verification readiness is schema-derived and preserves leading zero', async () => {
   const verify = jest.fn();
   const codeView = render(wrap(<VerifyEmailScreen onSubmitIntent={verify} />));
   const continueAction = codeView.getByRole('button', { name: 'Continue' });
@@ -519,12 +519,64 @@ test('verification and reset readiness are schema-derived and preserve leading z
   fireEvent.press(continueAction);
   await waitFor(() => expect(verify).toHaveBeenCalledWith({ code: '012345' }));
   codeView.unmount();
+});
 
-  const reset = render(wrap(<ResetPasswordScreen continuationAvailable />));
-  const update = reset.getByRole('button', { name: 'Update Password' });
-  fireEvent.changeText(reset.getByLabelText('New password'), 'fifteen-characters');
-  fireEvent.changeText(reset.getByLabelText('Confirm password'), 'fifteen-characters');
-  await waitFor(() => expect(update).toBeEnabled());
+test('reset-password action follows live schema validity and reset continuation custody', async () => {
+  const view = render(wrap(<ResetPasswordScreen continuationAvailable />));
+  const action = view.getByRole('button', { name: 'Update Password' });
+  const password = view.getByLabelText('New password');
+  const confirmation = view.getByLabelText('Confirm password');
+  expect(action).toBeDisabled();
+
+  fireEvent.changeText(password, 'too-short');
+  fireEvent.changeText(confirmation, 'too-short');
+  expect(action).toBeDisabled();
+  await waitFor(() =>
+    expect(view.getByRole('alert')).toHaveTextContent(/Password must be at least 15 characters\./),
+  );
+
+  fireEvent.changeText(password, 'valid-password-value');
+  fireEvent.changeText(confirmation, '');
+  expect(action).toBeDisabled();
+
+  fireEvent.changeText(confirmation, 'different-password-value');
+  expect(action).toBeDisabled();
+  await waitFor(() => expect(view.getByRole('alert')).toHaveTextContent(/Passwords must match\./));
+
+  fireEvent.changeText(confirmation, 'valid-password-value');
+  await waitFor(() => expect(action).toBeEnabled());
+
+  view.rerender(wrap(<ResetPasswordScreen continuationAvailable={false} />));
+  expect(view.getByRole('button', { name: 'Update Password' })).toBeDisabled();
+  expect(view.getByText(/reset link is unavailable/i)).toBeTruthy();
+});
+
+test('reset-password submits once while pending and clears sensitive fields after success', async () => {
+  let finishSubmission: ((value: boolean) => void) | undefined;
+  const handler = jest.fn(
+    () =>
+      new Promise<boolean>((resolve) => {
+        finishSubmission = resolve;
+      }),
+  );
+  const view = render(wrap(<ResetPasswordScreen continuationAvailable onSubmitIntent={handler} />));
+  const password = view.getByLabelText('New password');
+  const confirmation = view.getByLabelText('Confirm password');
+  const action = view.getByRole('button', { name: 'Update Password' });
+  fireEvent.changeText(password, 'valid-password-value');
+  fireEvent.changeText(confirmation, 'valid-password-value');
+  await waitFor(() => expect(action).toBeEnabled());
+
+  fireEvent.press(action);
+  fireEvent.press(action);
+  await waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+  expect(handler).toHaveBeenCalledWith({ newPassword: 'valid-password-value' });
+  expect(action).toBeDisabled();
+
+  await act(async () => finishSubmission?.(true));
+  await waitFor(() => expect(password.props.value).toBe(''));
+  expect(confirmation.props.value).toBe('');
+  expect(action).toBeDisabled();
 });
 
 test('create-account intent excludes the UI-only confirmation password', async () => {

@@ -34,7 +34,7 @@ export function ResetPasswordScreen({
 }) {
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { password: '', confirmPassword: '' },
   });
   const submit = useAuthSubmissionIntent(onSubmitIntent);

@@ -1,4 +1,6 @@
 import { ApiError } from '@/api';
+import { routes } from '@/navigation/routes';
+import { authMutationKeys, authQueryKeys } from './authQueryPolicy';
 import { createPasswordRecoveryWorkflow } from './passwordRecoveryWorkflow';
 import { parsePasswordResetLink } from './passwordResetLink';
 
@@ -25,14 +27,28 @@ test('confirmation owns the token privately and sends only authorized fields', a
   const api = service();
   const workflow = createPasswordRecoveryWorkflow(api as never);
   const candidate = opaque(' ');
+  const password = 'a sufficiently long password';
+  const consoleSpies = [
+    jest.spyOn(console, 'log').mockImplementation(),
+    jest.spyOn(console, 'warn').mockImplementation(),
+    jest.spyOn(console, 'error').mockImplementation(),
+  ];
   expect(workflow.acceptToken(candidate)).toBe(true);
   expect(JSON.stringify(workflow)).not.toContain(candidate);
-  await workflow.confirm('a sufficiently long password');
+  await workflow.confirm(password);
   expect(api.confirmPasswordReset).toHaveBeenCalledWith({
     token: candidate,
-    new_password: 'a sufficiently long password',
+    new_password: password,
   });
   expect(workflow.getState()).toBe('succeeded');
+  expect(JSON.stringify(workflow)).not.toContain(password);
+  expect(JSON.stringify(routes)).not.toContain(candidate);
+  expect(JSON.stringify(authMutationKeys)).not.toContain(candidate);
+  expect(JSON.stringify(authQueryKeys)).not.toContain(candidate);
+  for (const spy of consoleSpies) {
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockRestore();
+  }
   await expect(workflow.confirm('another valid password')).rejects.toThrow(
     'Password reset context is unavailable.',
   );
