@@ -58,6 +58,48 @@
         "title": "AuthenticationErrorResponse",
         "type": "object"
       },
+      "BudgetValue": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Amount"
+          },
+          "currency": {
+            "enum": ["USD", "INR", "CAD", "GBP", "EUR", "AUD"],
+            "title": "Currency",
+            "type": "string"
+          }
+        },
+        "required": ["amount", "currency"],
+        "title": "BudgetValue",
+        "type": "object"
+      },
+      "BudgetValueResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "title": "Amount",
+            "type": "string"
+          },
+          "currency": {
+            "enum": ["USD", "INR", "CAD", "GBP", "EUR", "AUD"],
+            "title": "Currency",
+            "type": "string"
+          }
+        },
+        "required": ["amount", "currency"],
+        "title": "BudgetValueResponse",
+        "type": "object"
+      },
       "ChangeUnverifiedEmailRequest": {
         "additionalProperties": false,
         "example": {
@@ -82,6 +124,19 @@
         },
         "required": ["flow_token", "new_email"],
         "title": "ChangeUnverifiedEmailRequest",
+        "type": "object"
+      },
+      "CompleteOnboardingRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "expected_version": {
+            "minimum": 0.0,
+            "title": "Expected Version",
+            "type": "integer"
+          }
+        },
+        "required": ["expected_version"],
+        "title": "CompleteOnboardingRequest",
         "type": "object"
       },
       "ConfirmEmailRequest": {
@@ -134,6 +189,30 @@
         },
         "required": ["token", "new_password"],
         "title": "ConfirmPasswordResetRequest",
+        "type": "object"
+      },
+      "CurrencyPreferenceResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "confirmed": {
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "enum": ["USD", "INR", "CAD", "GBP", "EUR", "AUD"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": ["value", "confirmed"],
+        "title": "CurrencyPreferenceResponse",
         "type": "object"
       },
       "CurrentSessionResponse": {
@@ -292,6 +371,85 @@
         "title": "HealthResponse",
         "type": "object"
       },
+      "IntegrationPreferencesResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "apple_health": {
+            "anyOf": [
+              {
+                "enum": ["interested", "not_interested", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apple Health"
+          },
+          "apple_watch": {
+            "anyOf": [
+              {
+                "enum": ["interested", "not_interested", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apple Watch"
+          },
+          "calendar": {
+            "anyOf": [
+              {
+                "enum": ["interested", "not_interested", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calendar"
+          },
+          "health_connect": {
+            "anyOf": [
+              {
+                "enum": ["interested", "not_interested", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Health Connect"
+          },
+          "reminders": {
+            "anyOf": [
+              {
+                "enum": ["interested", "not_interested", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reminders"
+          },
+          "wearables": {
+            "anyOf": [
+              {
+                "enum": ["interested", "not_interested", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wearables"
+          }
+        },
+        "title": "IntegrationPreferencesResponse",
+        "type": "object"
+      },
       "Item": {
         "properties": {
           "done": {
@@ -321,6 +479,673 @@
         "additionalProperties": true,
         "description": "Arbitrary partial fields preserved by the legacy local mock contract.",
         "title": "ItemPatch",
+        "type": "object"
+      },
+      "MeasuredValue": {
+        "additionalProperties": false,
+        "properties": {
+          "unit": {
+            "enum": ["kg", "lb"],
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": ["value", "unit"],
+        "title": "MeasuredValue",
+        "type": "object"
+      },
+      "MeasuredValueResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "unit": {
+            "enum": ["kg", "lb"],
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": ["value", "unit"],
+        "title": "MeasuredValueResponse",
+        "type": "object"
+      },
+      "NotificationPreferencesResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "deep_work": {
+            "anyOf": [
+              {
+                "enum": ["enabled", "disabled", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deep Work"
+          },
+          "finance": {
+            "anyOf": [
+              {
+                "enum": ["enabled", "disabled", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finance"
+          },
+          "protein": {
+            "anyOf": [
+              {
+                "enum": ["enabled", "disabled", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protein"
+          },
+          "water": {
+            "anyOf": [
+              {
+                "enum": ["enabled", "disabled", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Water"
+          },
+          "weekly_reflection": {
+            "anyOf": [
+              {
+                "enum": ["enabled", "disabled", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Reflection"
+          },
+          "workout": {
+            "anyOf": [
+              {
+                "enum": ["enabled", "disabled", "deferred"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workout"
+          }
+        },
+        "title": "NotificationPreferencesResponse",
+        "type": "object"
+      },
+      "OnboardingConfigurationResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "currencies": {
+            "items": {
+              "enum": ["USD", "INR", "CAD", "GBP", "EUR", "AUD"],
+              "type": "string"
+            },
+            "title": "Currencies",
+            "type": "array"
+          },
+          "integration_identifiers": {
+            "items": {
+              "enum": [
+                "apple_health",
+                "health_connect",
+                "apple_watch",
+                "calendar",
+                "reminders",
+                "wearables"
+              ],
+              "type": "string"
+            },
+            "title": "Integration Identifiers",
+            "type": "array"
+          },
+          "integration_preference_values": {
+            "items": {
+              "enum": ["interested", "not_interested", "deferred"],
+              "type": "string"
+            },
+            "title": "Integration Preference Values",
+            "type": "array"
+          },
+          "notification_identifiers": {
+            "items": {
+              "enum": ["workout", "protein", "water", "finance", "deep_work", "weekly_reflection"],
+              "type": "string"
+            },
+            "title": "Notification Identifiers",
+            "type": "array"
+          },
+          "notification_preference_values": {
+            "items": {
+              "enum": ["enabled", "disabled", "deferred"],
+              "type": "string"
+            },
+            "title": "Notification Preference Values",
+            "type": "array"
+          },
+          "optional_goal_fields": {
+            "items": {
+              "enum": [
+                "target_weight",
+                "daily_protein_grams",
+                "daily_water",
+                "daily_calories_kcal",
+                "daily_steps",
+                "workouts_per_week",
+                "focus_minutes_per_day",
+                "target_sleep_minutes",
+                "budget_target"
+              ],
+              "type": "string"
+            },
+            "title": "Optional Goal Fields",
+            "type": "array"
+          },
+          "priority_life_areas": {
+            "items": {
+              "enum": ["health", "nutrition", "fitness", "focus", "money", "habits", "sleep"],
+              "type": "string"
+            },
+            "title": "Priority Life Areas",
+            "type": "array"
+          },
+          "routine_creation_supported": {
+            "title": "Routine Creation Supported",
+            "type": "boolean"
+          },
+          "unit_systems": {
+            "items": {
+              "enum": ["metric", "imperial"],
+              "type": "string"
+            },
+            "title": "Unit Systems",
+            "type": "array"
+          }
+        },
+        "required": [
+          "priority_life_areas",
+          "unit_systems",
+          "currencies",
+          "optional_goal_fields",
+          "integration_identifiers",
+          "integration_preference_values",
+          "notification_identifiers",
+          "notification_preference_values",
+          "routine_creation_supported"
+        ],
+        "title": "OnboardingConfigurationResponse",
+        "type": "object"
+      },
+      "OnboardingGoals": {
+        "additionalProperties": false,
+        "properties": {
+          "budget_target": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BudgetValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "daily_calories_kcal": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 10000000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Calories Kcal"
+          },
+          "daily_protein_grams": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Protein Grams"
+          },
+          "daily_steps": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 100000000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Steps"
+          },
+          "daily_water": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WaterValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "focus_minutes_per_day": {
+            "anyOf": [
+              {
+                "maximum": 1440.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Focus Minutes Per Day"
+          },
+          "target_sleep_minutes": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 1440.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Sleep Minutes"
+          },
+          "target_weight": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MeasuredValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workouts_per_week": {
+            "anyOf": [
+              {
+                "maximum": 7.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workouts Per Week"
+          }
+        },
+        "title": "OnboardingGoals",
+        "type": "object"
+      },
+      "OnboardingGoalsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "budget_target": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BudgetValueResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "daily_calories_kcal": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Calories Kcal"
+          },
+          "daily_protein_grams": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Protein Grams"
+          },
+          "daily_steps": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Steps"
+          },
+          "daily_water": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WaterValueResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "focus_minutes_per_day": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Focus Minutes Per Day"
+          },
+          "target_sleep_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Sleep Minutes"
+          },
+          "target_weight": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MeasuredValueResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workouts_per_week": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workouts Per Week"
+          }
+        },
+        "title": "OnboardingGoalsResponse",
+        "type": "object"
+      },
+      "OnboardingPatchRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "anyOf": [
+              {
+                "enum": ["USD", "INR", "CAD", "GBP", "EUR", "AUD"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency"
+          },
+          "currency_confirmed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Currency Confirmed"
+          },
+          "expected_version": {
+            "minimum": 0.0,
+            "title": "Expected Version",
+            "type": "integer"
+          },
+          "goals": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OnboardingGoals"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "integration_preferences": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "enum": ["interested", "not_interested", "deferred"],
+                  "type": "string"
+                },
+                "propertyNames": {
+                  "enum": [
+                    "apple_health",
+                    "health_connect",
+                    "apple_watch",
+                    "calendar",
+                    "reminders",
+                    "wearables"
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integration Preferences"
+          },
+          "notification_preferences": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "enum": ["enabled", "disabled", "deferred"],
+                  "type": "string"
+                },
+                "propertyNames": {
+                  "enum": [
+                    "workout",
+                    "protein",
+                    "water",
+                    "finance",
+                    "deep_work",
+                    "weekly_reflection"
+                  ]
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notification Preferences"
+          },
+          "priority_life_areas": {
+            "anyOf": [
+              {
+                "items": {
+                  "enum": ["health", "nutrition", "fitness", "focus", "money", "habits", "sleep"],
+                  "type": "string"
+                },
+                "maxItems": 7,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority Life Areas"
+          },
+          "unit_system": {
+            "anyOf": [
+              {
+                "enum": ["metric", "imperial"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit System"
+          },
+          "unit_system_confirmed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit System Confirmed"
+          }
+        },
+        "required": ["expected_version"],
+        "title": "OnboardingPatchRequest",
+        "type": "object"
+      },
+      "OnboardingResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "configuration": {
+            "$ref": "#/components/schemas/OnboardingConfigurationResponse"
+          },
+          "contract_version": {
+            "const": "1.0",
+            "title": "Contract Version",
+            "type": "string"
+          },
+          "currency_preference": {
+            "$ref": "#/components/schemas/CurrencyPreferenceResponse"
+          },
+          "goals": {
+            "$ref": "#/components/schemas/OnboardingGoalsResponse"
+          },
+          "integration_preferences": {
+            "$ref": "#/components/schemas/IntegrationPreferencesResponse"
+          },
+          "notification_preferences": {
+            "$ref": "#/components/schemas/NotificationPreferencesResponse"
+          },
+          "priority_life_areas": {
+            "items": {
+              "enum": ["health", "nutrition", "fitness", "focus", "money", "habits", "sleep"],
+              "type": "string"
+            },
+            "title": "Priority Life Areas",
+            "type": "array"
+          },
+          "recommended_next_action": {
+            "enum": [
+              "select_priority_life_areas",
+              "confirm_unit_system",
+              "confirm_currency",
+              "complete_onboarding",
+              "onboarding_completed"
+            ],
+            "title": "Recommended Next Action",
+            "type": "string"
+          },
+          "requirements": {
+            "$ref": "#/components/schemas/RequirementsResponse"
+          },
+          "status": {
+            "enum": ["not_started", "in_progress", "completed"],
+            "title": "Status",
+            "type": "string"
+          },
+          "unit_preference": {
+            "$ref": "#/components/schemas/UnitPreferenceResponse"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "status",
+          "contract_version",
+          "version",
+          "priority_life_areas",
+          "unit_preference",
+          "currency_preference",
+          "goals",
+          "integration_preferences",
+          "notification_preferences",
+          "requirements",
+          "recommended_next_action",
+          "completed_at",
+          "configuration"
+        ],
+        "title": "OnboardingResponse",
         "type": "object"
       },
       "PasswordResetAcceptedResponse": {
@@ -586,6 +1411,35 @@
         "title": "RegistrationRequest",
         "type": "object"
       },
+      "RequirementsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "currency_satisfied": {
+            "title": "Currency Satisfied",
+            "type": "boolean"
+          },
+          "priority_life_areas_satisfied": {
+            "title": "Priority Life Areas Satisfied",
+            "type": "boolean"
+          },
+          "ready_to_complete": {
+            "title": "Ready To Complete",
+            "type": "boolean"
+          },
+          "unit_system_satisfied": {
+            "title": "Unit System Satisfied",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "priority_life_areas_satisfied",
+          "unit_system_satisfied",
+          "currency_satisfied",
+          "ready_to_complete"
+        ],
+        "title": "RequirementsResponse",
+        "type": "object"
+      },
       "ResendVerificationRequest": {
         "additionalProperties": false,
         "example": {
@@ -691,6 +1545,30 @@
         "title": "SignInRequest",
         "type": "object"
       },
+      "UnitPreferenceResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "confirmed": {
+            "title": "Confirmed",
+            "type": "boolean"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "enum": ["metric", "imperial"],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": ["value", "confirmed"],
+        "title": "UnitPreferenceResponse",
+        "type": "object"
+      },
       "VerificationFlowContinuation": {
         "properties": {
           "expires_at": {
@@ -714,6 +1592,48 @@
         },
         "required": ["flow_token", "masked_email", "expires_at", "resend_available_at"],
         "title": "VerificationFlowContinuation",
+        "type": "object"
+      },
+      "WaterValue": {
+        "additionalProperties": false,
+        "properties": {
+          "unit": {
+            "enum": ["liters", "fluid_ounces"],
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": ["value", "unit"],
+        "title": "WaterValue",
+        "type": "object"
+      },
+      "WaterValueResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "unit": {
+            "enum": ["liters", "fluid_ounces"],
+            "title": "Unit",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": ["value", "unit"],
+        "title": "WaterValueResponse",
         "type": "object"
       }
     },
@@ -2996,6 +3916,420 @@
         },
         "summary": "Rotate a refresh token",
         "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/onboarding": {
+      "get": {
+        "operationId": "get_onboarding_state",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Authentication is required or invalid.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The authenticated account is not eligible for this operation.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The request could not be validated.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "An unexpected server error occurred.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "A required dependency is unavailable.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get State",
+        "tags": ["Onboarding"]
+      },
+      "patch": {
+        "operationId": "update_onboarding_state",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingPatchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The operation is not supported for this resource.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Authentication is required or invalid.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The authenticated account is not eligible for this operation.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The request conflicts with existing state.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The request could not be validated.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "An unexpected server error occurred.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "A required dependency is unavailable.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update State",
+        "tags": ["Onboarding"]
+      }
+    },
+    "/api/v1/onboarding/complete": {
+      "post": {
+        "operationId": "complete_onboarding",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteOnboardingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Authentication is required or invalid.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The authenticated account is not eligible for this operation.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The request conflicts with existing state.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "The request could not be validated.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "An unexpected server error occurred.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "A required dependency is unavailable.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Request identifier for support and diagnostics.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Complete",
+        "tags": ["Onboarding"]
       }
     },
     "/demo/reset": {

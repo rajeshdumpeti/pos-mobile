@@ -13,7 +13,7 @@ export type HttpRequest<TBody = never> = {
 };
 type FetchLike = typeof fetch;
 const requestIdPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
-const allowedPath = /^\/(?:api\/v1\/auth(?:\/|$)|health$)/;
+const allowedPath = /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|health$)/;
 function authorization(credential?: string) {
   if (credential === undefined) return undefined;
   if (!credential || /[\r\n\s]/.test(credential))

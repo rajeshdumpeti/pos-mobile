@@ -32,6 +32,7 @@ jest.mock('@/features/auth/screens/ResetPasswordScreen', () => ({
 
 import {
   AuthRouteBoundary,
+  OnboardingBoundary,
   ProtectedAppBoundary,
   ResetPasswordRouteBoundary,
 } from './NavigationBoundaries';
@@ -44,7 +45,10 @@ const metrics = {
   insets: { top: 47, right: 0, bottom: 34, left: 0 },
 };
 
-function wrap(children: React.ReactNode, status: 'checking' | 'signedOut' | 'signedIn') {
+function wrap(
+  children: React.ReactNode,
+  status: 'checking' | 'signedOut' | 'onboarding' | 'signedIn',
+) {
   return (
     <SafeAreaProvider initialMetrics={metrics}>
       <ThemeProvider preference="light">
@@ -110,6 +114,29 @@ test('injected signed-in access reaches the temporary protected foundation', () 
   );
   expect(view.getByText('temporary foundation')).toBeTruthy();
   expect(view.queryByText(/redirect:/)).toBeNull();
+});
+
+test('incomplete access cannot enter Today and completed access cannot reopen onboarding', () => {
+  const app = render(
+    wrap(
+      <ProtectedAppBoundary>
+        <MockText>today</MockText>
+      </ProtectedAppBoundary>,
+      'onboarding',
+    ),
+  );
+  expect(app.getByText(`redirect:${routes.onboarding.index}`)).toBeTruthy();
+  expect(app.queryByText('today')).toBeNull();
+  const setup = render(
+    wrap(
+      <OnboardingBoundary>
+        <MockText>setup</MockText>
+      </OnboardingBoundary>,
+      'signedIn',
+    ),
+  );
+  expect(setup.getByText(`redirect:${routes.app.index}`)).toBeTruthy();
+  expect(setup.queryByText('setup')).toBeNull();
 });
 
 test('signed-in entry routes redirect while recovery routes remain available', () => {

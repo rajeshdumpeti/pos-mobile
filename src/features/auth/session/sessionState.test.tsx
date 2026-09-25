@@ -21,6 +21,12 @@ test('production session starts deterministically in the checking boundary', () 
 test('session maps to navigation access and supports controlled integration injection', () => {
   expect(sessionToNavigationAccess({ status: 'restoring' })).toBe('checking');
   expect(sessionToNavigationAccess({ status: 'signedOut' })).toBe('signedOut');
+  expect(
+    sessionToNavigationAccess({
+      status: 'signedIn',
+      account: { accountId: 'a', onboardingRequired: true },
+    }),
+  ).toBe('onboarding');
   const signedIn = {
     status: 'signedIn',
     account: { accountId: 'a', onboardingRequired: false },

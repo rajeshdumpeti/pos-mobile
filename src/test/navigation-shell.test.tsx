@@ -56,7 +56,7 @@ const metrics = {
 
 function wrap(
   children: React.ReactNode,
-  status: 'checking' | 'signedOut' | 'signedIn' = 'signedOut',
+  status: 'checking' | 'signedOut' | 'onboarding' | 'signedIn' = 'signedOut',
 ) {
   return (
     <SafeAreaProvider initialMetrics={metrics}>
@@ -71,6 +71,7 @@ beforeEach(() => {
 
 test.each([
   ['signedOut', `redirect:${routes.auth.welcome}`],
+  ['onboarding', `redirect:${routes.onboarding.index}`],
   ['signedIn', `redirect:${routes.app.index}`],
 ] as const)('root entry resolves %s deterministically', (status, expected) => {
   const view = render(wrap(<IndexRoute />, status));

@@ -40,7 +40,7 @@ export function Button({
       {...props}
       accessibilityRole="button"
       accessibilityLabel={props.accessibilityLabel ?? label}
-      accessibilityState={{ disabled: unavailable, busy: loading }}
+      accessibilityState={{ ...props.accessibilityState, disabled: unavailable, busy: loading }}
       disabled={unavailable}
       onPressIn={(event) => {
         setPressed(true);

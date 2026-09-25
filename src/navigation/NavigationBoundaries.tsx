@@ -33,7 +33,8 @@ export function AuthRouteBoundary({ children }: React.PropsWithChildren) {
   const pathname = usePathname();
 
   if (status === 'checking') return <NavigationRestoringScreen />;
-  if (shouldRedirectAuthRoute(status, pathname)) return <Redirect href={routes.app.index} />;
+  if (shouldRedirectAuthRoute(status, pathname))
+    return <Redirect href={status === 'onboarding' ? routes.onboarding.index : routes.app.index} />;
   return children;
 }
 
@@ -41,6 +42,15 @@ export function ProtectedAppBoundary({ children }: React.PropsWithChildren) {
   const status = useNavigationAccess();
   if (status === 'checking') return <NavigationRestoringScreen />;
   if (status === 'signedOut') return <Redirect href={routes.auth.welcome} />;
+  if (status === 'onboarding') return <Redirect href={routes.onboarding.index} />;
+  return children;
+}
+
+export function OnboardingBoundary({ children }: React.PropsWithChildren) {
+  const status = useNavigationAccess();
+  if (status === 'checking') return <NavigationRestoringScreen />;
+  if (status === 'signedOut') return <Redirect href={routes.auth.welcome} />;
+  if (status === 'signedIn') return <Redirect href={routes.app.index} />;
   return children;
 }
 

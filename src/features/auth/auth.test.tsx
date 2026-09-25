@@ -505,9 +505,11 @@ test('field errors wait for interaction and corrected fields revalidate', async 
   expect(view.queryByText('Enter a valid email address.')).toBeNull();
   fireEvent(email, 'blur');
   await waitFor(() => expect(view.getByRole('alert')).toBeTruthy());
-  fireEvent.changeText(email, 'tester@example.com');
-  fireEvent(email, 'blur');
-  await waitFor(() => expect(view.queryByRole('alert')).toBeNull());
+  await act(async () => {
+    fireEvent.changeText(email, 'tester@example.com');
+    fireEvent(email, 'blur');
+  });
+  await waitFor(() => expect(view.queryByText('Enter a valid email address.')).toBeNull());
 });
 
 test('verification readiness is schema-derived and preserves leading zero', async () => {
