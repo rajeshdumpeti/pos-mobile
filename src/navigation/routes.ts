@@ -18,10 +18,14 @@ export const routes = {
   app: {
     index: '/(app)',
   },
+  onboarding: {
+    index: '/(onboarding)' as Href,
+  },
 } as const satisfies {
   root: Href;
   auth: Record<string, Href>;
   app: Record<string, Href>;
+  onboarding: Record<string, Href>;
 };
 
 export type SafeFallbackRoute =

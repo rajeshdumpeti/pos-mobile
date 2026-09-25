@@ -14,6 +14,7 @@ import { routes } from './routes';
 test.each([
   ['checking', null],
   ['signedOut', routes.auth.welcome],
+  ['onboarding', routes.onboarding.index],
   ['signedIn', routes.app.index],
 ] as const)('resolves %s root entry without a redirect loop', (status, expected) => {
   expect(resolveEntryDestination(status)).toBe(expected);
@@ -43,6 +44,7 @@ test('central policy redirects signed-in entry routes but preserves recovery rou
 test('unknown routes recover only to allow-listed internal destinations', () => {
   expect(resolveUnknownRouteDestination('signedOut')).toBe(routes.auth.welcome);
   expect(resolveUnknownRouteDestination('checking')).toBe(routes.auth.welcome);
+  expect(resolveUnknownRouteDestination('onboarding')).toBe(routes.onboarding.index);
   expect(resolveUnknownRouteDestination('signedIn')).toBe(routes.app.index);
   expect(Object.values(routes.auth).every((route) => route.startsWith('/(auth)/'))).toBe(true);
   expect(routes.app.index.startsWith('/(app)')).toBe(true);
@@ -72,6 +74,8 @@ test('route inventory contains only the authorized root, auth, and protected fil
       '(auth)/too-many-attempts.tsx',
       '(auth)/verify-email.tsx',
       '(auth)/welcome.tsx',
+      '(onboarding)/_layout.tsx',
+      '(onboarding)/index.tsx',
       '+not-found.tsx',
       '_layout.tsx',
       'index.tsx',

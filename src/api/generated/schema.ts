@@ -197,6 +197,41 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/onboarding': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get State */
+    get: operations['get_onboarding_state'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update State */
+    patch: operations['update_onboarding_state'];
+    trace?: never;
+  };
+  '/api/v1/onboarding/complete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Complete */
+    post: operations['complete_onboarding'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/demo/reset': {
     parameters: {
       query?: never;
@@ -288,6 +323,26 @@ export interface components {
       /** Retry At */
       retry_at?: string | null;
     };
+    /** BudgetValue */
+    BudgetValue: {
+      /** Amount */
+      amount: number | string;
+      /**
+       * Currency
+       * @enum {string}
+       */
+      currency: 'USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD';
+    };
+    /** BudgetValueResponse */
+    BudgetValueResponse: {
+      /** Amount */
+      amount: string;
+      /**
+       * Currency
+       * @enum {string}
+       */
+      currency: 'USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD';
+    };
     /**
      * ChangeUnverifiedEmailRequest
      * @example {
@@ -303,6 +358,11 @@ export interface components {
       flow_token: string;
       /** New Email */
       new_email: string;
+    };
+    /** CompleteOnboardingRequest */
+    CompleteOnboardingRequest: {
+      /** Expected Version */
+      expected_version: number;
     };
     /**
      * ConfirmEmailRequest
@@ -335,6 +395,13 @@ export interface components {
        * Format: password
        */
       token: string;
+    };
+    /** CurrencyPreferenceResponse */
+    CurrencyPreferenceResponse: {
+      /** Confirmed */
+      confirmed: boolean;
+      /** Value */
+      value: ('USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD') | null;
     };
     /** CurrentSessionResponse */
     CurrentSessionResponse: {
@@ -428,6 +495,21 @@ export interface components {
       /** Status */
       status: string;
     };
+    /** IntegrationPreferencesResponse */
+    IntegrationPreferencesResponse: {
+      /** Apple Health */
+      apple_health?: ('interested' | 'not_interested' | 'deferred') | null;
+      /** Apple Watch */
+      apple_watch?: ('interested' | 'not_interested' | 'deferred') | null;
+      /** Calendar */
+      calendar?: ('interested' | 'not_interested' | 'deferred') | null;
+      /** Health Connect */
+      health_connect?: ('interested' | 'not_interested' | 'deferred') | null;
+      /** Reminders */
+      reminders?: ('interested' | 'not_interested' | 'deferred') | null;
+      /** Wearables */
+      wearables?: ('interested' | 'not_interested' | 'deferred') | null;
+    };
     /** Item */
     Item: {
       /**
@@ -451,6 +533,177 @@ export interface components {
      */
     ItemPatch: {
       [key: string]: unknown;
+    };
+    /** MeasuredValue */
+    MeasuredValue: {
+      /**
+       * Unit
+       * @enum {string}
+       */
+      unit: 'kg' | 'lb';
+      /** Value */
+      value: number | string;
+    };
+    /** MeasuredValueResponse */
+    MeasuredValueResponse: {
+      /**
+       * Unit
+       * @enum {string}
+       */
+      unit: 'kg' | 'lb';
+      /** Value */
+      value: string;
+    };
+    /** NotificationPreferencesResponse */
+    NotificationPreferencesResponse: {
+      /** Deep Work */
+      deep_work?: ('enabled' | 'disabled' | 'deferred') | null;
+      /** Finance */
+      finance?: ('enabled' | 'disabled' | 'deferred') | null;
+      /** Protein */
+      protein?: ('enabled' | 'disabled' | 'deferred') | null;
+      /** Water */
+      water?: ('enabled' | 'disabled' | 'deferred') | null;
+      /** Weekly Reflection */
+      weekly_reflection?: ('enabled' | 'disabled' | 'deferred') | null;
+      /** Workout */
+      workout?: ('enabled' | 'disabled' | 'deferred') | null;
+    };
+    /** OnboardingConfigurationResponse */
+    OnboardingConfigurationResponse: {
+      /** Currencies */
+      currencies: ('USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD')[];
+      /** Integration Identifiers */
+      integration_identifiers: (
+        'apple_health' | 'health_connect' | 'apple_watch' | 'calendar' | 'reminders' | 'wearables'
+      )[];
+      /** Integration Preference Values */
+      integration_preference_values: ('interested' | 'not_interested' | 'deferred')[];
+      /** Notification Identifiers */
+      notification_identifiers: (
+        'workout' | 'protein' | 'water' | 'finance' | 'deep_work' | 'weekly_reflection'
+      )[];
+      /** Notification Preference Values */
+      notification_preference_values: ('enabled' | 'disabled' | 'deferred')[];
+      /** Optional Goal Fields */
+      optional_goal_fields: (
+        | 'target_weight'
+        | 'daily_protein_grams'
+        | 'daily_water'
+        | 'daily_calories_kcal'
+        | 'daily_steps'
+        | 'workouts_per_week'
+        | 'focus_minutes_per_day'
+        | 'target_sleep_minutes'
+        | 'budget_target'
+      )[];
+      /** Priority Life Areas */
+      priority_life_areas: (
+        'health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep'
+      )[];
+      /** Routine Creation Supported */
+      routine_creation_supported: boolean;
+      /** Unit Systems */
+      unit_systems: ('metric' | 'imperial')[];
+    };
+    /** OnboardingGoals */
+    OnboardingGoals: {
+      budget_target?: components['schemas']['BudgetValue'] | null;
+      /** Daily Calories Kcal */
+      daily_calories_kcal?: number | null;
+      /** Daily Protein Grams */
+      daily_protein_grams?: number | string | null;
+      /** Daily Steps */
+      daily_steps?: number | null;
+      daily_water?: components['schemas']['WaterValue'] | null;
+      /** Focus Minutes Per Day */
+      focus_minutes_per_day?: number | null;
+      /** Target Sleep Minutes */
+      target_sleep_minutes?: number | null;
+      target_weight?: components['schemas']['MeasuredValue'] | null;
+      /** Workouts Per Week */
+      workouts_per_week?: number | null;
+    };
+    /** OnboardingGoalsResponse */
+    OnboardingGoalsResponse: {
+      budget_target?: components['schemas']['BudgetValueResponse'] | null;
+      /** Daily Calories Kcal */
+      daily_calories_kcal?: number | null;
+      /** Daily Protein Grams */
+      daily_protein_grams?: string | null;
+      /** Daily Steps */
+      daily_steps?: number | null;
+      daily_water?: components['schemas']['WaterValueResponse'] | null;
+      /** Focus Minutes Per Day */
+      focus_minutes_per_day?: number | null;
+      /** Target Sleep Minutes */
+      target_sleep_minutes?: number | null;
+      target_weight?: components['schemas']['MeasuredValueResponse'] | null;
+      /** Workouts Per Week */
+      workouts_per_week?: number | null;
+    };
+    /** OnboardingPatchRequest */
+    OnboardingPatchRequest: {
+      /** Currency */
+      currency?: ('USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD') | null;
+      /** Currency Confirmed */
+      currency_confirmed?: boolean | null;
+      /** Expected Version */
+      expected_version: number;
+      goals?: components['schemas']['OnboardingGoals'] | null;
+      /** Integration Preferences */
+      integration_preferences?: {
+        [key: string]: 'interested' | 'not_interested' | 'deferred';
+      } | null;
+      /** Notification Preferences */
+      notification_preferences?: {
+        [key: string]: 'enabled' | 'disabled' | 'deferred';
+      } | null;
+      /** Priority Life Areas */
+      priority_life_areas?:
+        ('health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep')[] | null;
+      /** Unit System */
+      unit_system?: ('metric' | 'imperial') | null;
+      /** Unit System Confirmed */
+      unit_system_confirmed?: boolean | null;
+    };
+    /** OnboardingResponse */
+    OnboardingResponse: {
+      /** Completed At */
+      completed_at: string | null;
+      configuration: components['schemas']['OnboardingConfigurationResponse'];
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      currency_preference: components['schemas']['CurrencyPreferenceResponse'];
+      goals: components['schemas']['OnboardingGoalsResponse'];
+      integration_preferences: components['schemas']['IntegrationPreferencesResponse'];
+      notification_preferences: components['schemas']['NotificationPreferencesResponse'];
+      /** Priority Life Areas */
+      priority_life_areas: (
+        'health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep'
+      )[];
+      /**
+       * Recommended Next Action
+       * @enum {string}
+       */
+      recommended_next_action:
+        | 'select_priority_life_areas'
+        | 'confirm_unit_system'
+        | 'confirm_currency'
+        | 'complete_onboarding'
+        | 'onboarding_completed';
+      requirements: components['schemas']['RequirementsResponse'];
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'not_started' | 'in_progress' | 'completed';
+      unit_preference: components['schemas']['UnitPreferenceResponse'];
+      /** Version */
+      version: number;
     };
     /** PasswordResetAcceptedResponse */
     PasswordResetAcceptedResponse: {
@@ -586,6 +839,17 @@ export interface components {
        */
       terms_version?: string | null;
     };
+    /** RequirementsResponse */
+    RequirementsResponse: {
+      /** Currency Satisfied */
+      currency_satisfied: boolean;
+      /** Priority Life Areas Satisfied */
+      priority_life_areas_satisfied: boolean;
+      /** Ready To Complete */
+      ready_to_complete: boolean;
+      /** Unit System Satisfied */
+      unit_system_satisfied: boolean;
+    };
     /**
      * ResendVerificationRequest
      * @example {
@@ -648,6 +912,13 @@ export interface components {
        */
       password: string;
     };
+    /** UnitPreferenceResponse */
+    UnitPreferenceResponse: {
+      /** Confirmed */
+      confirmed: boolean;
+      /** Value */
+      value: ('metric' | 'imperial') | null;
+    };
     /** VerificationFlowContinuation */
     VerificationFlowContinuation: {
       /**
@@ -664,6 +935,26 @@ export interface components {
        * Format: date-time
        */
       resend_available_at: string;
+    };
+    /** WaterValue */
+    WaterValue: {
+      /**
+       * Unit
+       * @enum {string}
+       */
+      unit: 'liters' | 'fluid_ounces';
+      /** Value */
+      value: number | string;
+    };
+    /** WaterValueResponse */
+    WaterValueResponse: {
+      /**
+       * Unit
+       * @enum {string}
+       */
+      unit: 'liters' | 'fluid_ounces';
+      /** Value */
+      value: string;
     };
   };
   responses: never;
@@ -2095,6 +2386,272 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
+  get_onboarding_state: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OnboardingResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  update_onboarding_state: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OnboardingPatchRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OnboardingResponse'];
+        };
+      };
+      /** @description The operation is not supported for this resource. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with existing state. */
+      409: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  complete_onboarding: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompleteOnboardingRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OnboardingResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with existing state. */
+      409: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
     };

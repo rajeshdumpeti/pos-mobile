@@ -27,5 +27,6 @@ export function reduceSession(_state: SessionState, event: SessionEvent): Sessio
 export function sessionToNavigationAccess(state: SessionState): NavigationAccessStatus {
   if (state.status === 'restoring') return 'checking';
   if (state.status === 'restorationFailed') return 'signedOut';
+  if (state.status === 'signedIn' && state.account.onboardingRequired) return 'onboarding';
   return state.status;
 }

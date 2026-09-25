@@ -21,6 +21,7 @@ export type AuthenticationCapabilities = {
   session: SessionWorkflow;
   passwordRecovery: PasswordRecoveryWorkflow;
   connectivity: ConnectivityObserver;
+  getAccessCredential?(): string | undefined;
 };
 function createDependencies(): AuthenticationCapabilities {
   const vault = createCredentialVault(createSecureCredentialStorage());
@@ -33,6 +34,7 @@ function createDependencies(): AuthenticationCapabilities {
     session: createSessionWorkflow(service, vault, registration),
     passwordRecovery: createPasswordRecoveryWorkflow(service),
     connectivity: createConnectivityObserver(),
+    getAccessCredential: () => vault.getAccessCredential(),
   };
 }
 const Context = createContext<AuthenticationCapabilities | undefined>(undefined);
