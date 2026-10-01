@@ -86,7 +86,7 @@ test('educational screens advance without mutation and progress is accessible', 
   );
 });
 
-test('priority selection announces state and saves once before integration can skip', async () => {
+test('priority success advances to integrations and selected integration advances to Goals', async () => {
   const screen = view();
   fireEvent.press(screen.getByLabelText('Continue'));
   fireEvent.press(screen.getByLabelText('Continue'));
@@ -98,6 +98,26 @@ test('priority selection announces state and saves once before integration can s
   await screen.findByRole('header', { name: 'Connect your life' });
   expect(mockSave.mutateAsync).toHaveBeenCalledTimes(1);
   expect(screen.getByRole('button', { name: 'Skip for now' })).toBeTruthy();
+  fireEvent.press(screen.getByRole('checkbox'));
+  fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await screen.findByRole('header', { name: 'Your goals' });
+  expect(mockSave.mutateAsync).toHaveBeenLastCalledWith({
+    integration_preferences: { calendar: 'interested' },
+  });
+});
+
+test('integration Skip persists deferred intent before Goals', async () => {
+  const screen = view();
+  fireEvent.press(screen.getByLabelText('Continue'));
+  fireEvent.press(screen.getByLabelText('Continue'));
+  fireEvent.press(screen.getByRole('checkbox'));
+  fireEvent.press(screen.getByLabelText('Continue'));
+  await screen.findByRole('header', { name: 'Connect your life' });
+  fireEvent.press(screen.getByRole('button', { name: 'Skip for now' }));
+  await screen.findByRole('header', { name: 'Your goals' });
+  expect(mockSave.mutateAsync).toHaveBeenLastCalledWith({
+    integration_preferences: { calendar: 'deferred' },
+  });
 });
 
 test('goals, notification preferences, and intelligence preserve optional behavior', async () => {
@@ -110,12 +130,40 @@ test('goals, notification preferences, and intelligence preserve optional behavi
   expect(screen.getByRole('header', { name: 'Your goals' })).toBeTruthy();
   fireEvent.press(screen.getByRole('button', { name: 'Metric' }));
   fireEvent.press(screen.getByRole('button', { name: 'USD' }));
+  mockSave.mutateAsync.mockImplementationOnce(async () => {
+    mockData.recommended_next_action = 'complete_onboarding';
+    mockData.requirements.ready_to_complete = true;
+    mockData.version = 4;
+    return mockData;
+  });
   fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
   await screen.findByRole('header', { name: 'Smart notifications that work for you' });
   expect(mockSave.mutateAsync).toHaveBeenCalledTimes(1);
   fireEvent.press(screen.getByRole('button', { name: 'Skip for now' }));
-  expect(screen.getByRole('header', { name: 'Meet POS Intelligence' })).toBeTruthy();
+  await screen.findByRole('header', { name: 'Meet POS Intelligence' });
+  expect(mockSave.mutateAsync).toHaveBeenLastCalledWith({
+    notification_preferences: { water: 'deferred' },
+  });
   expect(screen.queryByText(/estimated|recommendation|analyzed you/i)).toBeNull();
+});
+
+test('selected notification persists and advances to Intelligence', async () => {
+  Object.assign(mockData, {
+    status: 'in_progress',
+    version: 3,
+    recommended_next_action: 'confirm_currency',
+  });
+  const screen = view();
+  fireEvent.press(screen.getByRole('button', { name: 'Metric' }));
+  fireEvent.press(screen.getByRole('button', { name: 'USD' }));
+  fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await screen.findByRole('header', { name: 'Smart notifications that work for you' });
+  fireEvent.press(screen.getByRole('checkbox'));
+  fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await screen.findByRole('header', { name: 'Meet POS Intelligence' });
+  expect(mockSave.mutateAsync).toHaveBeenLastCalledWith({
+    notification_preferences: { water: 'enabled' },
+  });
 });
 
 test('Ready is authoritative and completion occurs only after explicit Enter POS', () => {
@@ -126,7 +174,7 @@ test('Ready is authoritative and completion occurs only after explicit Enter POS
   });
   Object.assign(mockData.requirements, { ready_to_complete: true });
   const screen = view();
-  expect(screen.getByRole('header', { name: "You're all set!" })).toBeTruthy();
+  expect(screen.getByRole('header', { name: 'You’re Ready' })).toBeTruthy();
   expect(mockComplete.mutateAsync).not.toHaveBeenCalled();
   fireEvent.press(screen.getByRole('button', { name: 'Enter POS' }));
   expect(mockComplete.mutateAsync).toHaveBeenCalledTimes(1);

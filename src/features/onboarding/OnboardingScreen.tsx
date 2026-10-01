@@ -8,7 +8,7 @@ import { useOnboarding } from './useOnboarding';
 import type { Currency, Priority, UnitSystem } from './types';
 import { GoalsFields } from './GoalsFields';
 import { goalDraftFromResource, serializeGoals, type GoalDraft, type GoalErrors } from './goals';
-import { authoritativeResumeStep, onboardingTitles as titles } from './workflow';
+import { authoritativeResumeStep, nextActiveStep, onboardingTitles as titles } from './workflow';
 
 const copy = [
   'We help you become your best self.',
@@ -79,6 +79,7 @@ export function OnboardingScreen() {
         }
         return;
       }
+      if (hydrated.current) return;
       setPriorities(query.data.priority_life_areas);
       setUnit(query.data.unit_preference.value);
       setCurrency(query.data.currency_preference.value);
@@ -159,13 +160,33 @@ export function OnboardingScreen() {
         if (result.status === 'completed') router.replace(routes.app.index);
         return;
       }
-      setStep((v) =>
-        v === 6 && !data.requirements.ready_to_complete
-          ? authoritativeResumeStep(data)
-          : Math.min(7, v + 1),
-      );
+      setStep(nextActiveStep);
     } catch {
       // The mutation state renders a fixed safe error; drafts remain in memory.
+    } finally {
+      submitting.current = false;
+    }
+  };
+  const skip = async () => {
+    if (submitting.current || (step !== 3 && step !== 5)) return;
+    submitting.current = true;
+    try {
+      if (step === 3) {
+        const deferred = Object.fromEntries(
+          data.configuration.integration_identifiers.map((identifier) => [identifier, 'deferred']),
+        ) as Record<string, 'deferred'>;
+        await save.mutateAsync({ integration_preferences: deferred });
+        setIntegrations(deferred);
+      } else {
+        const deferred = Object.fromEntries(
+          data.configuration.notification_identifiers.map((identifier) => [identifier, 'deferred']),
+        ) as Record<string, 'deferred'>;
+        await save.mutateAsync({ notification_preferences: deferred });
+        setNotifications(deferred);
+      }
+      setStep(nextActiveStep);
+    } catch {
+      // The shared mutation state retains the current screen and renders safe recovery.
     } finally {
       submitting.current = false;
     }
@@ -327,12 +348,7 @@ export function OnboardingScreen() {
         onPress={() => void next()}
       />
       {(step === 3 || step === 5) && (
-        <Button
-          label="Skip for now"
-          variant="ghost"
-          disabled={busy}
-          onPress={() => setStep((value) => value + 1)}
-        />
+        <Button label="Skip for now" variant="ghost" disabled={busy} onPress={() => void skip()} />
       )}
       {step > 0 && step < 7 && (
         <Button

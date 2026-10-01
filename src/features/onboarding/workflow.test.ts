@@ -1,4 +1,4 @@
-import { authoritativeResumeStep, onboardingTitles } from './workflow';
+import { authoritativeResumeStep, nextActiveStep, onboardingTitles } from './workflow';
 const resource = (action: string, overrides = {}) =>
   ({
     status: 'in_progress',
@@ -16,7 +16,7 @@ test('represents exactly the approved eight-screen sequence', () =>
     'Your goals',
     'Smart notifications that work for you',
     'Meet POS Intelligence',
-    "You're all set!",
+    'You’re Ready',
   ]));
 test.each([
   ['select_priority_life_areas', 2],
@@ -37,3 +37,9 @@ test('a new version-zero account sees the educational introduction', () =>
       resource('select_priority_life_areas', { status: 'not_started', version: 0 }),
     ),
   ).toBe(0));
+test('active forward navigation always follows the approved sequence', () => {
+  expect(Array.from({ length: 7 }, (_, step) => nextActiveStep(step))).toEqual([
+    1, 2, 3, 4, 5, 6, 7,
+  ]);
+  expect(nextActiveStep(7)).toBe(7);
+});

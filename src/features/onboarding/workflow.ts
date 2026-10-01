@@ -7,8 +7,11 @@ export const onboardingTitles = [
   'Your goals',
   'Smart notifications that work for you',
   'Meet POS Intelligence',
-  "You're all set!",
+  'You’re Ready',
 ] as const;
+export function nextActiveStep(step: number): number {
+  return Math.min(7, step + 1);
+}
 export function authoritativeResumeStep(resource: OnboardingResource): number {
   if (resource.status === 'not_started' && resource.version === 0) return 0;
   if (
