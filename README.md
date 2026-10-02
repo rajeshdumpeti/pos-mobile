@@ -1,8 +1,9 @@
 # POS Mobile
 
 POS Mobile is the Expo React Native frontend for the Personal Operating System. The obsolete demo
-presentation has been removed. The app currently boots into a temporary foundation state until the
-first approved roadmap screen is implemented.
+presentation has been removed. Session access routes users to Authentication, Onboarding or the
+authenticated Today/Plan/Focus/Review shell. Product bodies remain explicit placeholders; see
+[`docs/navigation-architecture.md`](docs/navigation-architecture.md).
 
 ## Stack
 

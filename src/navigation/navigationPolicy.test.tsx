@@ -61,7 +61,14 @@ test('route inventory contains only the authorized root, auth, and protected fil
   expect(files).toEqual(
     [
       '(app)/_layout.tsx',
-      '(app)/index.tsx',
+      '(app)/(tabs)/_layout.tsx',
+      '(app)/(tabs)/index.tsx',
+      '(app)/(tabs)/plan.tsx',
+      '(app)/(tabs)/focus.tsx',
+      '(app)/(tabs)/review.tsx',
+      '(app)/profile.tsx',
+      '(app)/notifications.tsx',
+      '(app)/quick-log.tsx',
       '(auth)/_layout.tsx',
       '(auth)/create-account.tsx',
       '(auth)/forgot-password.tsx',

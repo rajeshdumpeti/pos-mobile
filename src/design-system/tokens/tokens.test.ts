@@ -33,6 +33,7 @@ test.each(['light', 'dark'] as const)(
       colors.surfacePrimary,
       colors.surfaceElevated,
       colors.accentSoft,
+      colors.accentSelected,
     ]) {
       expect(contrast(colors.accentPrimary, surface)).toBeGreaterThanOrEqual(4.5);
       expect(contrast(colors.focusRing, surface)).toBeGreaterThanOrEqual(3);

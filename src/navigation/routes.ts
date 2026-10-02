@@ -16,7 +16,13 @@ export const routes = {
     securityState: '/(auth)/security-state',
   },
   app: {
-    index: '/(app)',
+    index: '/(app)/(tabs)',
+    plan: '/(app)/(tabs)/plan',
+    focus: '/(app)/(tabs)/focus',
+    review: '/(app)/(tabs)/review',
+    profile: '/(app)/profile',
+    notifications: '/(app)/notifications',
+    quickLog: '/(app)/quick-log',
   },
   onboarding: {
     index: '/(onboarding)' as Href,
