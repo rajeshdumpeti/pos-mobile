@@ -118,6 +118,25 @@ test('restoration and concurrent refresh use one rotation then current-session l
   expect(workflow.getState().status).toBe('signedIn');
 });
 
+test('completed-account cold restoration publishes current authoritative shell eligibility', async () => {
+  const { workflow, service } = setup(true);
+  service.getCurrentSession.mockResolvedValueOnce({
+    account_id: tokenResponse().account_id,
+    session_id: tokenResponse().session_id,
+    display_name: 'POS Tester',
+    onboarding_required: false,
+  });
+  await workflow.initialize();
+  expect(workflow.getState()).toEqual({
+    status: 'signedIn',
+    account: {
+      accountId: tokenResponse().account_id,
+      displayName: 'POS Tester',
+      onboardingRequired: false,
+    },
+  });
+});
+
 test('stale restoration cannot overwrite a newer authenticated session', async () => {
   const { workflow, service, vault } = setup(true);
   let finishRead:

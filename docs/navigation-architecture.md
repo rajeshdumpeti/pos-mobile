@@ -1,82 +1,78 @@
-# Navigation foundation — 1.D
+# Navigation architecture — authenticated shell
 
-## Ownership and route groups
+Expo Router owns native stacks, tabs, history, URL entry and unknown-route recovery.
+`src/navigation` remains the shared destination catalog, access policy and safe back/dismiss
+boundary. Features do not implement separate restoration or redirect rules.
 
-Expo Router owns file routes, native stack presentation, platform history, URL entry, and unknown
-route recovery. Public Authentication routes live in `app/(auth)`; the future protected
-application boundary lives in `app/(app)`. Its index renders only the neutral temporary
-`FoundationScreen`.
+## Authenticated shell
 
-`src/navigation` is the small policy boundary between Router and features:
+The protected native Stack contains `(tabs)`, Notifications/Profile modal panels and a regular
+Quick Log screen. Its default destination is Today, replacing the temporary Foundation screen. Four real
+Expo Router tabs appear in order Today, Plan, Focus, Review. The custom native bar inserts a
+violet Add action between Plan and Focus; it is never a selected tab. Selected tabs have a labeled
+violet pill using the darker `accentSelected` token and accessibility selected state. The fixed-size
+Add button has a contrasting 28-point plus icon. Normal navigator layout and bottom safe-area padding
+prevent overlap. Light/dark/system semantic theme tokens and scalable text are reused. Shell stack
+transitions disable native animation. Notifications/Profile use rounded, safe-area-inset side
+panels capped at 84% of window width (420 points on larger screens). A full-screen themed dimmed
+backdrop leaves outside space to tap and dismiss. Panels enter from the right and close back to
+the right using the same eased 440ms transition. Navigation dismissal waits for the close animation
+to finish; the backdrop fades with panel movement. Back, outside taps and Android hardware Back
+share the close path. Existing Reanimated motion honors system reduced motion. Header surfaces
+use a soft themed violet background. Repeated dismissal taps are guarded.
 
-- `routes.ts` is the typed allow-list for programmatic destinations.
-- `navigationPolicy.ts` contains pure entry, route-classification, recovery, and continuation
-  decisions.
-- `NavigationAccessProvider.tsx` exposes only `checking | signedOut | signedIn`.
-- route boundaries prevent protected-content flashes and centralize redirects.
-- `useSafeNavigation` uses native history when available and replaces with an allow-listed
-  fallback after cold entry.
+The shared header shows each title, or Today's local greeting, authoritative session display name
+and local date. The bell opens Notifications; the initials avatar opens Profile, with POS as the
+neutral fallback. No Search, unread badge, upload or image service is implemented. Header/Add
+navigation uses `navigate` plus a focus-reset opening guard to suppress duplicate taps.
 
-Feature screens request a destination from the catalog. They do not implement access policy,
-session restoration, sensitive parameter parsing, or redirect rules.
+Profile/Notifications use a left Back control and centered title in one header row. Back dismisses
+modal history or returns to Today after cold entry, without misleading tab selection. Quick Log is
+not a modal: its Back action uses native history, preserving the underlying tab, or falls back to
+Today. Profile retains the real session logout operation with a busy guard, safe failure
+message and query-cache clearing. Successful logout returns to Authentication through the existing
+session boundary, not a feature-owned redirect.
 
-## Access and entry policy
+Bodies deliberately contain only:
 
-| Access state | Root entry                                                      |
-| ------------ | --------------------------------------------------------------- |
-| `checking`   | Accessible neutral restoration progress; no auth or app content |
-| `signedOut`  | Replace with Authentication Welcome                             |
-| `signedIn`   | Replace with the protected application index                    |
+- Today: “Your Today content goes here.”
+- Plan: “Your plan goes here.”
+- Focus: “Your focus content goes here.”
+- Review: “Your review goes here.”
+- Notifications: “Your notifications go here.”
+- Profile: “Your profile content goes here.”
+- Quick Log: “Your quick logging actions go here.”
 
-Production currently defaults to `signedOut`. The provider stores no token, account, session, or
-mutation function. Milestone 1.E can supply restored access status without changing route files.
-Tests may inject another status; the application exposes no sign-in toggle.
+No metrics, AI, logging forms, fake saves, APIs or dependencies are added. No private values are
+added to parameters, query keys, analytics or logs.
 
-The protected layout renders nothing protected until access is `signedIn`. Signed-out direct
-entry replaces with Welcome. A future signed-in user opening Welcome, Sign In, or Create Account is
-redirected to the application index. Recovery routes remain available because the backend contract
-does not authorize blocking a legitimate password-recovery continuation for a signed-in browser or
-device.
+## Access and entry
 
-## Back and modal behavior
+`SessionNavigationAccess` derives access from the existing token-free session state:
 
-Welcome is the Authentication root and has no back control. Create Account and Sign In use native
-history and replace with Welcome when no usable history exists. Verify Email and Reset Password
-fall back to Sign In when transient continuation history is unavailable. Forgot Password is
-declared as a native modal in the Authentication stack; its Close action dismisses history and
-replaces with Sign In after direct entry. `navigate` is used to avoid stacking duplicate Forgot
-Password destinations. Native iOS gestures and Android Back remain enabled.
+- `checking`: neutral restoration loading, with no protected-content flash.
+- `signedOut`: Authentication Welcome.
+- `onboarding`: Onboarding, including direct attempts to open any shell route.
+- `signedIn`: Today, requiring authoritative `onboardingRequired=false`.
 
-## Deep links and security
+Completed sign-in, cold restoration and session-confirmed onboarding completion enter the same
+`/(app)/(tabs)` destination, resolving to Today and matching generated typed routes. Authentication and Onboarding never mount shell UI.
+See [authentication-state.md](authentication-state.md) for session ownership. Route guards improve
+UI flow but do not replace backend authorization.
 
-The app owns the `pos` custom scheme for local Router testing. Universal links, associated
-domains, Android App Links, and the deployed reset base URL remain deferred until founder-owned
-domain evidence exists.
+## Back, recovery and deep links
 
-Backend commit `c2f2ddeb20e03fca32062119fb59845892a46224`, Authentication Contract `1.1.0`,
-defines the reset destination as a configured base URL with exactly one query parameter named
-`token`. Navigation accepts one 32–256 character string, preserves it as opaque data, rejects
-missing/repeated/unexpected values, and passes only continuation availability to presentation.
-No token is rendered, logged, persisted, placed in global state, or treated as proof of success.
-Email-verification URL parameters are not implemented because the contract defines verification
-continuation as API-returned transient memory and provides no verification-link URL shape.
+Existing Authentication native-stack/modal behavior is unchanged. Welcome has no Back control;
+other routes use established safe-history fallbacks. Forgot Password remains a native modal.
+Recovery routes remain available to signed-in users where existing policy permits them.
+Unknown-route recovery uses allow-listed destinations without echoing URLs.
 
-Navigation ignores arbitrary redirect parameters and only selects destinations from `routes.ts`.
-Opening a URL never proves identity, verification, password-reset success, or authorization.
-Protected APIs will still require backend-issued credentials. Route guards improve UI flow; they
-do not replace backend authorization.
+The app owns the `pos` scheme for local Router testing. Universal links and platform domain
+associations remain deferred. Reset continuation retains the existing transient-memory ingress
+and custody boundary; navigation does not render, log or persist tokens. Arbitrary redirect
+parameters are ignored. URLs never prove identity, verification or authorization.
 
-## Recovery and deferred integration
+## Validation boundary
 
-Unknown routes show an accessible generic message without echoing a possibly sensitive URL.
-Recovery replaces with Welcome while signed out and the protected index while signed in.
-
-Milestone 1.E will own secure session restoration and supply read-only access status. Authentication
-API integration will own transient verification/reset material and confirmation calls. Secure
-credentials must use a platform secure-storage abstraction outside navigation. No API call,
-AsyncStorage token, session persistence, fake authenticated state, or product route is introduced
-by 1.D.
-
-## Milestone 1.E session access
-
-`SessionProvider` is now the single token-free owner of Authentication access status. `SessionNavigationAccess` derives `checking`, `signedOut`, or `signedIn` for the existing navigation policy; session code contains no redirects. Production starts signed out until future secure restoration exists. See [authentication-state.md](authentication-state.md).
+Automated component/policy/session tests and iOS/Android JavaScript exports do not replace
+founder device testing of visual fidelity, font scaling, safe areas, gestures and screen readers.

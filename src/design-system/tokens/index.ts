@@ -33,6 +33,8 @@ export type SemanticColorTokens = {
   accentPrimary: string;
   accentPressed: string;
   accentSoft: string;
+  accentSelected: string;
+  modalScrim: string;
   onAccent: string;
   textPrimary: string;
   textSecondary: string;
@@ -63,6 +65,8 @@ export const lightColors: SemanticColorTokens = {
   accentPrimary: palette.violet700,
   accentPressed: palette.violet800,
   accentSoft: palette.violet100,
+  accentSelected: '#E3D5FC',
+  modalScrim: 'rgba(16, 23, 19, 0.42)',
   onAccent: palette.white,
   textPrimary: palette.ink,
   textSecondary: palette.stone700,
@@ -93,6 +97,8 @@ export const darkColors: SemanticColorTokens = {
   accentPrimary: palette.violet300,
   accentPressed: palette.violet100,
   accentSoft: palette.violet950,
+  accentSelected: '#493363',
+  modalScrim: 'rgba(0, 0, 0, 0.64)',
   onAccent: palette.ink,
   textPrimary: '#F4F7F5',
   textSecondary: '#CDD7D1',

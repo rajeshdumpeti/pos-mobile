@@ -31,9 +31,10 @@ Files under `app/` select layouts, read route parameters, and compose a screen-l
 component. They do not fetch, validate, persist, or contain product business rules. The root route
 uses the access decision in `src/navigation/`. Authentication screens live in
 `src/features/auth/` and provide local presentation only; see
-[Authentication UI](authentication-ui.md). The protected `app/(app)/` index may render the
-temporary `FoundationScreen` only after its layout boundary receives signed-in access. See
-[Navigation foundation](navigation-architecture.md).
+[Authentication UI](authentication-ui.md). The protected `app/(app)/` stack composes the
+authenticated shell from `src/features/app-shell/` only after its layout boundary receives
+completed-account access. Its default Today tab replaces the temporary Foundation destination;
+product bodies remain placeholders. See [Navigation architecture](navigation-architecture.md).
 
 A future feature lives at `src/features/<feature>/` and may own its screens,
 components, hooks, queries, schemas, services, repositories, tests, state, and
