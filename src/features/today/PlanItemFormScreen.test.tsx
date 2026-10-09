@@ -1,4 +1,5 @@
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
+import { TextInput as NativeTextInput } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '@/design-system/theme';
 import { PlanItemFormScreen } from './PlanItemFormScreen';
@@ -9,12 +10,29 @@ const mockCreate = jest.fn(),
   mockUpdate = jest.fn(),
   mockBack = jest.fn(),
   mockReplace = jest.fn();
+const mockFocus = jest.spyOn(NativeTextInput.prototype, 'focus');
+const mockListeners = new Map<string, Set<(event: { data: { closing: boolean } }) => void>>();
+const mockNavigation = {
+  dispatch: jest.fn(),
+  isFocused: jest.fn(() => true),
+  addListener: jest.fn(
+    (name: string, listener: (event: { data: { closing: boolean } }) => void) => {
+      const listeners = mockListeners.get(name) ?? new Set();
+      listeners.add(listener);
+      mockListeners.set(name, listeners);
+      return () => listeners.delete(listener);
+    },
+  ),
+};
+function emitNavigation(name: string, closing = false) {
+  act(() => mockListeners.get(name)?.forEach((listener) => listener({ data: { closing } })));
+}
 let mockItem: ReturnType<typeof itemFixture> | undefined;
 const mockDrafts = new Map<string, SavedPlanDraft>();
 let mockCreation = createCreationCoordinator();
 jest.mock('expo-router', () => ({
   useRouter: () => ({ replace: mockReplace, navigate: jest.fn() }),
-  useNavigation: () => ({ dispatch: jest.fn() }),
+  useNavigation: () => mockNavigation,
 }));
 jest.mock('expo-router/react-navigation', () => ({ usePreventRemove: jest.fn() }));
 jest.mock('./NativePicker', () => ({ NativePicker: () => null }));
@@ -55,6 +73,8 @@ function screen(edit = false) {
 }
 beforeEach(() => {
   jest.clearAllMocks();
+  mockListeners.clear();
+  mockNavigation.isFocused.mockReturnValue(true);
   mockDrafts.clear();
   mockItem = undefined;
   mockCreation = createCreationCoordinator();
@@ -154,4 +174,49 @@ test('autofocus blur alone stays neutral; an interacted empty title shows valida
     'Add a title (up to 200 characters).',
   );
   expect(mockCreate).not.toHaveBeenCalled();
+});
+
+afterEach(() => jest.useRealTimers());
+
+test('title focuses only after modal presentation and the keyboard settling delay', () => {
+  jest.useFakeTimers();
+  const view = screen();
+  act(() => jest.advanceTimersByTime(1000));
+  expect(mockFocus).not.toHaveBeenCalled();
+  emitNavigation('transitionEnd');
+  act(() => jest.advanceTimersByTime(179));
+  expect(mockFocus).not.toHaveBeenCalled();
+  act(() => jest.advanceTimersByTime(1));
+  expect(mockFocus).toHaveBeenCalledTimes(1);
+  view.unmount();
+});
+
+test.each(['blur', 'transitionStart', 'unmount'])(
+  'pending title focus is cancelled on %s',
+  (event) => {
+    jest.useFakeTimers();
+    const view = screen();
+    emitNavigation('transitionEnd');
+    if (event === 'unmount') view.unmount();
+    else emitNavigation(event, true);
+    act(() => jest.advanceTimersByTime(180));
+    expect(mockFocus).not.toHaveBeenCalled();
+    view.unmount();
+    expect([...mockListeners.values()].every((listeners) => listeners.size === 0)).toBe(true);
+  },
+);
+
+test('closing transitions and edit forms do not autofocus', () => {
+  jest.useFakeTimers();
+  const view = screen();
+  emitNavigation('transitionEnd', true);
+  act(() => jest.advanceTimersByTime(180));
+  expect(mockFocus).not.toHaveBeenCalled();
+  view.unmount();
+  mockItem = itemFixture();
+  const edit = screen(true);
+  emitNavigation('transitionEnd');
+  act(() => jest.advanceTimersByTime(180));
+  expect(mockFocus).not.toHaveBeenCalled();
+  edit.unmount();
 });

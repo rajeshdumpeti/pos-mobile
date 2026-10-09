@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
-  InteractionManager,
+  Platform,
   Keyboard,
   TextInput as NativeTextInput,
   View,
@@ -30,6 +30,7 @@ import { PlanningButton as Button, PlanningCard as Card, PlanningCard } from './
 import { ScheduleFields } from './ScheduleFields';
 import { friendlyDate } from './presentation';
 import { usePreventRemove } from 'expo-router/react-navigation';
+import type { NativeStackNavigationProp } from 'expo-router/native-stack';
 export function PlanItemFormScreen({
   id: input,
   mode = 'create',
@@ -44,7 +45,7 @@ export function PlanItemFormScreen({
   const mutations = usePlanMutations(edit ? id : undefined),
     router = useRouter(),
     navigation = useSafeNavigation(),
-    nativeNavigation = useNavigation(),
+    nativeNavigation = useNavigation<NativeStackNavigationProp<Record<string, undefined>>>(),
     theme = useTheme(),
     connectivity = useAuthenticationConnectivity();
   const baseVersion = useRef<number | undefined>(undefined),
@@ -71,19 +72,44 @@ export function PlanItemFormScreen({
         ? draftFromCreation(attempt.payload)
         : (stored?.values ?? emptyDraft(resolveTimeZone())),
   });
+  const openingComplete = useRef(Platform.OS === 'web');
   const [creationRevision, setCreationRevision] = useState(0);
   const unresolved = !edit && planning.creation.needsReconciliation();
   useEffect(() => {
-    if (edit || unresolved) return;
+    let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
-    const interaction = InteractionManager.runAfterInteractions(() => {
-      timer = setTimeout(() => titleInput.current?.focus(), 180);
-    });
-    return () => {
-      interaction.cancel();
-      if (timer) clearTimeout(timer);
+    const cancel = () => {
+      if (timer !== undefined) clearTimeout(timer);
+      timer = undefined;
     };
-  }, [edit, unresolved]);
+    const schedule = () => {
+      cancel();
+      if (edit || unresolved) return;
+      // Preserve the keyboard settling delay, measured after native modal presentation.
+      timer = setTimeout(() => {
+        if (active && nativeNavigation.isFocused()) titleInput.current?.focus();
+      }, 180);
+    };
+    const stopStart = nativeNavigation.addListener('transitionStart', () => {
+      openingComplete.current = false;
+      cancel();
+    });
+    const stopEnd = nativeNavigation.addListener('transitionEnd', (event) => {
+      openingComplete.current = !event.data.closing;
+      if (openingComplete.current) schedule();
+      else cancel();
+    });
+    const stopBlur = nativeNavigation.addListener('blur', cancel);
+    // Web has no native modal presentation events. Also handle reconciliation after opening.
+    if (openingComplete.current && nativeNavigation.isFocused()) schedule();
+    return () => {
+      active = false;
+      cancel();
+      stopStart();
+      stopEnd();
+      stopBlur();
+    };
+  }, [edit, unresolved, nativeNavigation]);
   const blocked =
     mutations.busy ||
     (!edit && planning.creation.isBusy()) ||
