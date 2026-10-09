@@ -33,11 +33,12 @@ export function ShellHeader({ title }: { title: string }) {
         flexDirection: 'row',
         alignItems: 'center',
         gap: theme.spacing.xs,
-        backgroundColor: theme.colors.accentSoft,
+        backgroundColor: theme.colors.surfacePrimary,
         borderRadius: theme.radii.large,
-        padding: theme.spacing.sm,
-        marginHorizontal: -theme.spacing.sm,
-        borderWidth: 1,
+        paddingVertical: theme.spacing.md,
+        paddingHorizontal: theme.spacing.xs,
+        marginHorizontal: 0,
+        borderWidth: 0,
         borderColor: theme.colors.borderDefault,
       }}
     >
@@ -52,6 +53,10 @@ export function ShellHeader({ title }: { title: string }) {
         )}
       </View>
       <IconButton
+        style={{
+          borderRadius: theme.radii.pill,
+          backgroundColor: theme.colors.backgroundSecondary,
+        }}
         icon="notifications"
         accessibilityLabel="Open Notifications"
         onPress={() => open(routes.app.notifications)}
@@ -64,7 +69,7 @@ export function ShellHeader({ title }: { title: string }) {
           minHeight: theme.accessibility.minimumTouchTarget,
           minWidth: theme.accessibility.minimumTouchTarget,
           borderRadius: theme.radii.pill,
-          backgroundColor: theme.colors.surfacePrimary,
+          backgroundColor: theme.colors.backgroundSecondary,
           alignItems: 'center',
           justifyContent: 'center',
         }}

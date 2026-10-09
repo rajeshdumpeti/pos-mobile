@@ -192,3 +192,28 @@ export type POSThemeTokens = {
   accessibility: typeof accessibility;
   controlSizes: typeof controlSizes;
 };
+
+/** Today/planning presentation roles; existing shared type roles remain unchanged. */
+export const planningTypography = {
+  accessibleHeadline: { fontSize: 20, lineHeight: 28, fontWeight: fontWeights.semibold },
+  accessibleMetric: {
+    fontSize: 40,
+    lineHeight: 48,
+    fontWeight: fontWeights.bold,
+    fontVariant: ['tabular-nums'],
+  },
+  headline: { fontSize: 24, lineHeight: 32, fontWeight: fontWeights.semibold },
+  metric: {
+    fontSize: 52,
+    lineHeight: 60,
+    fontWeight: fontWeights.bold,
+    fontVariant: ['tabular-nums'],
+  },
+  support: { fontSize: 14, lineHeight: 20, fontWeight: fontWeights.medium },
+} satisfies Record<string, TextStyle>;
+export const planningVisuals = {
+  ringDiameter: 112,
+  ringStroke: 9,
+  illustration: 80,
+  compactIllustration: 64,
+} as const;

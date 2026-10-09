@@ -23,6 +23,9 @@ export const routes = {
     profile: '/(app)/profile',
     notifications: '/(app)/notifications',
     quickLog: '/(app)/quick-log',
+    planItemNew: '/(app)/plan-item-new',
+    planItem: '/(app)/plan-item',
+    planItemEdit: '/(app)/plan-item-edit',
   },
   onboarding: {
     index: '/(onboarding)' as Href,

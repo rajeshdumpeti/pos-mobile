@@ -1,0 +1,10 @@
+import type { components } from '@/api/generated/schema';
+type Schemas = components['schemas'];
+export type TodayResource = Schemas['TodayResponse'];
+export type PlanItem = Schemas['PlanItemResponse'];
+export type CreatePlanItem = Schemas['CreatePlanItemRequest'];
+export type UpdatePlanItem = Schemas['UpdatePlanItemRequest'];
+export type PlanAction = Schemas['ActionIdentifier'];
+export type SectionState = Schemas['SectionState'];
+export type PlanSummary = Schemas['ItemSummaryResponse'];
+export type RecommendationCode = Schemas['RecommendationCode'];

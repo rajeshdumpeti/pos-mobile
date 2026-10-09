@@ -13,6 +13,16 @@ test('connects a visible label, hint, and accessible input name', () => {
   expect(view.getByText('Amount')).toBeTruthy();
   expect(view.getByText('Enter dollars and cents')).toBeTruthy();
   expect(view.getByLabelText('Amount')).toBeTruthy();
+  expect(view.getByLabelText('Amount').props.showSoftInputOnFocus).toBe(true);
+});
+
+test('allows an explicit non-keyboard text control', () => {
+  const view = render(
+    <ThemeProvider preference="light">
+      <TextInput label="Amount" showSoftInputOnFocus={false} />
+    </ThemeProvider>,
+  );
+  expect(view.getByLabelText('Amount').props.showSoftInputOnFocus).toBe(false);
 });
 
 test('announces error text and shows focus/error borders', () => {

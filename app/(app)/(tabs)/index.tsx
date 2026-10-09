@@ -1,4 +1,4 @@
-import { PrimaryScreen } from '@/features/app-shell/ShellScreens';
+import { TodayScreen } from '@/features/today/TodayScreen';
 export default function Today() {
-  return <PrimaryScreen title="Today" body="Your Today content goes here." />;
+  return <TodayScreen />;
 }

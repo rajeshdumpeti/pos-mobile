@@ -79,7 +79,7 @@ test.each(['light', 'dark'] as const)(
   (mode) => {
     const view = render(wrap(<ShellHeader title="Today" />, mode));
     expect(StyleSheet.flatten(view.getByTestId('shell-header').props.style).backgroundColor).toBe(
-      createTheme(mode).colors.accentSoft,
+      createTheme(mode).colors.surfacePrimary,
     );
     expect(view.getByRole('header').props.children).toContain('Alex Taylor');
     fireEvent.press(view.getByLabelText('Open Notifications'));
