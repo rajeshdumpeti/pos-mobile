@@ -30,15 +30,27 @@
     "plugins": [
       "expo-font",
       "expo-router",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "enableSceneSupport": true
+          }
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/brand/splash-icon.png",
+          "backgroundColor": "#F4F3EF",
+          "resizeMode": "contain",
+          "enableFullScreenImage_legacy": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "splash": {
-      "image": "./assets/brand/splash-icon.png",
-      "backgroundColor": "#F4F3EF",
-      "resizeMode": "contain"
     },
     "extra": {
       "eas": {

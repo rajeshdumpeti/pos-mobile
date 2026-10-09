@@ -10,3 +10,6 @@ app.json
 eslint.config.js
 jest.setup.js
 metro.config.js
+
+# Archived QA run outputs; preserve recorded evidence.
+/qa-output/today-acceptance-2026-10-06/

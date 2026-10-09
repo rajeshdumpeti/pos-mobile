@@ -29,7 +29,7 @@ import { resolveTimeZone } from './time';
 import { PlanningButton as Button, PlanningCard as Card, PlanningCard } from './TodayVisuals';
 import { ScheduleFields } from './ScheduleFields';
 import { friendlyDate } from './presentation';
-import { usePreventRemove } from '@react-navigation/native';
+import { usePreventRemove } from 'expo-router/react-navigation';
 export function PlanItemFormScreen({
   id: input,
   mode = 'create',

@@ -78,7 +78,7 @@ export function CodeEntry({
             onBlur?.();
           }}
           style={[
-            StyleSheet.absoluteFillObject,
+            StyleSheet.absoluteFill,
             {
               color: 'transparent',
               backgroundColor: 'transparent',
