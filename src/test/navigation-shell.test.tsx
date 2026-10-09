@@ -7,6 +7,10 @@ import { NavigationAccessProvider, routes } from '@/navigation';
 const mockReplace = jest.fn();
 const mockScreenOptions = jest.fn();
 
+jest.mock('@/features/today/PlanningProvider', () => ({
+  PlanningSessionScope: ({ children }: React.PropsWithChildren) => children,
+}));
+
 jest.mock('@/providers/AppProviders', () => ({
   AppProviders: ({ children }: React.PropsWithChildren) => children,
 }));

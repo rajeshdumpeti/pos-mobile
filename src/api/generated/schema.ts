@@ -4,85 +4,17 @@
  */
 
 export interface paths {
-  '/api/v1/auth/email-verifications/confirm': {
+  '/health': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
-    /** Confirm an email verification code */
-    post: operations['confirm_email_verification'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/email-verifications/email': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
+    /** Check service health */
+    get: operations['get_health'];
     put?: never;
     post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Change an unverified registration email */
-    patch: operations['change_unverified_email'];
-    trace?: never;
-  };
-  '/api/v1/auth/email-verifications/resend': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Resend an email verification code */
-    post: operations['resend_email_verification'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/password-resets': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Request password reset instructions */
-    post: operations['request_password_reset'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/password-resets/confirm': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Confirm a password reset */
-    post: operations['confirm_password_reset'];
     delete?: never;
     options?: never;
     head?: never;
@@ -129,28 +61,55 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/auth/session': {
+  '/api/v1/auth/email-verifications/confirm': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /**
-     * Get the current authenticated identity and session
-     * @description Validates the access token and persisted session before restoring identity facts.
-     */
-    get: operations['get_current_session'];
+    get?: never;
     put?: never;
-    post?: never;
-    /**
-     * Log out the current session
-     * @description Idempotently revokes the current refresh session.
-     */
-    delete: operations['delete_current_session'];
+    /** Confirm an email verification code */
+    post: operations['confirm_email_verification'];
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/email-verifications/resend': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Resend an email verification code */
+    post: operations['resend_email_verification'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/email-verifications/email': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Change an unverified registration email */
+    patch: operations['change_unverified_email'];
     trace?: never;
   };
   '/api/v1/auth/sessions': {
@@ -197,25 +156,31 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/onboarding': {
+  '/api/v1/auth/session': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** Get State */
-    get: operations['get_onboarding_state'];
+    /**
+     * Get the current authenticated identity and session
+     * @description Validates the access token and persisted session before restoring identity facts.
+     */
+    get: operations['get_current_session'];
     put?: never;
     post?: never;
-    delete?: never;
+    /**
+     * Log out the current session
+     * @description Idempotently revokes the current refresh session.
+     */
+    delete: operations['delete_current_session'];
     options?: never;
     head?: never;
-    /** Update State */
-    patch: operations['update_onboarding_state'];
+    patch?: never;
     trace?: never;
   };
-  '/api/v1/onboarding/complete': {
+  '/api/v1/auth/password-resets': {
     parameters: {
       query?: never;
       header?: never;
@@ -224,15 +189,15 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Complete */
-    post: operations['complete_onboarding'];
+    /** Request password reset instructions */
+    post: operations['request_password_reset'];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/demo/reset': {
+  '/api/v1/auth/password-resets/confirm': {
     parameters: {
       query?: never;
       header?: never;
@@ -241,25 +206,8 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Reset all local mock data */
-    post: operations['reset_mock_demo'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Check service health */
-    get: operations['get_health'];
-    put?: never;
-    post?: never;
+    /** Confirm a password reset */
+    post: operations['confirm_password_reset'];
     delete?: never;
     options?: never;
     head?: never;
@@ -302,26 +250,153 @@ export interface paths {
     patch: operations['update_mock_resource_item'];
     trace?: never;
   };
+  '/demo/reset': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Reset all local mock data */
+    post: operations['reset_mock_demo'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/onboarding': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get State */
+    get: operations['get_onboarding_state'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update State */
+    patch: operations['update_onboarding_state'];
+    trace?: never;
+  };
+  '/api/v1/onboarding/complete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Complete */
+    post: operations['complete_onboarding'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/plan/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create */
+    post: operations['create_plan_item'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/plan/items/{plan_item_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get */
+    get: operations['get_plan_item'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update */
+    patch: operations['update_plan_item'];
+    trace?: never;
+  };
+  '/api/v1/plan/items/{plan_item_id}/complete': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Complete */
+    post: operations['complete_plan_item'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/today': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Today */
+    get: operations['get_today_dashboard'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /**
+     * ActionIdentifier
+     * @enum {string}
+     */
+    ActionIdentifier:
+      'plan_item.create' | 'plan_item.view' | 'plan_item.update' | 'plan_item.complete';
     /** AuthenticationErrorResponse */
     AuthenticationErrorResponse: {
-      /** Actions */
-      actions?: ('sign_in' | 'forgot_password' | 'verify_email' | 'refresh_registration_policy')[];
       /** Code */
       code: string;
-      /** Details */
-      details?: components['schemas']['ErrorDetail'][];
       /** Message */
       message: string;
       /** Request Id */
       request_id: string;
-      /** Retry After Seconds */
-      retry_after_seconds?: number | null;
+      /** Details */
+      details?: components['schemas']['ErrorDetail'][];
       /** Retry At */
       retry_at?: string | null;
+      /** Retry After Seconds */
+      retry_after_seconds?: number | null;
+      /** Actions */
+      actions?: ('sign_in' | 'forgot_password' | 'verify_email' | 'refresh_registration_policy')[];
     };
     /** BudgetValue */
     BudgetValue: {
@@ -342,6 +417,18 @@ export interface components {
        * @enum {string}
        */
       currency: 'USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD';
+    };
+    /** CapabilitiesResponse */
+    CapabilitiesResponse: {
+      state: components['schemas']['SectionState'];
+      /** Actions */
+      actions: components['schemas']['ActionIdentifier'][];
+      /** Priority Life Areas */
+      priority_life_areas: components['schemas']['PriorityLifeArea'][];
+      /** Configured Goals */
+      configured_goals: components['schemas']['GoalIdentifier'][];
+      /** Measurement Sources */
+      measurement_sources: 'reserved'[];
     };
     /**
      * ChangeUnverifiedEmailRequest
@@ -364,6 +451,16 @@ export interface components {
       /** Expected Version */
       expected_version: number;
     };
+    /** CompletePlanItemRequest */
+    CompletePlanItemRequest: {
+      /** Expected Version */
+      expected_version: number;
+    };
+    /**
+     * CompletionState
+     * @enum {string}
+     */
+    CompletionState: 'incomplete' | 'completed';
     /**
      * ConfirmEmailRequest
      * @example {
@@ -373,35 +470,56 @@ export interface components {
      */
     ConfirmEmailRequest: {
       /**
-       * Code
-       * Format: password
-       */
-      code: string;
-      /**
        * Flow Token
        * Format: password
        */
       flow_token: string;
+      /**
+       * Code
+       * Format: password
+       */
+      code: string;
     };
     /** ConfirmPasswordResetRequest */
     ConfirmPasswordResetRequest: {
-      /**
-       * New Password
-       * Format: password
-       */
-      new_password: string;
       /**
        * Token
        * Format: password
        */
       token: string;
+      /**
+       * New Password
+       * Format: password
+       */
+      new_password: string;
+    };
+    /** CreatePlanItemRequest */
+    CreatePlanItemRequest: {
+      /** Title */
+      title: string;
+      /**
+       * Scheduled For Date
+       * Format: date
+       */
+      scheduled_for_date: string;
+      /** Timezone */
+      timezone: string;
+      /** Scheduled Start At */
+      scheduled_start_at?: string | null;
+      /** Scheduled End At */
+      scheduled_end_at?: string | null;
+      /**
+       * Is Priority
+       * @default false
+       */
+      is_priority: boolean;
     };
     /** CurrencyPreferenceResponse */
     CurrencyPreferenceResponse: {
-      /** Confirmed */
-      confirmed: boolean;
       /** Value */
       value: ('USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD') | null;
+      /** Confirmed */
+      confirmed: boolean;
     };
     /** CurrentSessionResponse */
     CurrentSessionResponse: {
@@ -410,27 +528,46 @@ export interface components {
        * Format: uuid
        */
       account_id: string;
-      /** Display Name */
-      display_name: string;
-      /** Onboarding Required */
-      onboarding_required: boolean;
       /**
        * Session Id
        * Format: uuid
        */
       session_id: string;
+      /** Display Name */
+      display_name: string;
+      /** Onboarding Required */
+      onboarding_required: boolean;
     };
+    /**
+     * DailyStatusCode
+     * @enum {string}
+     */
+    DailyStatusCode: 'getting_started' | 'complete' | 'needs_attention' | 'on_track';
+    /** DailyStatusResponse */
+    DailyStatusResponse: {
+      state: components['schemas']['SectionState'];
+      code: components['schemas']['DailyStatusCode'];
+      /** Eligible */
+      eligible: number;
+      /** Completed */
+      completed: number;
+      /** Remaining */
+      remaining: number;
+      /** Overdue */
+      overdue: number;
+    };
+    /**
+     * DomainType
+     * @enum {string}
+     */
+    DomainType: 'plan_item';
     /** EmailNotVerifiedResponse */
     EmailNotVerifiedResponse: {
-      /** Actions */
-      actions: 'verify_email'[];
       /**
        * Code
        * @constant
        */
       code: 'email_not_verified';
-      /** Details */
-      details?: components['schemas']['ErrorDetail'][];
       /**
        * Message
        * @constant
@@ -438,6 +575,10 @@ export interface components {
       message: 'Email verification is required';
       /** Request Id */
       request_id: string;
+      /** Details */
+      details?: components['schemas']['ErrorDetail'][];
+      /** Actions */
+      actions: 'verify_email'[];
       verification_flow: components['schemas']['VerificationFlowContinuation'];
     };
     /**
@@ -451,31 +592,31 @@ export interface components {
      */
     EmailVerifiedResponse: {
       /**
+       * Status
+       * @constant
+       */
+      status: 'email_verified';
+      /**
        * Account Id
        * Format: uuid
        */
       account_id: string;
-      /**
-       * Next Action
-       * @constant
-       */
-      next_action: 'await_session_establishment';
       /** Onboarding Required */
       onboarding_required: boolean;
       /** Session */
       session?: null;
       /**
-       * Status
+       * Next Action
        * @constant
        */
-      status: 'email_verified';
+      next_action: 'await_session_establishment';
     };
     /** ErrorDetail */
     ErrorDetail: {
-      /** Code */
-      code: string;
       /** Field */
       field: string;
+      /** Code */
+      code: string;
       /** Message */
       message: string;
     };
@@ -483,13 +624,40 @@ export interface components {
     ErrorResponse: {
       /** Code */
       code: string;
-      /** Details */
-      details?: components['schemas']['ErrorDetail'][];
       /** Message */
       message: string;
       /** Request Id */
       request_id: string;
+      /** Details */
+      details?: components['schemas']['ErrorDetail'][];
     };
+    /** FreshnessResponse */
+    FreshnessResponse: {
+      /**
+       * State
+       * @constant
+       */
+      state: 'current';
+      /**
+       * As Of
+       * Format: date-time
+       */
+      as_of: string;
+    };
+    /**
+     * GoalIdentifier
+     * @enum {string}
+     */
+    GoalIdentifier:
+      | 'target_weight'
+      | 'daily_protein_grams'
+      | 'daily_water'
+      | 'daily_calories_kcal'
+      | 'daily_steps'
+      | 'workouts_per_week'
+      | 'focus_minutes_per_day'
+      | 'target_sleep_minutes'
+      | 'budget_target';
     /** HealthResponse */
     HealthResponse: {
       /** Status */
@@ -499,12 +667,12 @@ export interface components {
     IntegrationPreferencesResponse: {
       /** Apple Health */
       apple_health?: ('interested' | 'not_interested' | 'deferred') | null;
+      /** Health Connect */
+      health_connect?: ('interested' | 'not_interested' | 'deferred') | null;
       /** Apple Watch */
       apple_watch?: ('interested' | 'not_interested' | 'deferred') | null;
       /** Calendar */
       calendar?: ('interested' | 'not_interested' | 'deferred') | null;
-      /** Health Connect */
-      health_connect?: ('interested' | 'not_interested' | 'deferred') | null;
       /** Reminders */
       reminders?: ('interested' | 'not_interested' | 'deferred') | null;
       /** Wearables */
@@ -512,20 +680,20 @@ export interface components {
     };
     /** Item */
     Item: {
-      /**
-       * Done
-       * @default false
-       */
-      done: boolean;
       /** Id */
       id: string;
+      /** Title */
+      title: string;
       /**
        * Meta
        * @default
        */
       meta: string;
-      /** Title */
-      title: string;
+      /**
+       * Done
+       * @default false
+       */
+      done: boolean;
     };
     /**
      * ItemPatch
@@ -534,57 +702,77 @@ export interface components {
     ItemPatch: {
       [key: string]: unknown;
     };
+    /** ItemSummaryResponse */
+    ItemSummaryResponse: {
+      /**
+       * Plan Item Id
+       * Format: uuid
+       */
+      plan_item_id: string;
+      /** Title */
+      title: string;
+      /** Scheduled Start At */
+      scheduled_start_at: string | null;
+      /** Scheduled End At */
+      scheduled_end_at: string | null;
+      /**
+       * Scheduled For Date
+       * Format: date
+       */
+      scheduled_for_date: string;
+      /** Timezone */
+      timezone: string;
+      domain: components['schemas']['DomainType'];
+      state: components['schemas']['CompletionState'];
+      action: components['schemas']['ActionIdentifier'];
+      /** Completed At */
+      completed_at: string | null;
+    };
     /** MeasuredValue */
     MeasuredValue: {
+      /** Value */
+      value: number | string;
       /**
        * Unit
        * @enum {string}
        */
       unit: 'kg' | 'lb';
-      /** Value */
-      value: number | string;
     };
     /** MeasuredValueResponse */
     MeasuredValueResponse: {
+      /** Value */
+      value: string;
       /**
        * Unit
        * @enum {string}
        */
       unit: 'kg' | 'lb';
-      /** Value */
-      value: string;
     };
     /** NotificationPreferencesResponse */
     NotificationPreferencesResponse: {
-      /** Deep Work */
-      deep_work?: ('enabled' | 'disabled' | 'deferred') | null;
-      /** Finance */
-      finance?: ('enabled' | 'disabled' | 'deferred') | null;
+      /** Workout */
+      workout?: ('enabled' | 'disabled' | 'deferred') | null;
       /** Protein */
       protein?: ('enabled' | 'disabled' | 'deferred') | null;
       /** Water */
       water?: ('enabled' | 'disabled' | 'deferred') | null;
+      /** Finance */
+      finance?: ('enabled' | 'disabled' | 'deferred') | null;
+      /** Deep Work */
+      deep_work?: ('enabled' | 'disabled' | 'deferred') | null;
       /** Weekly Reflection */
       weekly_reflection?: ('enabled' | 'disabled' | 'deferred') | null;
-      /** Workout */
-      workout?: ('enabled' | 'disabled' | 'deferred') | null;
     };
     /** OnboardingConfigurationResponse */
     OnboardingConfigurationResponse: {
+      /** Priority Life Areas */
+      priority_life_areas: (
+        'health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep'
+      )[];
+      /** Unit Systems */
+      unit_systems: ('metric' | 'imperial')[];
       /** Currencies */
       currencies: ('USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD')[];
-      /** Integration Identifiers */
-      integration_identifiers: (
-        'apple_health' | 'health_connect' | 'apple_watch' | 'calendar' | 'reminders' | 'wearables'
-      )[];
-      /** Integration Preference Values */
-      integration_preference_values: ('interested' | 'not_interested' | 'deferred')[];
-      /** Notification Identifiers */
-      notification_identifiers: (
-        'workout' | 'protein' | 'water' | 'finance' | 'deep_work' | 'weekly_reflection'
-      )[];
-      /** Notification Preference Values */
-      notification_preference_values: ('enabled' | 'disabled' | 'deferred')[];
       /** Optional Goal Fields */
       optional_goal_fields: (
         | 'target_weight'
@@ -597,59 +785,72 @@ export interface components {
         | 'target_sleep_minutes'
         | 'budget_target'
       )[];
-      /** Priority Life Areas */
-      priority_life_areas: (
-        'health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep'
+      /** Integration Identifiers */
+      integration_identifiers: (
+        'apple_health' | 'health_connect' | 'apple_watch' | 'calendar' | 'reminders' | 'wearables'
       )[];
+      /** Integration Preference Values */
+      integration_preference_values: ('interested' | 'not_interested' | 'deferred')[];
+      /** Notification Identifiers */
+      notification_identifiers: (
+        'workout' | 'protein' | 'water' | 'finance' | 'deep_work' | 'weekly_reflection'
+      )[];
+      /** Notification Preference Values */
+      notification_preference_values: ('enabled' | 'disabled' | 'deferred')[];
       /** Routine Creation Supported */
       routine_creation_supported: boolean;
-      /** Unit Systems */
-      unit_systems: ('metric' | 'imperial')[];
     };
     /** OnboardingGoals */
     OnboardingGoals: {
-      budget_target?: components['schemas']['BudgetValue'] | null;
-      /** Daily Calories Kcal */
-      daily_calories_kcal?: number | null;
+      target_weight?: components['schemas']['MeasuredValue'] | null;
       /** Daily Protein Grams */
       daily_protein_grams?: number | string | null;
+      daily_water?: components['schemas']['WaterValue'] | null;
+      /** Daily Calories Kcal */
+      daily_calories_kcal?: number | null;
       /** Daily Steps */
       daily_steps?: number | null;
-      daily_water?: components['schemas']['WaterValue'] | null;
+      /** Workouts Per Week */
+      workouts_per_week?: number | null;
       /** Focus Minutes Per Day */
       focus_minutes_per_day?: number | null;
       /** Target Sleep Minutes */
       target_sleep_minutes?: number | null;
-      target_weight?: components['schemas']['MeasuredValue'] | null;
-      /** Workouts Per Week */
-      workouts_per_week?: number | null;
+      budget_target?: components['schemas']['BudgetValue'] | null;
     };
     /** OnboardingGoalsResponse */
     OnboardingGoalsResponse: {
-      budget_target?: components['schemas']['BudgetValueResponse'] | null;
-      /** Daily Calories Kcal */
-      daily_calories_kcal?: number | null;
+      target_weight?: components['schemas']['MeasuredValueResponse'] | null;
       /** Daily Protein Grams */
       daily_protein_grams?: string | null;
+      daily_water?: components['schemas']['WaterValueResponse'] | null;
+      /** Daily Calories Kcal */
+      daily_calories_kcal?: number | null;
       /** Daily Steps */
       daily_steps?: number | null;
-      daily_water?: components['schemas']['WaterValueResponse'] | null;
+      /** Workouts Per Week */
+      workouts_per_week?: number | null;
       /** Focus Minutes Per Day */
       focus_minutes_per_day?: number | null;
       /** Target Sleep Minutes */
       target_sleep_minutes?: number | null;
-      target_weight?: components['schemas']['MeasuredValueResponse'] | null;
-      /** Workouts Per Week */
-      workouts_per_week?: number | null;
+      budget_target?: components['schemas']['BudgetValueResponse'] | null;
     };
     /** OnboardingPatchRequest */
     OnboardingPatchRequest: {
+      /** Expected Version */
+      expected_version: number;
+      /** Priority Life Areas */
+      priority_life_areas?:
+        ('health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep')[] | null;
+      /** Unit System */
+      unit_system?: ('metric' | 'imperial') | null;
+      /** Unit System Confirmed */
+      unit_system_confirmed?: boolean | null;
       /** Currency */
       currency?: ('USD' | 'INR' | 'CAD' | 'GBP' | 'EUR' | 'AUD') | null;
       /** Currency Confirmed */
       currency_confirmed?: boolean | null;
-      /** Expected Version */
-      expected_version: number;
       goals?: components['schemas']['OnboardingGoals'] | null;
       /** Integration Preferences */
       integration_preferences?: {
@@ -659,32 +860,31 @@ export interface components {
       notification_preferences?: {
         [key: string]: 'enabled' | 'disabled' | 'deferred';
       } | null;
-      /** Priority Life Areas */
-      priority_life_areas?:
-        ('health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep')[] | null;
-      /** Unit System */
-      unit_system?: ('metric' | 'imperial') | null;
-      /** Unit System Confirmed */
-      unit_system_confirmed?: boolean | null;
     };
     /** OnboardingResponse */
     OnboardingResponse: {
-      /** Completed At */
-      completed_at: string | null;
-      configuration: components['schemas']['OnboardingConfigurationResponse'];
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: 'not_started' | 'in_progress' | 'completed';
       /**
        * Contract Version
        * @constant
        */
       contract_version: '1.0';
-      currency_preference: components['schemas']['CurrencyPreferenceResponse'];
-      goals: components['schemas']['OnboardingGoalsResponse'];
-      integration_preferences: components['schemas']['IntegrationPreferencesResponse'];
-      notification_preferences: components['schemas']['NotificationPreferencesResponse'];
+      /** Version */
+      version: number;
       /** Priority Life Areas */
       priority_life_areas: (
         'health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep'
       )[];
+      unit_preference: components['schemas']['UnitPreferenceResponse'];
+      currency_preference: components['schemas']['CurrencyPreferenceResponse'];
+      goals: components['schemas']['OnboardingGoalsResponse'];
+      integration_preferences: components['schemas']['IntegrationPreferencesResponse'];
+      notification_preferences: components['schemas']['NotificationPreferencesResponse'];
+      requirements: components['schemas']['RequirementsResponse'];
       /**
        * Recommended Next Action
        * @enum {string}
@@ -695,15 +895,9 @@ export interface components {
         | 'confirm_currency'
         | 'complete_onboarding'
         | 'onboarding_completed';
-      requirements: components['schemas']['RequirementsResponse'];
-      /**
-       * Status
-       * @enum {string}
-       */
-      status: 'not_started' | 'in_progress' | 'completed';
-      unit_preference: components['schemas']['UnitPreferenceResponse'];
-      /** Version */
-      version: number;
+      /** Completed At */
+      completed_at: string | null;
+      configuration: components['schemas']['OnboardingConfigurationResponse'];
     };
     /** PasswordResetAcceptedResponse */
     PasswordResetAcceptedResponse: {
@@ -731,30 +925,133 @@ export interface components {
      */
     PendingVerificationResponse: {
       /**
-       * Flow Expires At
-       * Format: date-time
+       * Status
+       * @constant
        */
-      flow_expires_at: string;
+      status: 'registration_pending';
       /** Flow Token */
       flow_token: string;
       /** Masked Email */
       masked_email: string;
       /**
-       * Resend Available At
-       * Format: date-time
-       */
-      resend_available_at: string;
-      /**
-       * Status
-       * @constant
-       */
-      status: 'registration_pending';
-      /**
        * Verification Expires At
        * Format: date-time
        */
       verification_expires_at: string;
+      /**
+       * Flow Expires At
+       * Format: date-time
+       */
+      flow_expires_at: string;
+      /**
+       * Resend Available At
+       * Format: date-time
+       */
+      resend_available_at: string;
     };
+    /** PlanItemResponse */
+    PlanItemResponse: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Title */
+      title: string;
+      /**
+       * Scheduled For Date
+       * Format: date
+       */
+      scheduled_for_date: string;
+      /** Timezone */
+      timezone: string;
+      /** Scheduled Start At */
+      scheduled_start_at: string | null;
+      /** Scheduled End At */
+      scheduled_end_at: string | null;
+      /** Is Priority */
+      is_priority: boolean;
+      /** Completed At */
+      completed_at: string | null;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string;
+      /** Version */
+      version: number;
+    };
+    /**
+     * PriorityLifeArea
+     * @enum {string}
+     */
+    PriorityLifeArea: 'health' | 'nutrition' | 'fitness' | 'focus' | 'money' | 'habits' | 'sleep';
+    /** PrioritySectionResponse */
+    PrioritySectionResponse: {
+      state: components['schemas']['SectionState'];
+      /** Items */
+      items: components['schemas']['ItemSummaryResponse'][];
+      action: components['schemas']['ActionIdentifier'];
+    };
+    /** ProgressResponse */
+    ProgressResponse: {
+      state: components['schemas']['SectionState'];
+      /**
+       * Reason
+       * @constant
+       */
+      reason: 'no_supported_measurement_sources';
+      /** Metrics */
+      metrics: 'reserved'[];
+    };
+    /**
+     * RecommendationCode
+     * @enum {string}
+     */
+    RecommendationCode:
+      | 'priority_past_start'
+      | 'past_start'
+      | 'priority_upcoming'
+      | 'upcoming'
+      | 'priority_unscheduled'
+      | 'unscheduled'
+      | 'create_first_plan_item'
+      | 'all_plan_items_complete';
+    /** RecommendationEvidenceResponse */
+    RecommendationEvidenceResponse: {
+      /** Eligible */
+      eligible: number;
+      /** Remaining */
+      remaining: number;
+      /** Is Priority */
+      is_priority: boolean | null;
+      /** Scheduled Start At */
+      scheduled_start_at: string | null;
+    };
+    /** RecommendationResponse */
+    RecommendationResponse: {
+      state: components['schemas']['RecommendationState'];
+      code: components['schemas']['RecommendationCode'];
+      domain: components['schemas']['DomainType'];
+      /** Recommendation */
+      recommendation: string;
+      /** Reason */
+      reason: string;
+      action: components['schemas']['ActionIdentifier'];
+      /** Plan Item Id */
+      plan_item_id: string | null;
+      evidence: components['schemas']['RecommendationEvidenceResponse'];
+    };
+    /**
+     * RecommendationState
+     * @enum {string}
+     */
+    RecommendationState: 'populated' | 'new_user' | 'insufficient_data';
     /** RefreshSessionRequest */
     RefreshSessionRequest: {
       /**
@@ -786,14 +1083,14 @@ export interface components {
        * @enum {string}
        */
       legal_policy_status: 'active' | 'deferred_nonproduction';
-      /** Privacy Url */
-      privacy_url: string | null;
-      /** Privacy Version */
-      privacy_version: string | null;
-      /** Terms Url */
-      terms_url: string | null;
       /** Terms Version */
       terms_version: string | null;
+      /** Terms Url */
+      terms_url: string | null;
+      /** Privacy Version */
+      privacy_version: string | null;
+      /** Privacy Url */
+      privacy_url: string | null;
     };
     /**
      * RegistrationRequest
@@ -819,36 +1116,36 @@ export interface components {
        */
       password: string;
       /**
-       * Privacy Accepted
-       * @description Required and true only when legal_consent_required is true; otherwise omit.
-       */
-      privacy_accepted?: boolean | null;
-      /**
-       * Privacy Version
-       * @description Current backend-provided Privacy version when consent is required; otherwise omit.
-       */
-      privacy_version?: string | null;
-      /**
        * Terms Accepted
        * @description Required and true only when legal_consent_required is true; otherwise omit.
        */
       terms_accepted?: boolean | null;
       /**
+       * Privacy Accepted
+       * @description Required and true only when legal_consent_required is true; otherwise omit.
+       */
+      privacy_accepted?: boolean | null;
+      /**
        * Terms Version
        * @description Current backend-provided Terms version when consent is required; otherwise omit.
        */
       terms_version?: string | null;
+      /**
+       * Privacy Version
+       * @description Current backend-provided Privacy version when consent is required; otherwise omit.
+       */
+      privacy_version?: string | null;
     };
     /** RequirementsResponse */
     RequirementsResponse: {
-      /** Currency Satisfied */
-      currency_satisfied: boolean;
       /** Priority Life Areas Satisfied */
       priority_life_areas_satisfied: boolean;
-      /** Ready To Complete */
-      ready_to_complete: boolean;
       /** Unit System Satisfied */
       unit_system_satisfied: boolean;
+      /** Currency Satisfied */
+      currency_satisfied: boolean;
+      /** Ready To Complete */
+      ready_to_complete: boolean;
     };
     /**
      * ResendVerificationRequest
@@ -868,39 +1165,86 @@ export interface components {
       /** Status */
       status: string;
     };
+    /** ScoreContributionResponse */
+    ScoreContributionResponse: {
+      /**
+       * Item Id
+       * Format: uuid
+       */
+      item_id: string;
+      domain: components['schemas']['DomainType'];
+      /**
+       * Eligibility Reason
+       * @constant
+       */
+      eligibility_reason: 'assigned_current_local_date';
+      /**
+       * Weight
+       * @constant
+       */
+      weight: 1;
+      /**
+       * Earned Weight
+       * @enum {integer}
+       */
+      earned_weight: 0 | 1;
+      completion_state: components['schemas']['CompletionState'];
+    };
+    /** ScoreResponse */
+    ScoreResponse: {
+      state: components['schemas']['ScoreState'];
+      /** Percentage */
+      percentage: number | null;
+      /** Numerator */
+      numerator: number;
+      /** Denominator */
+      denominator: number;
+      /** Breakdown */
+      breakdown: components['schemas']['ScoreContributionResponse'][];
+    };
+    /**
+     * ScoreState
+     * @enum {string}
+     */
+    ScoreState: 'available' | 'no_score';
+    /**
+     * SectionState
+     * @enum {string}
+     */
+    SectionState: 'available' | 'empty' | 'no_data' | 'unavailable' | 'partial' | 'stale' | 'error';
     /** SessionTokenResponse */
     SessionTokenResponse: {
-      /**
-       * Access Expires At
-       * Format: date-time
-       */
-      access_expires_at: string;
       /** Access Token */
       access_token: string;
-      /**
-       * Account Id
-       * Format: uuid
-       */
-      account_id: string;
-      /** Onboarding Required */
-      onboarding_required: boolean;
-      /**
-       * Refresh Expires At
-       * Format: date-time
-       */
-      refresh_expires_at: string;
       /** Refresh Token */
       refresh_token: string;
-      /**
-       * Session Id
-       * Format: uuid
-       */
-      session_id: string;
       /**
        * Token Type
        * @constant
        */
       token_type: 'Bearer';
+      /**
+       * Access Expires At
+       * Format: date-time
+       */
+      access_expires_at: string;
+      /**
+       * Refresh Expires At
+       * Format: date-time
+       */
+      refresh_expires_at: string;
+      /**
+       * Account Id
+       * Format: uuid
+       */
+      account_id: string;
+      /**
+       * Session Id
+       * Format: uuid
+       */
+      session_id: string;
+      /** Onboarding Required */
+      onboarding_required: boolean;
     };
     /** SignInRequest */
     SignInRequest: {
@@ -912,24 +1256,90 @@ export interface components {
        */
       password: string;
     };
+    /** TodayResponse */
+    TodayResponse: {
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      /**
+       * Generated At
+       * Format: date-time
+       */
+      generated_at: string;
+      /** Timezone */
+      timezone: string;
+      /**
+       * Local Date
+       * Format: date
+       */
+      local_date: string;
+      freshness: components['schemas']['FreshnessResponse'];
+      daily_status: components['schemas']['DailyStatusResponse'];
+      next_best_action: components['schemas']['RecommendationResponse'];
+      score: components['schemas']['ScoreResponse'];
+      progress: components['schemas']['ProgressResponse'];
+      up_next: components['schemas']['UpNextSectionResponse'];
+      top_priorities: components['schemas']['PrioritySectionResponse'];
+      wins: components['schemas']['WinsSectionResponse'];
+      capabilities: components['schemas']['CapabilitiesResponse'];
+    };
     /** UnitPreferenceResponse */
     UnitPreferenceResponse: {
-      /** Confirmed */
-      confirmed: boolean;
       /** Value */
       value: ('metric' | 'imperial') | null;
+      /** Confirmed */
+      confirmed: boolean;
+    };
+    /** UpNextItemResponse */
+    UpNextItemResponse: {
+      item: components['schemas']['ItemSummaryResponse'];
+      label: components['schemas']['UpNextLabel'];
+    };
+    /**
+     * UpNextLabel
+     * @enum {string}
+     */
+    UpNextLabel: 'NOW' | 'NEXT' | 'LATER';
+    /** UpNextSectionResponse */
+    UpNextSectionResponse: {
+      state: components['schemas']['SectionState'];
+      /** Items */
+      items: components['schemas']['UpNextItemResponse'][];
+      action: components['schemas']['ActionIdentifier'];
+    };
+    /** UpdatePlanItemRequest */
+    UpdatePlanItemRequest: {
+      /** Expected Version */
+      expected_version: number;
+      /** Title */
+      title?: string;
+      /**
+       * Scheduled For Date
+       * Format: date
+       */
+      scheduled_for_date?: string;
+      /** Timezone */
+      timezone?: string;
+      /** Scheduled Start At */
+      scheduled_start_at?: string | null;
+      /** Scheduled End At */
+      scheduled_end_at?: string | null;
+      /** Is Priority */
+      is_priority?: boolean;
     };
     /** VerificationFlowContinuation */
     VerificationFlowContinuation: {
+      /** Flow Token */
+      flow_token: string;
+      /** Masked Email */
+      masked_email: string;
       /**
        * Expires At
        * Format: date-time
        */
       expires_at: string;
-      /** Flow Token */
-      flow_token: string;
-      /** Masked Email */
-      masked_email: string;
       /**
        * Resend Available At
        * Format: date-time
@@ -938,23 +1348,30 @@ export interface components {
     };
     /** WaterValue */
     WaterValue: {
+      /** Value */
+      value: number | string;
       /**
        * Unit
        * @enum {string}
        */
       unit: 'liters' | 'fluid_ounces';
-      /** Value */
-      value: number | string;
     };
     /** WaterValueResponse */
     WaterValueResponse: {
+      /** Value */
+      value: string;
       /**
        * Unit
        * @enum {string}
        */
       unit: 'liters' | 'fluid_ounces';
-      /** Value */
-      value: string;
+    };
+    /** WinsSectionResponse */
+    WinsSectionResponse: {
+      state: components['schemas']['SectionState'];
+      /** Items */
+      items: components['schemas']['ItemSummaryResponse'][];
+      action: components['schemas']['ActionIdentifier'];
     };
   };
   responses: never;
@@ -965,6 +1382,272 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  get_health: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HealthResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  get_authentication_registration_policy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['RegistrationPolicyResponse'];
+        };
+      };
+      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication credentials are invalid or expired. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request is too large. */
+      413: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request must use JSON. */
+      415: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request or legal acceptance could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
+      429: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description An unexpected safe internal failure occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description A required persistence or cryptographic dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
+  create_email_registration: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RegistrationRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PendingVerificationResponse'];
+        };
+      };
+      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication credentials are invalid or expired. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with current authentication state. */
+      409: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request is too large. */
+      413: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request must use JSON. */
+      415: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request or legal acceptance could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
+      429: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description An unexpected safe internal failure occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description A required persistence or cryptographic dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
   confirm_email_verification: {
     parameters: {
       query?: never;
@@ -1067,135 +1750,10 @@ export interface operations {
       /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
       429: {
         headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
           /** @description Bounded delay in seconds when throttled. */
           'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description An unexpected safe internal failure occurred. */
-      500: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description A required persistence or cryptographic dependency is unavailable. */
-      503: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-    };
-  };
-  change_unverified_email: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ChangeUnverifiedEmailRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      202: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PendingVerificationResponse'];
-        };
-      };
-      /** @description The password, flow, verification code, or HTTP input was rejected. */
-      400: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description Authentication credentials are invalid or expired. */
-      401: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The verification code or flow expired. */
-      410: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request is too large. */
-      413: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request must use JSON. */
-      415: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request or legal acceptance could not be validated. */
-      422: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
-      429: {
-        headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
           [name: string]: unknown;
         };
         content: {
@@ -1317,10 +1875,715 @@ export interface operations {
       /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
       429: {
         headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
           /** @description Request identifier for support and diagnostics. */
           'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description An unexpected safe internal failure occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description A required persistence or cryptographic dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
+  change_unverified_email: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ChangeUnverifiedEmailRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PendingVerificationResponse'];
+        };
+      };
+      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication credentials are invalid or expired. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The verification code or flow expired. */
+      410: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request is too large. */
+      413: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request must use JSON. */
+      415: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request or legal acceptance could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
+      429: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description An unexpected safe internal failure occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description A required persistence or cryptographic dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
+  create_email_session: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SignInRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SessionTokenResponse'];
+        };
+      };
+      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication credentials are invalid or expired. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Correct credentials require email verification or the account is unavailable. */
+      403: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json':
+            | components['schemas']['EmailNotVerifiedResponse']
+            | components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request is too large. */
+      413: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request must use JSON. */
+      415: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request or legal acceptance could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
+      429: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description An unexpected safe internal failure occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description A required persistence or cryptographic dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
+  delete_all_sessions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication credentials are invalid or expired. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request is too large. */
+      413: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request must use JSON. */
+      415: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request or legal acceptance could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
+      429: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description An unexpected safe internal failure occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description A required persistence or cryptographic dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
+  refresh_email_session: {
+    parameters: {
+      query?: never;
+      header: {
+        'Idempotency-Key': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RefreshSessionRequest'];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SessionTokenResponse'];
+        };
+      };
+      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication credentials are invalid or expired. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with current authentication state. */
+      409: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request is too large. */
+      413: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request must use JSON. */
+      415: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request or legal acceptance could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
+      429: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description An unexpected safe internal failure occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description A required persistence or cryptographic dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
+  get_current_session: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CurrentSessionResponse'];
+        };
+      };
+      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication credentials are invalid or expired. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request is too large. */
+      413: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request must use JSON. */
+      415: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request or legal acceptance could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
+      429: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description An unexpected safe internal failure occurred. */
+      500: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description A required persistence or cryptographic dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+    };
+  };
+  delete_current_session: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      400: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication credentials are invalid or expired. */
+      401: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request is too large. */
+      413: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The authentication request must use JSON. */
+      415: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description The request or legal acceptance could not be validated. */
+      422: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['AuthenticationErrorResponse'];
+        };
+      };
+      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
+      429: {
+        headers: {
+          /** @description Request identifier for support and diagnostics. */
+          'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
           [name: string]: unknown;
         };
         content: {
@@ -1541,10 +2804,10 @@ export interface operations {
       /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
       429: {
         headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
           /** @description Request identifier for support and diagnostics. */
           'X-Request-ID'?: string;
+          /** @description Bounded delay in seconds when throttled. */
+          'Retry-After'?: number;
           [name: string]: unknown;
         };
         content: {
@@ -1575,11 +2838,13 @@ export interface operations {
       };
     };
   };
-  get_authentication_registration_policy: {
+  get_mock_resource: {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        resource: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -1590,54 +2855,21 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['RegistrationPolicyResponse'];
+          'application/json': unknown;
         };
       };
-      /** @description The password, flow, verification code, or HTTP input was rejected. */
-      400: {
+      /** @description The requested route, resource, or item was not found. */
+      404: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
           'X-Request-ID'?: string;
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Authentication credentials are invalid or expired. */
-      401: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request is too large. */
-      413: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request must use JSON. */
-      415: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request or legal acceptance could not be validated. */
+      /** @description The request could not be validated. */
       422: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -1645,23 +2877,10 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
-      429: {
-        headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description An unexpected safe internal failure occurred. */
+      /** @description An unexpected server error occurred. */
       500: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -1669,155 +2888,25 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description A required persistence or cryptographic dependency is unavailable. */
-      503: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
     };
   };
-  create_email_registration: {
+  create_mock_resource_item: {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        resource: string;
+      };
       cookie?: never;
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['RegistrationRequest'];
+        'application/json': components['schemas']['Item'];
       };
     };
-    responses: {
-      /** @description Successful Response */
-      202: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PendingVerificationResponse'];
-        };
-      };
-      /** @description The password, flow, verification code, or HTTP input was rejected. */
-      400: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description Authentication credentials are invalid or expired. */
-      401: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request conflicts with current authentication state. */
-      409: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request is too large. */
-      413: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request must use JSON. */
-      415: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request or legal acceptance could not be validated. */
-      422: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
-      429: {
-        headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description An unexpected safe internal failure occurred. */
-      500: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description A required persistence or cryptographic dependency is unavailable. */
-      503: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-    };
-  };
-  get_current_session: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Successful Response */
       200: {
@@ -1825,10 +2914,10 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['CurrentSessionResponse'];
+          'application/json': components['schemas']['Item'];
         };
       };
-      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      /** @description The operation is not supported for this resource. */
       400: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -1836,43 +2925,10 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Authentication credentials are invalid or expired. */
-      401: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request is too large. */
-      413: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request must use JSON. */
-      415: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request or legal acceptance could not be validated. */
+      /** @description The request could not be validated. */
       422: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -1880,23 +2936,10 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
-      429: {
-        headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description An unexpected safe internal failure occurred. */
+      /** @description An unexpected server error occurred. */
       500: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -1904,27 +2947,19 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description A required persistence or cryptographic dependency is unavailable. */
-      503: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
     };
   };
-  delete_current_session: {
+  delete_mock_resource_item: {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        resource: string;
+        item_id: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -1936,7 +2971,7 @@ export interface operations {
         };
         content?: never;
       };
-      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      /** @description The operation is not supported for this resource. */
       400: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -1944,43 +2979,10 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Authentication credentials are invalid or expired. */
-      401: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request is too large. */
-      413: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request must use JSON. */
-      415: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request or legal acceptance could not be validated. */
+      /** @description The request could not be validated. */
       422: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -1988,23 +2990,10 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
-      429: {
-        headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description An unexpected safe internal failure occurred. */
+      /** @description An unexpected server error occurred. */
       500: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -2012,32 +3001,24 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description A required persistence or cryptographic dependency is unavailable. */
-      503: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
     };
   };
-  create_email_session: {
+  update_mock_resource_item: {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        resource: string;
+        item_id: string;
+      };
       cookie?: never;
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['SignInRequest'];
+        'application/json': components['schemas']['ItemPatch'];
       };
     };
     responses: {
@@ -2047,10 +3028,12 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['SessionTokenResponse'];
+          'application/json': {
+            [key: string]: unknown;
+          };
         };
       };
-      /** @description The password, flow, verification code, or HTTP input was rejected. */
+      /** @description The operation is not supported for this resource. */
       400: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -2058,56 +3041,21 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Authentication credentials are invalid or expired. */
-      401: {
+      /** @description The requested route, resource, or item was not found. */
+      404: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
           'X-Request-ID'?: string;
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Correct credentials require email verification or the account is unavailable. */
-      403: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json':
-            | components['schemas']['EmailNotVerifiedResponse']
-            | components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request is too large. */
-      413: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request must use JSON. */
-      415: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request or legal acceptance could not be validated. */
+      /** @description The request could not be validated. */
       422: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -2115,23 +3063,10 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
-      429: {
-        headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description An unexpected safe internal failure occurred. */
+      /** @description An unexpected server error occurred. */
       500: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -2139,23 +3074,12 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description A required persistence or cryptographic dependency is unavailable. */
-      503: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
     };
   };
-  delete_all_sessions: {
+  reset_mock_demo: {
     parameters: {
       query?: never;
       header?: never;
@@ -2165,208 +3089,15 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description The password, flow, verification code, or HTTP input was rejected. */
-      400: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description Authentication credentials are invalid or expired. */
-      401: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request is too large. */
-      413: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request must use JSON. */
-      415: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request or legal acceptance could not be validated. */
-      422: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
-      429: {
-        headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description An unexpected safe internal failure occurred. */
-      500: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description A required persistence or cryptographic dependency is unavailable. */
-      503: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-    };
-  };
-  refresh_email_session: {
-    parameters: {
-      query?: never;
-      header: {
-        'Idempotency-Key': string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RefreshSessionRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['SessionTokenResponse'];
+          'application/json': components['schemas']['ResetResponse'];
         };
       };
-      /** @description The password, flow, verification code, or HTTP input was rejected. */
-      400: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description Authentication credentials are invalid or expired. */
-      401: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request conflicts with current authentication state. */
-      409: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request is too large. */
-      413: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The authentication request must use JSON. */
-      415: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description The request or legal acceptance could not be validated. */
-      422: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description Authentication admission, verification attempts, or resend cooldown was exceeded. */
-      429: {
-        headers: {
-          /** @description Bounded delay in seconds when throttled. */
-          'Retry-After'?: number;
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description An unexpected safe internal failure occurred. */
+      /** @description An unexpected server error occurred. */
       500: {
         headers: {
           /** @description Request identifier for support and diagnostics. */
@@ -2374,18 +3105,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
-        };
-      };
-      /** @description A required persistence or cryptographic dependency is unavailable. */
-      503: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthenticationErrorResponse'];
+          'application/json': components['schemas']['ErrorResponse'];
         };
       };
     };
@@ -2656,268 +3376,60 @@ export interface operations {
       };
     };
   };
-  reset_mock_demo: {
+  create_plan_item: {
     parameters: {
       query?: never;
-      header?: never;
+      header: {
+        'Idempotency-Key': string;
+      };
       path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ResetResponse'];
-        };
-      };
-      /** @description An unexpected server error occurred. */
-      500: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-    };
-  };
-  get_health: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HealthResponse'];
-        };
-      };
-      /** @description An unexpected server error occurred. */
-      500: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-    };
-  };
-  get_mock_resource: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        resource: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description The requested route, resource, or item was not found. */
-      404: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-      /** @description The request could not be validated. */
-      422: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-      /** @description An unexpected server error occurred. */
-      500: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-    };
-  };
-  create_mock_resource_item: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        resource: string;
-      };
       cookie?: never;
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['Item'];
+        'application/json': components['schemas']['CreatePlanItemRequest'];
       };
     };
     responses: {
-      /** @description Successful Response */
-      200: {
+      /** @description Authoritative planning response */
+      201: {
         headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Item'];
+          'application/json': components['schemas']['PlanItemResponse'];
         };
       };
-      /** @description The operation is not supported for this resource. */
-      400: {
+      /** @description Authentication is required or invalid. */
+      401: {
         headers: {
-          /** @description Request identifier for support and diagnostics. */
+          /** @description Validated caller correlation ID or generated server ID */
           'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
           [name: string]: unknown;
         };
         content: {
           'application/json': components['schemas']['ErrorResponse'];
         };
       };
-      /** @description The request could not be validated. */
-      422: {
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
         headers: {
-          /** @description Request identifier for support and diagnostics. */
+          /** @description Validated caller correlation ID or generated server ID */
           'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-      /** @description An unexpected server error occurred. */
-      500: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-    };
-  };
-  delete_mock_resource_item: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        resource: string;
-        item_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description The operation is not supported for this resource. */
-      400: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-      /** @description The request could not be validated. */
-      422: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-      /** @description An unexpected server error occurred. */
-      500: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponse'];
-        };
-      };
-    };
-  };
-  update_mock_resource_item: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        resource: string;
-        item_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ItemPatch'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            [key: string]: unknown;
-          };
-        };
-      };
-      /** @description The operation is not supported for this resource. */
-      400: {
-        headers: {
-          /** @description Request identifier for support and diagnostics. */
-          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
           [name: string]: unknown;
         };
         content: {
@@ -2927,8 +3439,27 @@ export interface operations {
       /** @description The requested route, resource, or item was not found. */
       404: {
         headers: {
-          /** @description Request identifier for support and diagnostics. */
+          /** @description Validated caller correlation ID or generated server ID */
           'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with existing state. */
+      409: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
           [name: string]: unknown;
         };
         content: {
@@ -2938,8 +3469,12 @@ export interface operations {
       /** @description The request could not be validated. */
       422: {
         headers: {
-          /** @description Request identifier for support and diagnostics. */
+          /** @description Validated caller correlation ID or generated server ID */
           'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
           [name: string]: unknown;
         };
         content: {
@@ -2949,8 +3484,567 @@ export interface operations {
       /** @description An unexpected server error occurred. */
       500: {
         headers: {
-          /** @description Request identifier for support and diagnostics. */
+          /** @description Validated caller correlation ID or generated server ID */
           'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  get_plan_item: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        plan_item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Authoritative planning response */
+      200: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PlanItemResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with existing state. */
+      409: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  update_plan_item: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        plan_item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePlanItemRequest'];
+      };
+    };
+    responses: {
+      /** @description Authoritative planning response */
+      200: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PlanItemResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with existing state. */
+      409: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  complete_plan_item: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        plan_item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompletePlanItemRequest'];
+      };
+    };
+    responses: {
+      /** @description Authoritative planning response */
+      200: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PlanItemResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with existing state. */
+      409: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  get_today_dashboard: {
+    parameters: {
+      query: {
+        timezone: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Authoritative planning response */
+      200: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TodayResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request conflicts with existing state. */
+      409: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
           [name: string]: unknown;
         };
         content: {

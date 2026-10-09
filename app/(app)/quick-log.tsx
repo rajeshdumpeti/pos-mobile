@@ -1,4 +1,4 @@
-import { SecondaryScreen } from '@/features/app-shell/ShellScreens';
+import { QuickActionsScreen } from '@/features/today/QuickActionsScreen';
 export default function QuickLog() {
-  return <SecondaryScreen title="Quick Log" body="Your quick logging actions go here." />;
+  return <QuickActionsScreen />;
 }

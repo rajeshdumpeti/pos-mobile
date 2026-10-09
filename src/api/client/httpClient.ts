@@ -8,12 +8,14 @@ export type HttpRequest<TBody = never> = {
   requestId?: string;
   credential?: string;
   idempotencyKey?: string;
+  query?: Readonly<{ timezone: string }>;
   signal?: AbortSignal;
   timeoutMs?: number;
 };
 type FetchLike = typeof fetch;
 const requestIdPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
-const allowedPath = /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|health$)/;
+const allowedPath =
+  /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|api\/v1\/today$|api\/v1\/plan\/items(?:\/[0-9a-f-]{36}(?:\/complete)?)?$|health$)/i;
 function authorization(credential?: string) {
   if (credential === undefined) return undefined;
   if (!credential || /[\r\n\s]/.test(credential))
@@ -83,8 +85,23 @@ export function createHttpClient({
     if (!requestIdPattern.test(requestId))
       throw new ApiError('configuration', 'Unable to create a valid request identifier.');
     const auth = authorization(input.credential);
-    if (input.idempotencyKey && !requestIdPattern.test(input.idempotencyKey))
+    const keyPattern =
+      input.path === '/api/v1/plan/items' ? /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/ : requestIdPattern;
+    if (input.idempotencyKey && !keyPattern.test(input.idempotencyKey))
       throw new ApiError('configuration', 'The idempotency key is malformed.');
+    let query = '';
+    if (input.query !== undefined) {
+      if (
+        input.path !== '/api/v1/today' ||
+        input.method !== 'GET' ||
+        Object.keys(input.query).some((key) => key !== 'timezone') ||
+        typeof input.query.timezone !== 'string' ||
+        !input.query.timezone ||
+        input.query.timezone.length > 128
+      )
+        throw new ApiError('configuration', 'The API query is not allowed.');
+      query = `?timezone=${encodeURIComponent(input.query.timezone)}`;
+    }
     const controller = new AbortController();
     let timedOut = false;
     const onAbort = () => controller.abort();
@@ -103,7 +120,7 @@ export function createHttpClient({
     if (input.idempotencyKey) headers['Idempotency-Key'] = input.idempotencyKey;
     try {
       if (input.signal?.aborted) throw new ApiError('cancelled', 'The API request was cancelled.');
-      const response = await fetchImpl(`${baseUrl}${input.path}`, {
+      const response = await fetchImpl(`${baseUrl}${input.path}${query}`, {
         method: input.method,
         headers,
         body: input.body === undefined ? undefined : JSON.stringify(input.body),

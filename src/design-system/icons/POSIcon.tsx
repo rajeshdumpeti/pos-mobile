@@ -5,6 +5,12 @@ import { useTheme } from '@/design-system/theme';
 
 const iconMap = {
   add: 'add',
+  priority: 'flag-outline',
+  progress: 'pulse-outline',
+  score: 'ellipse-outline',
+  edit: 'create-outline',
+  clock: 'time-outline',
+  chevron: 'chevron-forward',
   today: 'sunny-outline',
   focus: 'timer-outline',
   review: 'stats-chart-outline',

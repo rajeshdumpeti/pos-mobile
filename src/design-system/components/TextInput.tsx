@@ -27,6 +27,7 @@ export function TextInput({
   ref,
   className,
   style,
+  showSoftInputOnFocus = true,
   ...props
 }: TextInputProps) {
   const theme = useTheme();
@@ -46,6 +47,7 @@ export function TextInput({
           aria-invalid={Boolean(error)}
           className={className}
           editable={!disabled}
+          showSoftInputOnFocus={showSoftInputOnFocus}
           placeholderTextColor={theme.colors.textMuted}
           onFocus={(event) => {
             setFocused(true);

@@ -1,0 +1,701 @@
+
+===== PAGE 1 =====
+
+POS
+Today Dashboard Core v1
+Acceptance Test Plan &
+Execution Workbook
+Functional correctness. Honest intelligence. Premium mobile quality.
+Document control Value
+Document ID / version POS-QA-TODAY-001 / 1.0
+Prepared October 5, 2026
+Scope Today Core v1, plan-item flows and visual polish
+Baseline Today contract 1.0; local feat/today-dashboard-core
+Classification Internal - founder acceptance
+Approval state Test specification; not a release approval
+Prepared from the Frontend-to-Testing handoff and this testing channel. No repository, complete OpenAPI
+schema or post-polish validation report was independently inspected. Contract-specific limits and ordering
+must be verified before execution.
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 1
+
+===== PAGE 2 =====
+
+01 / Purpose and scope
+Verify that Today presents authoritative daily state, recommends a supported next action with transparent
+reasoning, and safely supports real plan-item creation, retrieval, editing and completion. Visual polish must
+not weaken correctness, privacy, accessibility or existing session boundaries.
+Included Excluded / separate approval
+Daily Status; Next Best Action; score and
+breakdown; progress; Up Next; priorities; wins;
+supported quick actions
+Nutrition, workout, money, health and focus
+measurement/logging not supported by this
+milestone
+Plan-item forms, date/time selection, modal behavior,
+refresh, failure and conflict handling
+Provider integrations, notification scheduling,
+fabricated AI output, queued offline mutations
+iOS Simulator acceptance and targeted
+auth/onboarding regression
+Physical iPhone, Android, staging and production
+acceptance
+02 / Baseline and entry criteria
+Backend SHA: 6bde40e0800ef36a9edefec9c6acbf5cc16d1e74. Frontend Git/merge status is unconfirmed.
+Initial implementation validation: 54 suites / 410 tests reported passed; these results do not establish
+post-polish validation.
+Before execution, record frontend SHA or dirty-worktree identifier, backend SHA, contract version,
+Expo/native build identifier, Metro bundle revision, simulator model/iOS version, timezone, test date and
+tester. Confirm backend reachability and current bundle. Obtain the final post-polish lint, typecheck, contract
+checks and automated-test report before Git/PR approval.
+Use only local, founder-controlled test accounts. Keep an empty completed-onboarding account, a populated
+account, a second account for isolation, and an incomplete-onboarding account. Never reset
+production/staging data.
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 2
+
+===== PAGE 3 =====
+
+03 / Execution and evidence rules
+Status Meaning
+PASS All required checks executed and matched expected results. Identify founder-reported
+versus independently inspected evidence.
+FAIL At least one executed check differs from expected behavior. Record a defect.
+PARTIAL Some checks passed but required checks remain untested or evidence is insufficient.
+BLOCKED A prerequisite prevents safe execution. Record owner and unblock condition.
+NOT TESTED Execution has not started.
+Run one gate at a time during interactive founder testing. Each case below is independently recordable. All
+positively phrased expected checks should be YES; use PARTIAL for any untested check. A screenshot
+cannot prove request count, backend persistence, absence of scheduling or sensitive logging. Use redacted
+network evidence when those assertions matter.
+Evidence per run: case ID, timestamp/timezone, baseline, test-account alias, selected non-sensitive fixture
+values, expected/actual result, screenshot or recording reference, sanitized request method/status/count and
+relevant response fields, defect link and retest result. Do not capture passwords, verification codes, tokens,
+Authorization headers, cookies, private email addresses or reset URLs.
+04 / Current acceptance ledger
+Gate Recorded state Evidence boundary
+TD1 - Empty state PASS Founder reported YES / PASS
+TD2 - Unscheduled creation PASS Founder reported YES / PASS
+TD3 - Date/time creation PASS Founder reported YES / PASS; 12:30 PM screenshot
+prompted an unresolved intended-time check
+TD4 - Ordering / CTA PARTIAL Screenshot only; API comparison, CTA and intended
+saved time unconfirmed
+All later cases NOT TESTED This document specifies future execution
+No confirmed Today defect has been assigned an issue ID in this channel. Two NOW labels on past-time
+items are an observation, not a proven defect. Earlier passes are retained; the TD3 time observation requires
+targeted verification.
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 3
+
+===== PAGE 4 =====
+
+05 / Coverage map
+Coverage area Cases
+State and truthful data TC01-TC06
+Create, scheduling and recommendations TC07-TC15
+Edit, completion and score TC16-TC23
+Recovery, concurrency and security TC24-TC32
+Mobile UX and accessibility TC33-TC39
+Performance and release regression TC40-TC42
+Priority: P0 = data integrity, account security or essential flow; P1 = core acceptance; P2 = polish and
+secondary behavior. Priority is test execution order, not defect severity.
+Contract oracle: compare UI against the actual Today contract 1.0 response and approved plan-item schema.
+Do not invent score formulas, valid field limits, tie-break ordering, endpoint names, conflict codes or time
+classification. Record missing contract evidence as BLOCKED or PARTIAL.
+Fixture set
+A: empty, verified, completed-onboarding account. B: populated account with Today QA - Unscheduled,
+Today QA - Scheduled and Today QA - Later. C: second completed-onboarding account with distinctive
+items. D: verified incomplete-onboarding account. Add past-time, future-day and completed fixtures only
+where a case requires them. Record exact local dates/times; relative times become stale across sessions.
+Safe fault injection
+Use a local test harness or approved local response stub for conflicts, malformed responses and error codes.
+Never modify shared backend behavior, intercept third-party traffic, expose credentials or trigger intentional
+production failures. If no safe harness exists, mark those cases BLOCKED.
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 4
+
+===== PAGE 5 =====
+
+06 / Detailed test cases
+TC01 / Empty Today state
+Priority: P1 Baseline status: TD1 founder-reported PASS
+Preconditions: Account A; no plan items.
+Actions: Open Today; refresh; inspect each section.
+Expected checks: Getting-started state and accurate empty priorities/Up Next/wins; supported create action
+reachable; no invented records.
+Evidence: Screenshot and sanitized Today response.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC02 / Null score versus genuine zero
+Priority: P1 Baseline status: TD1 covers unavailable state only; zero comparison NOT TESTED
+Preconditions: A and an account with eligible incomplete work; contract available.
+Actions: Compare empty account score with populated incomplete account; inspect breakdown response.
+Expected checks: Unavailable/null is not rendered as genuine zero; genuine zero is displayed only when
+authoritative score is zero.
+Evidence: Both responses and score screenshots.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 5
+
+===== PAGE 6 =====
+
+06 / Detailed test cases
+TC03 / Daily Status accuracy
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: B with incomplete and completed fixtures.
+Actions: Refresh; compare eligible/completed/remaining/overdue counts and displayed state to response.
+Expected checks: Counts and state match the authoritative response; no local invented total.
+Evidence: Sanitized response and screen.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC04 / Honest progress and unsupported metrics
+Priority: P1 Baseline status: Empty-state portion founder-reported PASS
+Preconditions: Configured goals but no supported measurements.
+Actions: Inspect Today progress and quick actions in populated and empty states.
+Expected checks: Targets are not recorded progress; unavailable measurements remain honest;
+unsupported log domains are excluded.
+Evidence: Screenshots and supported-action inventory.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 6
+
+===== PAGE 7 =====
+
+06 / Detailed test cases
+TC05 / Singular and plural copy
+Priority: P2 Baseline status: NOT TESTED; handoff notes 1 eligible items / 1 of 1 plan items
+Preconditions: One eligible item, then two; one completed item.
+Actions: Inspect score explanation, breakdown and item-count labels at each count.
+Expected checks: Grammar is correct for one and multiple items; counts remain accurate.
+Evidence: Screenshots for each count.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC06 / Empty Up Next with unscheduled work
+Priority: P1 Baseline status: TD2 founder-reported PASS
+Preconditions: Unscheduled incomplete item only.
+Actions: Refresh; inspect Up Next and active priorities.
+Expected checks: Unscheduled work remains visible; empty scheduled copy does not imply all work is
+complete or absent.
+Evidence: Response plus both sections.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 7
+
+===== PAGE 8 =====
+
+06 / Detailed test cases
+TC07 / Unscheduled creation
+Priority: P0 Baseline status: TD2 founder-reported PASS
+Preconditions: Completed-onboarding account.
+Actions: Create Today QA - Unscheduled without date/time; save; refresh; retrieve.
+Expected checks: Exactly one durable item; entered fields preserved; no invented schedule; appears where
+contract prescribes.
+Evidence: Create response, retrieved fields, refresh screenshot.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC08 / Duplicate-tap suppression
+Priority: P0 Baseline status: TD2 founder-reported PASS
+Preconditions: Create form; network observable.
+Actions: Rapidly tap Save while request pending; inspect count; refresh.
+Expected checks: One logical creation; busy/disabled action; no duplicates and no false success.
+Evidence: Request count and retrieved inventory.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 8
+
+===== PAGE 9 =====
+
+06 / Detailed test cases
+TC09 / Required fields and input validation
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Approved plan-item field rules available.
+Actions: Try empty/whitespace title and schema-invalid values; correct them and save.
+Expected checks: Invalid requests prevented or safely rejected; useful field errors; draft retained; valid
+correction succeeds.
+Evidence: Non-sensitive field values, request counts, errors.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC10 / Date/time picker cancellation
+Priority: P1 Baseline status: TD3 picker cancellation founder-reported PASS; form cancel NOT TESTED
+Preconditions: Create form with known initial value.
+Actions: Change picker selection; cancel; reopen; compare; dismiss entire form.
+Expected checks: Unconfirmed picker changes discarded; cancelling form creates nothing.
+Evidence: Recording and mutation count.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 9
+
+===== PAGE 10 =====
+
+06 / Detailed test cases
+TC11 / Scheduled priority creation and local-time fidelity
+Priority: P0 Baseline status: TD3 founder-reported PASS; intended 12:30 PM check unresolved
+Preconditions: B; known app/backend timezone.
+Actions: Select today and an explicit future local time; record it; set supported priority; save and retrieve.
+Expected checks: Exact confirmed date/time and priority survive save/refresh; UTC conversion does not
+shift intended local value.
+Evidence: Form time, sanitized saved/retrieved timestamp and UI.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC12 / NOW/NEXT/LATER authority
+Priority: P1 Baseline status: TD4 PARTIAL
+Preconditions: Past-time and future-time items; response available.
+Actions: Refresh; compare every label/order to response; include two past-time items.
+Expected checks: UI follows contract labels and ordering; no invented temporal category; multiple NOW
+entries evaluated against contract.
+Evidence: Ordered response and screenshot.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 10
+
+===== PAGE 11 =====
+
+06 / Detailed test cases
+TC13 / Next Best Action reason and CTA
+Priority: P1 Baseline status: TD4 PARTIAL
+Preconditions: Populated recommendation with supported target.
+Actions: Compare recommendation/reason/action target; tap CTA; retrieve target.
+Expected checks: Transparent reason and recommendation match response; CTA opens correct
+item/action without completing it automatically.
+Evidence: Response and CTA recording.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC14 / Unavailable or stale recommendation
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Safe local fixtures for absent/stale/unsupported action.
+Actions: Render each fixture; attempt available action; refresh.
+Expected checks: No fabricated recommendation, broken target or false freshness; safe fallback and
+supported action only.
+Evidence: Fixture, screen and request trace.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 11
+
+===== PAGE 12 =====
+
+06 / Detailed test cases
+TC15 / Future-day exclusion and date boundaries
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: One today item and one tomorrow item; timezone recorded.
+Actions: Save tomorrow item; refresh; compare eligible score and active today sections; test local midnight
+with safe clock fixture.
+Expected checks: Future item excluded from today eligible score; date membership follows contract
+timezone; no UTC-day drift.
+Evidence: Dates, response counts and boundary fixture.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC16 / Item retrieval
+Priority: P1 Baseline status: TD3 opening details founder-reported PASS
+Preconditions: Existing item ID; no mutation in progress.
+Actions: Open from priority/Up Next and recommendation where available; close/reopen.
+Expected checks: Correct authoritative item and fields; loading safe; opening creates no mutation.
+Evidence: Retrieval requests and modal screen.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 12
+
+===== PAGE 13 =====
+
+06 / Detailed test cases
+TC17 / Edit item and persistence
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Incomplete test item.
+Actions: Edit title, supported priority and schedule; save once; refresh and reopen.
+Expected checks: Changes persist on correct item; all affected Today sections reconcile; no duplicate or
+stale details.
+Evidence: Edit response and retrieval after refresh.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC18 / Edit cancellation and validation
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Known saved fields.
+Actions: Edit fields and dismiss without saving; reopen; try invalid edit; correct it.
+Expected checks: Cancelled draft does not change server; invalid edit safe; original item preserved; valid
+explicit save succeeds.
+Evidence: Before/after values and request counts.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 13
+
+===== PAGE 14 =====
+
+06 / Detailed test cases
+TC19 / Confirmed completion
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Incomplete eligible item; network observable.
+Actions: Complete once; observe pending state and response; refresh.
+Expected checks: Completion shown only after authoritative success; duplicate taps suppressed; server
+retains completed state.
+Evidence: Mutation count, response and retrieved state.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC20 / Active removal and unique wins
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Complete an item displayed in multiple sections.
+Actions: After completion inspect priorities, Up Next and wins; refresh twice.
+Expected checks: Completed item leaves active sections; wins shows it once; recommendation reconciles
+safely.
+Evidence: Before/after screen and response IDs.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 14
+
+===== PAGE 15 =====
+
+06 / Detailed test cases
+TC21 / Score and breakdown reconciliation
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Known eligible set; contract score oracle.
+Actions: Record baseline; complete one eligible item; refresh; open breakdown.
+Expected checks: Score, numerator/denominator and breakdown match response/formula; no guessed
+rounding or inflated progress.
+Evidence: Baseline/updated responses and breakdown.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC22 / All eligible items complete
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Small eligible set.
+Actions: Complete remaining eligible items; refresh; inspect state, score, CTA and wins.
+Expected checks: Completed-day presentation reflects response; no stale active recommendation or
+duplicate win; unavailable metrics stay unavailable.
+Evidence: Response and sections.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 15
+
+===== PAGE 16 =====
+
+06 / Detailed test cases
+TC23 / Completion failure
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Safe local failure harness.
+Actions: Fail completion request; inspect item; restore backend; explicitly retry.
+Expected checks: No fake completion or inflated score/win; safe error; explicit retry succeeds exactly once.
+Evidence: Failed/success requests and screen.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC24 / Optimistic-concurrency conflict
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Two authorized local clients editing same test item; contract conflict behavior known.
+Actions: Update item in second client; submit stale version in first; review refreshed state; explicitly retry.
+Expected checks: Safe reconciliation; no silent overwrite or automatic mutation replay; explicit action uses
+current version.
+Evidence: Sanitized versions, conflict response and retry count.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 16
+
+===== PAGE 17 =====
+
+06 / Detailed test cases
+TC25 / Refresh and freshness
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Update fixture using authorized second local client.
+Actions: Pull to refresh; inspect pending state and updated content; repeat quickly.
+Expected checks: Authoritative state replaces stale data; no duplicate items/mutations; freshness claims
+match response.
+Evidence: Recording and read-request trace.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC26 / Offline read and recovery
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Loaded Today; disconnect backend/network locally.
+Actions: Refresh offline; inspect retained content/error; reconnect.
+Expected checks: No fabricated fresh state; safe offline indication; reconnection restores reads without
+queued writes.
+Evidence: Offline and recovered screen plus trace.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 17
+
+===== PAGE 18 =====
+
+06 / Detailed test cases
+TC27 / Offline create/edit and explicit retry
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Open valid form; backend disconnected.
+Actions: Save; inspect error/draft; reconnect without tapping; then explicitly retry.
+Expected checks: No success before server confirmation; draft retained where safe; reconnect alone sends
+no mutation; retry sends one.
+Evidence: Request counts across disconnect/reconnect.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC28 / Timeout and uncertain mutation outcome
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Harness delays response after possible server commit.
+Actions: Submit; trigger timeout; inspect safe message; reconcile item inventory before retry.
+Expected checks: No claim of definite failure/success without evidence; reconciliation avoids duplicate
+logical item; explicit retry follows supported contract.
+Evidence: Server state and timeout/retry trace.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 18
+
+===== PAGE 19 =====
+
+06 / Detailed test cases
+TC29 / Error response matrix
+Priority: P0 Baseline status: NOT TESTED; record each status separately
+Preconditions: Approved local fixtures for 401/403/422/429/500/503.
+Actions: Run reads and applicable mutations for each status separately; record behavior and recovery.
+Expected checks: Fixed safe messages; no raw backend prose; no false success or automatic mutation
+replay; terminal auth failure follows auth boundary.
+Evidence: Per-status results and sanitized trace.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC30 / Malformed success and response validation
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Safe invalid response fixture: missing/wrong fields, unsupported contract.
+Actions: Supply malformed read and mutation responses independently.
+Expected checks: Safe error boundary; no crash, fabricated state or success; existing data handled
+honestly.
+Evidence: Fixture and app output.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 19
+
+===== PAGE 20 =====
+
+06 / Detailed test cases
+TC31 / Cold launch and onboarding boundaries
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Completed and incomplete-onboarding accounts.
+Actions: Cold launch each; test signed-out launch; restore valid session.
+Expected checks: Completed account reaches Today; incomplete account reaches Onboarding; signed-out
+account reaches Auth; neutral unresolved loading.
+Evidence: Launch recordings and redacted session flags.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC32 / Sign-out and account isolation
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: B and C with distinctive records.
+Actions: Load B; sign out; sign in C; switch back; inspect Today/modals/cache.
+Expected checks: No B records visible to C, including transient flashes; private drafts/cache cleared at auth
+boundary; correct records restored.
+Evidence: Account-alias recordings only.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 20
+
+===== PAGE 21 =====
+
+06 / Detailed test cases
+TC33 / Modal lifecycle and focus return
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Today scroll position recorded.
+Actions: Open create/view/edit; dismiss through supported controls/gestures; repeat; reopen.
+Expected checks: One modal; no stuck backdrop, accidental save or scroll lock; focus returns to trigger;
+draft policy consistent.
+Evidence: Recording and mutation trace.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC34 / Keyboard and sticky form actions
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Smallest supported simulator; longest form.
+Actions: Focus lower fields; open keyboard; scroll; reach Save/Cancel; dismiss keyboard.
+Expected checks: Fields/errors/actions reachable above keyboard and home indicator; no overlap or
+trapped scrolling; 44pt targets.
+Evidence: Keyboard screenshots and interaction recording.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 21
+
+===== PAGE 22 =====
+
+06 / Detailed test cases
+TC35 / Safe areas, scroll and navigation
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Notched simulator; long content and long titles.
+Actions: Scroll top/bottom; open tabs/quick action; rotate only if supported.
+Expected checks: Header/cards/nav remain within safe areas; bottom content reachable; tabs/actions not
+obscured; unsupported actions absent.
+Evidence: Top/bottom screenshots.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC36 / Light and dark presentation
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Both theme modes available.
+Actions: Inspect Today and every modal/error/loading state in both themes.
+Expected checks: Readable contrast, clear hierarchy, coherent icons and cards; no missing content, clipped
+text or invisible action.
+Evidence: Paired screenshots.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 22
+
+===== PAGE 23 =====
+
+06 / Detailed test cases
+TC37 / Large text and long content
+Priority: P1 Baseline status: NOT TESTED
+Preconditions: Largest supported accessibility text; long title fixture.
+Actions: Inspect cards, breakdown, form errors and bottom actions; scroll.
+Expected checks: No essential truncation or overlap; controls reachable; text reflows and remains
+understandable.
+Evidence: Screenshots at recorded text setting.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC38 / Screen reader semantics
+Priority: P1 Baseline status: NOT TESTED; BLOCKED if tooling unavailable
+Preconditions: VoiceOver or equivalent supported simulator tooling.
+Actions: Navigate header, insight, score, items, forms and modal dismissal.
+Expected checks: Meaningful labels/order; selected/busy/disabled states announced; color not sole signal;
+modal focus contained and returned.
+Evidence: Accessibility recording/inspector evidence.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 23
+
+===== PAGE 24 =====
+
+06 / Detailed test cases
+TC39 / Motion and reduced motion
+Priority: P2 Baseline status: NOT TESTED
+Preconditions: Normal and reduced-motion settings.
+Actions: Open/dismiss forms; load score; save/complete; repeat with reduced motion.
+Expected checks: Purposeful non-blocking animation; no flicker/repeated distracting animation; reduced
+motion removes/reduces effects; actions remain correct.
+Evidence: Paired recordings.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC40 / Privacy and safe diagnostics
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Authorized local inspection tools.
+Actions: Inspect routes, query keys, analytics/logs and sanitized requests across flows.
+Expected checks: No tokens/passwords/private values in logs/routes/keys; item content not needlessly
+logged; errors do not expose backend internals.
+Evidence: Redacted audit notes, not raw secrets.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 24
+
+===== PAGE 25 =====
+
+06 / Detailed test cases
+TC41 / Responsiveness and load
+Priority: P2 Baseline status: NOT TESTED; budget approval required
+Preconditions: Recorded simulator/build; representative larger local fixture set.
+Actions: Measure cold load, refresh and modal response; repeat; inspect scrolling and crashes.
+Expected checks: No hangs/crashes/unbounded rendering; record timings; evaluate against approved
+budget, not invented thresholds.
+Evidence: Timings, fixture size, recording; budget reference.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+TC42 / Final regression and release candidate
+Priority: P0 Baseline status: NOT TESTED
+Preconditions: Final candidate revision and post-polish automated report.
+Actions: Rerun P0/P1 affected cases; smoke registration/sign-in/onboarding/Today; inspect final
+diff/validation report.
+Expected checks: No auth/onboarding regressions; tests tied to final revision; unresolved failures disclosed;
+no staging/production approval inferred.
+Evidence: Candidate SHA, CI/local checks and signed ledger.
+Execution: All expected checks YES / NO / NOT TESTED
+Result: PASS / FAIL / PARTIAL / BLOCKED / NOT TESTED
+Actual / evidence reference / defect ID: __________________________
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 25
+
+===== PAGE 26 =====
+
+07 / Defect management
+Assign TODAY-01, TODAY-02 and so on only to confirmed defects. Distinguish frontend interpretation,
+backend response, environment and test-data causes. An API involvement alone does not establish backend
+ownership.
+Severity Definition
+Critical Account isolation/security failure or unrecoverable material data loss. Stop affected
+testing.
+High Core create/edit/complete broken, wrong persisted date, duplicate writes, false
+success or incorrect authoritative score.
+Medium Recoverable functional or accessibility failure with a practical workaround.
+Low Copy, visual or motion defect without material workflow impact.
+Issue record template
+ID / title: __________
+Status / severity / blocking: __________
+Environment and frontend/backend revisions: __________
+Preconditions and test data: __________
+Steps to reproduce: __________
+Expected behavior: __________
+Actual behavior: __________
+Redacted evidence references: __________
+Probable ownership and rationale: __________
+Retest revision / date / result: __________
+Open observations, not confirmed defects
+1. TD4 screenshot: two past-time items labelled NOW; compare to contract before classification.
+2. TD3 screenshot: Scheduled displayed 12:30 PM; confirm intended picker selection before attributing a time
+defect.
+3. Handoff copy: singular grammar and empty Up Next semantics require explicit checks.
+4. Sticky form actions require keyboard/home-indicator verification.
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 26
+
+===== PAGE 27 =====
+
+08 / Acceptance and release decision
+Local acceptance supports proceeding to Git/PR only when the final candidate is identified, post-polish
+checks are supplied, required P0/P1 scenarios pass, no unresolved Critical/High defect exists, and deferred
+lower-risk checks have explicit founder disposition. A partial run is not complete acceptance. Git/PR approval
+does not authorize merge, staging or production.
+Current decision: acceptance is incomplete. TD1-TD3 are founder-reported PASS, TD4 is PARTIAL, later
+coverage is NOT TESTED. Git/merge state and post-polish automation remain unconfirmed. Physical iPhone,
+Android and staging acceptance remain separate and unapproved.
+Approval field Record
+Candidate revision / branch
+____________________________
+Executed / passed / failed / partial / blocked ____________________________
+Open defects and deferred risk ____________________________
+Post-polish validation reference ____________________________
+Local acceptance supports Git/PR YES / NO - reasons: __________________
+Founder / tester / date
+____________________________
+Physical-device / Android / staging Separate acceptance; not approved here
+09 / Completion handoff template
+POS Today acceptance handoff
+Baseline: frontend ___ / backend ___ / contract ___
+Environment and platform: ___
+Passed cases and evidence: ___
+Failed cases / confirmed issues: ___
+Partial, blocked and deferred checks: ___
+Retest outcomes: ___
+Automation on final revision: ___
+Local acceptance supports Git/PR: YES / NO, because ___
+Staging / physical iPhone / Android: separately unapproved unless explicitly accepted.
+Next authorized action: ___
+Document maintenance: update the execution ledger without rewriting historical evidence. Any relevant code
+change triggers risk-based retest on the new revision. Version 1.0 is the complete planned scenario baseline,
+not a claim that all scenarios have passed.
+POS / TODAY QUALITY ENGINEERING / v1.0 / INTERNAL 27
