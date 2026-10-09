@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Pressable, PressableProps } from 'react-native';
 
 import { POSIcon, POSIconName } from '@/design-system/icons';
@@ -15,15 +15,9 @@ export function IconButton({
   disabled = false,
   className,
   style,
-  onPressIn,
-  onPressOut,
-  onHoverIn,
-  onHoverOut,
   ...props
 }: IconButtonProps) {
   const theme = useTheme();
-  const [pressed, setPressed] = useState(false),
-    [hovered, setHovered] = useState(false);
   const isDisabled = Boolean(disabled);
   return (
     <Pressable
@@ -34,31 +28,15 @@ export function IconButton({
       className={joinClassNames('items-center justify-center', className)}
       disabled={isDisabled}
       hitSlop={4}
-      onPressIn={(event) => {
-        setPressed(true);
-        onPressIn?.(event);
-      }}
-      onPressOut={(event) => {
-        setPressed(false);
-        onPressOut?.(event);
-      }}
-      onHoverIn={(event) => {
-        setHovered(true);
-        onHoverIn?.(event);
-      }}
-      onHoverOut={(event) => {
-        setHovered(false);
-        onHoverOut?.(event);
-      }}
-      style={[
+      style={(state) => [
         {
           width: theme.controlSizes.iconButton,
           height: theme.controlSizes.iconButton,
           borderRadius: theme.radii.pill,
-          backgroundColor: pressed ? theme.colors.accentSoft : 'transparent',
+          backgroundColor: state.pressed ? theme.colors.accentSoft : 'transparent',
           opacity: isDisabled ? theme.opacity.disabled : 1,
         },
-        typeof style === 'function' ? style({ pressed, hovered }) : style,
+        typeof style === 'function' ? style(state) : style,
       ]}
     >
       <POSIcon name={icon} tone="accent" />
