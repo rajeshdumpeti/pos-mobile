@@ -16,7 +16,7 @@ jest.mock('expo-router', () => ({
   useRouter: () => ({ replace: mockReplace, navigate: jest.fn() }),
   useNavigation: () => ({ dispatch: jest.fn() }),
 }));
-jest.mock('@react-navigation/native', () => ({ usePreventRemove: jest.fn() }));
+jest.mock('expo-router/react-navigation', () => ({ usePreventRemove: jest.fn() }));
 jest.mock('./NativePicker', () => ({ NativePicker: () => null }));
 jest.mock('@/navigation', () => ({
   routes: { app: { index: '/', planItem: '/plan-item' } },

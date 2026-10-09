@@ -76,7 +76,16 @@ requireCheck(
   app.android?.adaptiveIcon?.backgroundColor === '#302344',
   'Expo adaptive background must use premium violet #302344.',
 );
-requireCheck(app.splash?.image === expected.splash, 'Expo splash path is incorrect.');
+const splashPlugin = app.plugins.find(
+  (plugin) => Array.isArray(plugin) && plugin[0] === 'expo-splash-screen',
+);
+requireCheck(splashPlugin?.[1]?.image === expected.splash, 'Expo splash path is incorrect.');
+requireCheck(
+  splashPlugin?.[1]?.backgroundColor === '#F4F3EF' &&
+    splashPlugin?.[1]?.resizeMode === 'contain' &&
+    splashPlugin?.[1]?.enableFullScreenImage_legacy === true,
+  'Expo splash appearance must preserve the approved legacy layout.',
+);
 for (const file of Object.values(expected))
   requireCheck(fs.existsSync(path.join(root, file)), `Expo references missing file ${file}.`);
 

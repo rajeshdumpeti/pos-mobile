@@ -45,7 +45,7 @@ export type ThemeContextValue = POSTheme & {
 
 export function resolveThemeMode(
   preference: ThemePreference,
-  systemScheme: ColorSchemeName,
+  systemScheme: ColorSchemeName | null | undefined,
 ): ResolvedAppearance {
   if (preference !== 'system') return preference;
   return systemScheme === 'dark' ? 'dark' : 'light';

@@ -48,9 +48,17 @@ test('resolved Expo inputs preserve identity and use separate platform assets', 
         backgroundColor: '#302344',
       },
     },
-    splash: { image: './assets/brand/splash-icon.png', backgroundColor: '#F4F3EF' },
     extra: { eas: { projectId: '7eda4110-a762-4d91-b02e-646e9ff2c1fa' } },
   });
+  expect(app.plugins).toContainEqual([
+    'expo-splash-screen',
+    {
+      image: './assets/brand/splash-icon.png',
+      backgroundColor: '#F4F3EF',
+      resizeMode: 'contain',
+      enableFullScreenImage_legacy: true,
+    },
+  ]);
   expect(app.ios.infoPlist.ITSAppUsesNonExemptEncryption).toBe(false);
   expect(JSON.stringify(app)).not.toContain('welcome.png');
   expect(configured.icon).toBe(app.icon);
