@@ -9,7 +9,7 @@ test('Expo and EAS own the required development-build foundation', () => {
   const eas = json('eas.json');
   const pkg = json('package.json');
   expect(app.scheme).toBe('pos');
-  expect(pkg.dependencies['expo-dev-client']).toBe('57.0.19');
+  expect(pkg.dependencies['expo-dev-client']).toBe('57.0.20');
   expect(eas.build.development).toMatchObject({
     developmentClient: true,
     distribution: 'internal',

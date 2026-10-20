@@ -1,3 +1,4 @@
+import type { PlanContext } from '@/features/plan/calendar';
 import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, View, useWindowDimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
@@ -20,11 +21,17 @@ export function validPlanId(value: unknown): string | undefined {
     ? value
     : undefined;
 }
-export function PlanItemDetailScreen({ id: input }: { id?: string | string[] }) {
+export function PlanItemDetailScreen({
+  id: input,
+  context,
+}: {
+  id?: string | string[];
+  context?: PlanContext;
+}) {
   const id = validPlanId(input),
     query = usePlanItem(id),
     mutations = usePlanMutations(id),
-    open = usePlanAction(),
+    open = usePlanAction(context),
     theme = useTheme(),
     connectivity = useAuthenticationConnectivity();
   const { fontScale } = useWindowDimensions();
@@ -73,6 +80,7 @@ export function PlanItemDetailScreen({ id: input }: { id?: string | string[] }) 
   const disabled = mutations.reviewRequired || query.isError || connectivity === 'offline';
   return (
     <PlanItemPage
+      context={context}
       title="Plan item"
       busy={mutations.busy}
       footer={

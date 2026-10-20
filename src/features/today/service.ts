@@ -1,6 +1,7 @@
 import type { HttpRequest } from '@/api/client';
 import type { CreatePlanItem, UpdatePlanItem } from './types';
 import { requireToday, requirePlanItem } from './validation';
+import { requirePlanDate } from '@/features/plan/validation';
 import { ApiError } from '@/api';
 type Request = <R, B = never>(input: HttpRequest<B>) => Promise<R>;
 const itemPath = (id: string) => {
@@ -10,6 +11,25 @@ const itemPath = (id: string) => {
 };
 export function createPlanningService(request: Request) {
   return {
+    selectedDate: async (
+      credential: string,
+      selected_date: string,
+      timezone: string,
+      cursor?: string,
+      signal?: AbortSignal,
+    ) =>
+      requirePlanDate(
+        await request<unknown>({
+          path: '/api/v1/plan',
+          method: 'GET',
+          query: { selected_date, timezone, limit: 50, ...(cursor ? { cursor } : {}) },
+          credential,
+          signal,
+          expectedStatuses: [200],
+        }),
+        selected_date,
+        timezone,
+      ),
     today: async (credential: string, timezone: string, signal?: AbortSignal) =>
       requireToday(
         await request<unknown>({

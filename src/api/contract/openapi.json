@@ -4584,6 +4584,272 @@
           }
         }
       }
+    },
+    "/api/v1/plan": {
+      "get": {
+        "tags": ["Daily planning and Today"],
+        "summary": "Read authoritative items assigned to a selected date",
+        "description": "Plan contract 1.0. Ownership uses the authenticated account and explicit scheduled_for_date. Requested timezone determines past/current/future; stored scheduling intent is preserved. Past dates show current state. Summary and deterministic insight cover the full selected date. Order: scheduled incomplete by start/UUID, unscheduled incomplete by priority descending/creation/UUID, completed by completion descending/UUID. Cursors are opaque and account/date/timezone scoped. Mutations between pages can change results; refetch from page one after mutation success. No snapshot pagination guarantee. Insight-only modeled failures preserve items and summary. Responses are current-only and never cached.",
+        "operationId": "get_plan_selected_date",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "timezone",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "title": "Timezone"
+            }
+          },
+          {
+            "name": "selected_date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "Explicit assigned date, YYYY-MM-DD; independent of start conversion",
+              "title": "Selected Date"
+            },
+            "description": "Explicit assigned date, YYYY-MM-DD; independent of start conversion"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Maximum returned items; summary and insight cover the full date",
+              "default": 50,
+              "title": "Limit"
+            },
+            "description": "Maximum returned items; summary and insight cover the full date"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque continuation from the preceding response; bound to account, date and timezone",
+              "title": "Cursor"
+            },
+            "description": "Opaque continuation from the preceding response; bound to account, date and timezone"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authoritative planning response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanSelectedDateResponse"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Sensitive responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required or invalid.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Sensitive responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated account is not eligible for this operation.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Sensitive responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The request could not be validated.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Sensitive responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Sensitive responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A required dependency is unavailable.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Sensitive responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -6090,6 +6356,293 @@
           "verification_expires_at": "2026-09-01T12:10:00Z"
         }
       },
+      "PlanDateRelation": {
+        "type": "string",
+        "enum": ["past", "current", "future"],
+        "title": "PlanDateRelation"
+      },
+      "PlanDayItemResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "scheduled_for_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Scheduled For Date"
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone"
+          },
+          "scheduled_start_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduled Start At"
+          },
+          "scheduled_end_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduled End At"
+          },
+          "is_priority": {
+            "type": "boolean",
+            "title": "Is Priority"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version"
+          },
+          "section": {
+            "$ref": "#/components/schemas/PlanItemSection"
+          },
+          "timing_state": {
+            "$ref": "#/components/schemas/PlanTimingState"
+          },
+          "action": {
+            "type": "string",
+            "const": "plan_item.view",
+            "title": "Action"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "scheduled_for_date",
+          "timezone",
+          "scheduled_start_at",
+          "scheduled_end_at",
+          "is_priority",
+          "completed_at",
+          "created_at",
+          "updated_at",
+          "version",
+          "section",
+          "timing_state",
+          "action"
+        ],
+        "title": "PlanDayItemResponse"
+      },
+      "PlanFreshnessResponse": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "const": "current",
+            "title": "State"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "title": "As Of"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["state", "as_of"],
+        "title": "PlanFreshnessResponse"
+      },
+      "PlanInsightAction": {
+        "type": "string",
+        "enum": ["plan_item.create", "plan_item.view"],
+        "title": "PlanInsightAction"
+      },
+      "PlanInsightCode": {
+        "type": "string",
+        "enum": [
+          "current_ongoing_priority",
+          "current_ongoing",
+          "current_past_priority",
+          "current_past",
+          "current_upcoming_priority",
+          "current_upcoming",
+          "current_unscheduled_priority",
+          "current_unscheduled",
+          "past_remaining_priority",
+          "past_remaining",
+          "future_scheduled_priority",
+          "future_scheduled",
+          "future_unscheduled_priority",
+          "future_unscheduled",
+          "selected_date_complete",
+          "selected_date_empty",
+          "insight_unavailable"
+        ],
+        "title": "PlanInsightCode"
+      },
+      "PlanInsightEvidenceResponse": {
+        "properties": {
+          "selected_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Selected Date"
+          },
+          "date_relation": {
+            "$ref": "#/components/schemas/PlanDateRelation"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "completed": {
+            "type": "integer",
+            "title": "Completed"
+          },
+          "remaining": {
+            "type": "integer",
+            "title": "Remaining"
+          },
+          "is_priority": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Priority"
+          },
+          "timing_state": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanTimingState"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scheduled_start_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scheduled Start At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "selected_date",
+          "date_relation",
+          "total",
+          "completed",
+          "remaining",
+          "is_priority",
+          "timing_state",
+          "scheduled_start_at"
+        ],
+        "title": "PlanInsightEvidenceResponse"
+      },
+      "PlanInsightResponse": {
+        "properties": {
+          "state": {
+            "$ref": "#/components/schemas/PlanInsightState"
+          },
+          "code": {
+            "$ref": "#/components/schemas/PlanInsightCode"
+          },
+          "recommendation": {
+            "type": "string",
+            "title": "Recommendation"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanInsightAction"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "plan_item_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Plan Item Id"
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/PlanInsightEvidenceResponse"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "state",
+          "code",
+          "recommendation",
+          "reason",
+          "action",
+          "plan_item_id",
+          "evidence"
+        ],
+        "title": "PlanInsightResponse"
+      },
+      "PlanInsightState": {
+        "type": "string",
+        "enum": ["available", "empty", "unavailable", "error"],
+        "title": "PlanInsightState"
+      },
       "PlanItemResponse": {
         "properties": {
           "id": {
@@ -6181,6 +6734,160 @@
           "version"
         ],
         "title": "PlanItemResponse"
+      },
+      "PlanItemSection": {
+        "type": "string",
+        "enum": ["scheduled_incomplete", "unscheduled_incomplete", "completed"],
+        "title": "PlanItemSection"
+      },
+      "PlanPageResponse": {
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Limit"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "has_more": {
+            "type": "boolean",
+            "title": "Has More"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["limit", "next_cursor", "has_more"],
+        "title": "PlanPageResponse"
+      },
+      "PlanSelectedDateResponse": {
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Contract Version"
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Generated At"
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone"
+          },
+          "selected_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Selected Date"
+          },
+          "date_relation": {
+            "$ref": "#/components/schemas/PlanDateRelation"
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/PlanFreshnessResponse"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/PlanSummaryResponse"
+          },
+          "insight": {
+            "$ref": "#/components/schemas/PlanInsightResponse"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PlanDayItemResponse"
+            },
+            "type": "array",
+            "maxItems": 100,
+            "title": "Items"
+          },
+          "page": {
+            "$ref": "#/components/schemas/PlanPageResponse"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "contract_version",
+          "generated_at",
+          "timezone",
+          "selected_date",
+          "date_relation",
+          "freshness",
+          "summary",
+          "insight",
+          "items",
+          "page"
+        ],
+        "title": "PlanSelectedDateResponse"
+      },
+      "PlanSummaryResponse": {
+        "properties": {
+          "total": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Total"
+          },
+          "completed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Completed"
+          },
+          "remaining": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Remaining"
+          },
+          "scheduled_remaining": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Scheduled Remaining"
+          },
+          "unscheduled_remaining": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Unscheduled Remaining"
+          },
+          "completion_percentage": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completion Percentage",
+            "description": "Equal-weight full-date completion, Decimal ROUND_HALF_UP; null for no items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "total",
+          "completed",
+          "remaining",
+          "scheduled_remaining",
+          "unscheduled_remaining",
+          "completion_percentage"
+        ],
+        "title": "PlanSummaryResponse"
+      },
+      "PlanTimingState": {
+        "type": "string",
+        "enum": ["ongoing", "past", "upcoming", "unscheduled", "completed"],
+        "title": "PlanTimingState"
       },
       "PriorityLifeArea": {
         "type": "string",
@@ -7042,5 +7749,6 @@
     }
   },
   "x-pos-authentication-contract-version": "1.1.0",
-  "x-pos-today-contract-version": "1.0"
+  "x-pos-today-contract-version": "1.0",
+  "x-pos-plan-contract-version": "1.0"
 }

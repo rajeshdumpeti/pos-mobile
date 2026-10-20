@@ -17,6 +17,8 @@ export function usePlanMutations(id?: string) {
   const onSuccess = async (item: PlanItem | undefined) => {
     if (!planning.current()) throw new ApiError('cancelled', 'Planning access changed.');
     if (!item) return;
+    // Reset all account-owned date pages, including old/new assignments. Active boards refetch page one.
+    await client.resetQueries({ queryKey: [...planningKeys.account(planning.account), 'plan'] });
     client.setQueryData(planningKeys.item(planning.account, item.id), item);
     setFailure(undefined);
     await client.invalidateQueries({

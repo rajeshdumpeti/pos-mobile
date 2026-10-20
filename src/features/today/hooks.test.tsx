@@ -39,6 +39,7 @@ function setup() {
   });
   clients.push(client);
   const service: jest.Mocked<PlanningService> = {
+    selectedDate: jest.fn(),
     today: jest.fn().mockResolvedValue(todayFixture()),
     get: jest.fn().mockResolvedValue(itemFixture()),
     create: jest.fn().mockResolvedValue(itemFixture()),
@@ -277,4 +278,30 @@ test('account transition clears unsaved presentation drafts as well as the query
   expect(previous.size).toBe(0);
   expect(result.current.drafts.size).toBe(0);
   expect(result.current.drafts).not.toBe(previous);
+});
+
+test('confirmed rescheduling resets old and new selected-date pages, while session cleanup removes Plan', async () => {
+  const { client, service, wrapper } = setup();
+  const oldKey = planningKeys.plan(accountA, '2026-10-02', 'UTC'),
+    newKey = planningKeys.plan(accountA, '2026-10-03', 'UTC');
+  client.setQueryData(oldKey, {
+    pages: [{ page: { next_cursor: 'opaque-old' } }],
+    pageParams: [undefined],
+  });
+  client.setQueryData(newKey, {
+    pages: [{ page: { next_cursor: 'opaque-new' } }],
+    pageParams: [undefined],
+  });
+  service.update.mockResolvedValue(itemFixture({ scheduled_for_date: '2026-10-03', version: 2 }));
+  const { result } = renderHook(() => usePlanMutations(itemId), { wrapper });
+  await act(async () => {
+    await result.current.update({ expected_version: 1, scheduled_for_date: '2026-10-03' });
+  });
+  expect(client.getQueryData(oldKey)).toBeUndefined();
+  expect(client.getQueryData(newKey)).toBeUndefined();
+  client.setQueryData(oldKey, { safe: true });
+  await act(async () => {
+    await clearPlanningAccount(client, accountA);
+  });
+  expect(client.getQueryData(oldKey)).toBeUndefined();
 });
