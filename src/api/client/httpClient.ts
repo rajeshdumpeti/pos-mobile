@@ -8,14 +8,14 @@ export type HttpRequest<TBody = never> = {
   requestId?: string;
   credential?: string;
   idempotencyKey?: string;
-  query?: Readonly<{ timezone: string }>;
+  query?: Readonly<{ timezone: string; selected_date?: string; limit?: number; cursor?: string }>;
   signal?: AbortSignal;
   timeoutMs?: number;
 };
 type FetchLike = typeof fetch;
 const requestIdPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 const allowedPath =
-  /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|api\/v1\/today$|api\/v1\/plan\/items(?:\/[0-9a-f-]{36}(?:\/complete)?)?$|health$)/i;
+  /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|api\/v1\/today$|api\/v1\/plan$|api\/v1\/plan\/items(?:\/[0-9a-f-]{36}(?:\/complete)?)?$|health$)/i;
 function authorization(credential?: string) {
   if (credential === undefined) return undefined;
   if (!credential || /[\r\n\s]/.test(credential))
@@ -91,16 +91,31 @@ export function createHttpClient({
       throw new ApiError('configuration', 'The idempotency key is malformed.');
     let query = '';
     if (input.query !== undefined) {
+      const q = input.query;
+      const plan = input.path === '/api/v1/plan';
       if (
-        input.path !== '/api/v1/today' ||
+        (!plan && input.path !== '/api/v1/today') ||
         input.method !== 'GET' ||
-        Object.keys(input.query).some((key) => key !== 'timezone') ||
-        typeof input.query.timezone !== 'string' ||
-        !input.query.timezone ||
-        input.query.timezone.length > 128
+        Object.keys(q).some(
+          (key) =>
+            !(plan ? ['timezone', 'selected_date', 'limit', 'cursor'] : ['timezone']).includes(key),
+        ) ||
+        typeof q.timezone !== 'string' ||
+        !q.timezone ||
+        q.timezone.length > 128 ||
+        (plan &&
+          (typeof q.selected_date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(q.selected_date))) ||
+        (q.limit !== undefined && (!Number.isInteger(q.limit) || q.limit < 1 || q.limit > 100)) ||
+        (q.cursor !== undefined &&
+          (typeof q.cursor !== 'string' || !q.cursor || q.cursor.length > 1024))
       )
         throw new ApiError('configuration', 'The API query is not allowed.');
-      query = `?timezone=${encodeURIComponent(input.query.timezone)}`;
+      query =
+        '?' +
+        Object.entries(q)
+          .filter(([, v]) => v !== undefined)
+          .map(([key, v]) => `${key}=${encodeURIComponent(String(v))}`)
+          .join('&');
     }
     const controller = new AbortController();
     let timedOut = false;

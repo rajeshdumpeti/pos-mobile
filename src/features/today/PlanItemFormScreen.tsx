@@ -1,3 +1,4 @@
+import type { PlanContext } from '@/features/plan/calendar';
 import { useEffect, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
@@ -34,9 +35,11 @@ import type { NativeStackNavigationProp } from 'expo-router/native-stack';
 export function PlanItemFormScreen({
   id: input,
   mode = 'create',
+  context,
 }: {
   id?: string | string[];
   mode?: 'create' | 'edit';
+  context?: PlanContext;
 }) {
   const id = validPlanId(input),
     edit = mode === 'edit',
@@ -51,7 +54,11 @@ export function PlanItemFormScreen({
   const baseVersion = useRef<number | undefined>(undefined),
     hydrated = useRef(false),
     titleInput = useRef<NativeTextInput>(null);
-  const draftKey = edit ? `edit:${id}` : 'create';
+  const draftKey = edit ? `edit:${id}` : context ? `create:plan:${context.selectedDate}` : 'create';
+  const initialDraft = () => ({
+    ...emptyDraft(resolveTimeZone()),
+    ...(context ? { date: context.selectedDate } : {}),
+  });
   const stored = planning.drafts?.get(draftKey);
   const confirmedWrite = useRef(false),
     titleInteracted = useRef(false);
@@ -68,9 +75,7 @@ export function PlanItemFormScreen({
     formState: { errors, isSubmitted },
   } = useForm<PlanDraft>({
     defaultValues:
-      attempt && !edit
-        ? draftFromCreation(attempt.payload)
-        : (stored?.values ?? emptyDraft(resolveTimeZone())),
+      attempt && !edit ? draftFromCreation(attempt.payload) : (stored?.values ?? initialDraft()),
   });
   const openingComplete = useRef(Platform.OS === 'web');
   const [creationRevision, setCreationRevision] = useState(0);
@@ -145,7 +150,16 @@ export function PlanItemFormScreen({
     AccessibilityInfo.announceForAccessibility(
       edit ? 'Plan item update confirmed.' : 'Plan item creation confirmed.',
     );
-    if (edit) navigation.backOrReplace(routes.app.index);
+    if (!edit && context) {
+      if (router.canGoBack()) router.back();
+      else
+        router.replace({
+          pathname: routes.app.plan,
+          params: { selectedDate: context.selectedDate },
+        });
+    } else if (edit && context && !router.canGoBack()) {
+      router.replace({ pathname: routes.app.planItem, params: { id: result.id, ...context } });
+    } else if (edit) navigation.backOrReplace(routes.app.index);
     else router.replace({ pathname: routes.app.planItem, params: { id: result.id } });
   };
   const submit = handleSubmit((draft) => {
@@ -169,6 +183,7 @@ export function PlanItemFormScreen({
     });
   return (
     <PlanItemPage
+      context={context}
       title={edit ? 'Edit plan item' : 'Create plan item'}
       busy={mutations.busy}
       footer={
@@ -359,7 +374,7 @@ export function PlanItemFormScreen({
                   disabled={mutations.busy}
                   onPress={() => {
                     planning.creation.reset();
-                    reset(emptyDraft(resolveTimeZone()));
+                    reset(initialDraft());
                     clearErrors();
                     setCreationRevision((value) => value + 1);
                   }}

@@ -371,6 +371,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/plan': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Read authoritative items assigned to a selected date
+     * @description Plan contract 1.0. Ownership uses the authenticated account and explicit scheduled_for_date. Requested timezone determines past/current/future; stored scheduling intent is preserved. Past dates show current state. Summary and deterministic insight cover the full selected date. Order: scheduled incomplete by start/UUID, unscheduled incomplete by priority descending/creation/UUID, completed by completion descending/UUID. Cursors are opaque and account/date/timezone scoped. Mutations between pages can change results; refetch from page one after mutation success. No snapshot pagination guarantee. Insight-only modeled failures preserve items and summary. Responses are current-only and never cached.
+     */
+    get: operations['get_plan_selected_date'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -949,6 +969,133 @@ export interface components {
        */
       resend_available_at: string;
     };
+    /**
+     * PlanDateRelation
+     * @enum {string}
+     */
+    PlanDateRelation: 'past' | 'current' | 'future';
+    /** PlanDayItemResponse */
+    PlanDayItemResponse: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Title */
+      title: string;
+      /**
+       * Scheduled For Date
+       * Format: date
+       */
+      scheduled_for_date: string;
+      /** Timezone */
+      timezone: string;
+      /** Scheduled Start At */
+      scheduled_start_at: string | null;
+      /** Scheduled End At */
+      scheduled_end_at: string | null;
+      /** Is Priority */
+      is_priority: boolean;
+      /** Completed At */
+      completed_at: string | null;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string;
+      /** Version */
+      version: number;
+      section: components['schemas']['PlanItemSection'];
+      timing_state: components['schemas']['PlanTimingState'];
+      /**
+       * Action
+       * @constant
+       */
+      action: 'plan_item.view';
+    };
+    /** PlanFreshnessResponse */
+    PlanFreshnessResponse: {
+      /**
+       * State
+       * @constant
+       */
+      state: 'current';
+      /**
+       * As Of
+       * Format: date-time
+       */
+      as_of: string;
+    };
+    /**
+     * PlanInsightAction
+     * @enum {string}
+     */
+    PlanInsightAction: 'plan_item.create' | 'plan_item.view';
+    /**
+     * PlanInsightCode
+     * @enum {string}
+     */
+    PlanInsightCode:
+      | 'current_ongoing_priority'
+      | 'current_ongoing'
+      | 'current_past_priority'
+      | 'current_past'
+      | 'current_upcoming_priority'
+      | 'current_upcoming'
+      | 'current_unscheduled_priority'
+      | 'current_unscheduled'
+      | 'past_remaining_priority'
+      | 'past_remaining'
+      | 'future_scheduled_priority'
+      | 'future_scheduled'
+      | 'future_unscheduled_priority'
+      | 'future_unscheduled'
+      | 'selected_date_complete'
+      | 'selected_date_empty'
+      | 'insight_unavailable';
+    /** PlanInsightEvidenceResponse */
+    PlanInsightEvidenceResponse: {
+      /**
+       * Selected Date
+       * Format: date
+       */
+      selected_date: string;
+      date_relation: components['schemas']['PlanDateRelation'];
+      /** Total */
+      total: number;
+      /** Completed */
+      completed: number;
+      /** Remaining */
+      remaining: number;
+      /** Is Priority */
+      is_priority: boolean | null;
+      timing_state: components['schemas']['PlanTimingState'] | null;
+      /** Scheduled Start At */
+      scheduled_start_at: string | null;
+    };
+    /** PlanInsightResponse */
+    PlanInsightResponse: {
+      state: components['schemas']['PlanInsightState'];
+      code: components['schemas']['PlanInsightCode'];
+      /** Recommendation */
+      recommendation: string;
+      /** Reason */
+      reason: string;
+      action: components['schemas']['PlanInsightAction'] | null;
+      /** Plan Item Id */
+      plan_item_id: string | null;
+      evidence: components['schemas']['PlanInsightEvidenceResponse'];
+    };
+    /**
+     * PlanInsightState
+     * @enum {string}
+     */
+    PlanInsightState: 'available' | 'empty' | 'unavailable' | 'error';
     /** PlanItemResponse */
     PlanItemResponse: {
       /**
@@ -986,6 +1133,70 @@ export interface components {
       /** Version */
       version: number;
     };
+    /**
+     * PlanItemSection
+     * @enum {string}
+     */
+    PlanItemSection: 'scheduled_incomplete' | 'unscheduled_incomplete' | 'completed';
+    /** PlanPageResponse */
+    PlanPageResponse: {
+      /** Limit */
+      limit: number;
+      /** Next Cursor */
+      next_cursor: string | null;
+      /** Has More */
+      has_more: boolean;
+    };
+    /** PlanSelectedDateResponse */
+    PlanSelectedDateResponse: {
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      /**
+       * Generated At
+       * Format: date-time
+       */
+      generated_at: string;
+      /** Timezone */
+      timezone: string;
+      /**
+       * Selected Date
+       * Format: date
+       */
+      selected_date: string;
+      date_relation: components['schemas']['PlanDateRelation'];
+      freshness: components['schemas']['PlanFreshnessResponse'];
+      summary: components['schemas']['PlanSummaryResponse'];
+      insight: components['schemas']['PlanInsightResponse'];
+      /** Items */
+      items: components['schemas']['PlanDayItemResponse'][];
+      page: components['schemas']['PlanPageResponse'];
+    };
+    /** PlanSummaryResponse */
+    PlanSummaryResponse: {
+      /** Total */
+      total: number;
+      /** Completed */
+      completed: number;
+      /** Remaining */
+      remaining: number;
+      /** Scheduled Remaining */
+      scheduled_remaining: number;
+      /** Unscheduled Remaining */
+      unscheduled_remaining: number;
+      /**
+       * Completion Percentage
+       * @description Equal-weight full-date completion, Decimal ROUND_HALF_UP; null for no items
+       */
+      completion_percentage: number | null;
+    };
+    /**
+     * PlanTimingState
+     * @enum {string}
+     */
+    PlanTimingState: 'ongoing' | 'past' | 'upcoming' | 'unscheduled' | 'completed';
     /**
      * PriorityLifeArea
      * @enum {string}
@@ -3993,6 +4204,115 @@ export interface operations {
       };
       /** @description The request conflicts with existing state. */
       409: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  get_plan_selected_date: {
+    parameters: {
+      query: {
+        timezone: string;
+        /** @description Explicit assigned date, YYYY-MM-DD; independent of start conversion */
+        selected_date: string;
+        /** @description Maximum returned items; summary and insight cover the full date */
+        limit?: number;
+        /** @description Opaque continuation from the preceding response; bound to account, date and timezone */
+        cursor?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Authoritative planning response */
+      200: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PlanSelectedDateResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Sensitive responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
         headers: {
           /** @description Validated caller correlation ID or generated server ID */
           'X-Request-ID'?: string;

@@ -12,6 +12,8 @@ export type SavedPlanDraft = { values: PlanDraft; version?: number };
 export const planningRoot = ['daily-planning'] as const;
 export const planningKeys = {
   account: (account: string) => [...planningRoot, account] as const,
+  plan: (account: string, date: string, zone: string) =>
+    [...planningRoot, account, 'plan', date, zone] as const,
   today: (account: string, zone: string) => [...planningRoot, account, 'today', zone] as const,
   item: (account: string, id: string) => [...planningRoot, account, 'item', id] as const,
 };

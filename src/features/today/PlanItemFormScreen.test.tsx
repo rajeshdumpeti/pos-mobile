@@ -3,6 +3,7 @@ import { TextInput as NativeTextInput } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '@/design-system/theme';
 import { PlanItemFormScreen } from './PlanItemFormScreen';
+import type { PlanContext } from '@/features/plan/calendar';
 import { createCreationCoordinator } from './creation';
 import type { SavedPlanDraft } from './PlanningProvider';
 import { itemFixture, itemId } from './testFixtures';
@@ -31,13 +32,13 @@ let mockItem: ReturnType<typeof itemFixture> | undefined;
 const mockDrafts = new Map<string, SavedPlanDraft>();
 let mockCreation = createCreationCoordinator();
 jest.mock('expo-router', () => ({
-  useRouter: () => ({ replace: mockReplace, navigate: jest.fn() }),
+  useRouter: () => ({ replace: mockReplace, navigate: jest.fn(), canGoBack: () => false }),
   useNavigation: () => mockNavigation,
 }));
 jest.mock('expo-router/react-navigation', () => ({ usePreventRemove: jest.fn() }));
 jest.mock('./NativePicker', () => ({ NativePicker: () => null }));
 jest.mock('@/navigation', () => ({
-  routes: { app: { index: '/', planItem: '/plan-item' } },
+  routes: { app: { index: '/', plan: '/plan', planItem: '/plan-item' } },
   useSafeNavigation: () => ({ backOrReplace: mockBack }),
 }));
 jest.mock('./PlanningProvider', () => ({
@@ -57,7 +58,7 @@ jest.mock('./usePlanMutations', () => ({
 jest.mock('@/features/auth/integration/useConnectivity', () => ({
   useAuthenticationConnectivity: () => 'online',
 }));
-function screen(edit = false) {
+function screen(edit = false, context?: PlanContext) {
   return render(
     <SafeAreaProvider
       initialMetrics={{
@@ -66,7 +67,11 @@ function screen(edit = false) {
       }}
     >
       <ThemeProvider preference="light">
-        <PlanItemFormScreen mode={edit ? 'edit' : 'create'} id={edit ? itemId : undefined} />
+        <PlanItemFormScreen
+          mode={edit ? 'edit' : 'create'}
+          id={edit ? itemId : undefined}
+          context={context}
+        />
       </ThemeProvider>
     </SafeAreaProvider>,
   );
@@ -219,4 +224,28 @@ test('closing transitions and edit forms do not autofocus', () => {
   act(() => jest.advanceTimersByTime(180));
   expect(mockFocus).not.toHaveBeenCalled();
   edit.unmount();
+});
+
+test('Plan creation defaults to selected date, unscheduled and non-priority, then returns to that date', async () => {
+  const context: PlanContext = { origin: 'plan', selectedDate: '2026-11-01' };
+  const view = screen(false, context);
+  fireEvent.changeText(view.getByLabelText('Title'), 'Prepare report');
+  fireEvent.press(view.getByRole('button', { name: 'Create plan item' }));
+  await waitFor(() =>
+    expect(mockCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        scheduled_for_date: context.selectedDate,
+        timezone: expect.any(String),
+        scheduled_start_at: null,
+        scheduled_end_at: null,
+        is_priority: false,
+      }),
+    ),
+  );
+  await waitFor(() =>
+    expect(mockReplace).toHaveBeenCalledWith({
+      pathname: '/plan',
+      params: { selectedDate: context.selectedDate },
+    }),
+  );
 });

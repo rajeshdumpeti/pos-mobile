@@ -1,3 +1,5 @@
+import { useRouter } from 'expo-router';
+import type { PlanContext } from '@/features/plan/calendar';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { AppText, Button, Screen } from '@/design-system';
@@ -9,14 +11,17 @@ export function PlanItemPage({
   busy = false,
   children,
   footer,
+  context,
 }: {
   title: string;
   busy?: boolean;
   children: ReactNode;
   footer?: ReactNode;
+  context?: PlanContext;
 }) {
   const theme = useTheme(),
-    navigation = useSafeNavigation();
+    navigation = useSafeNavigation(),
+    router = useRouter();
   return (
     <Screen
       keyboardSafe
@@ -45,7 +50,14 @@ export function PlanItemPage({
               variant="ghost"
               accessibilityLabel={`Back from ${title}`}
               disabled={busy}
-              onPress={() => navigation.backOrReplace(routes.app.index)}
+              onPress={() => {
+                if (context && !router.canGoBack())
+                  router.replace({
+                    pathname: routes.app.plan,
+                    params: { selectedDate: context.selectedDate },
+                  });
+                else navigation.backOrReplace(routes.app.index);
+              }}
             />
             <AppText
               variant="title"

@@ -35,7 +35,7 @@ test('all five operations use reviewed authenticated transport and exact version
     'Idempotency-Key': 'plan-test',
   });
   expect(JSON.parse(fetcher.mock.calls[4]?.[1].body)).toEqual({ expected_version: 2 });
-  expect(contractMetadata.backendCommit).toBe('6bde40e0800ef36a9edefec9c6acbf5cc16d1e74');
+  expect(contractMetadata.backendCommit).toBe('146df660844019ff0052ccd05201e860deb48360');
   expect(contractMetadata.todayContractVersion).toBe('1.0');
 });
 test('successful but invalid body never reaches presentation state', async () => {
