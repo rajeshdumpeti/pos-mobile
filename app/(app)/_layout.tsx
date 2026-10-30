@@ -20,6 +20,15 @@ export default function AppLayout() {
         >
           <Stack.Screen name="(tabs)" />
           <Stack.Screen
+            name="notification-permission"
+            options={{
+              presentation: 'modal',
+              gestureEnabled: false,
+              animation: reduced ? 'fade' : 'slide_from_bottom',
+              contentStyle: { backgroundColor: theme.colors.backgroundPrimary },
+            }}
+          />
+          <Stack.Screen
             name="notifications"
             options={{
               presentation: 'transparentModal',

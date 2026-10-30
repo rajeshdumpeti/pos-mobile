@@ -22,6 +22,7 @@ export const routes = {
     review: '/(app)/(tabs)/review',
     profile: '/(app)/profile',
     notifications: '/(app)/notifications',
+    notificationPermission: '/(app)/notification-permission',
     quickLog: '/(app)/quick-log',
     planItemNew: '/(app)/plan-item-new',
     planItem: '/(app)/plan-item',

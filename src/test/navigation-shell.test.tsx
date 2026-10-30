@@ -100,6 +100,7 @@ test.each([
   expect(view.getByText(`redirect:${destination}`)).toBeTruthy();
   expect(view.queryByText('screen:(tabs)')).toBeNull();
   expect(view.queryByText('screen:profile')).toBeNull();
+  expect(view.queryByText('screen:notification-permission')).toBeNull();
   expect(view.queryByText('screen:quick-log')).toBeNull();
 });
 
@@ -107,6 +108,11 @@ test('completed users mount the shell stack and checking users see only neutral 
   const completed = render(wrap(<AppLayout />, 'signedIn'));
   expect(completed.getByText('screen:(tabs)')).toBeTruthy();
   expect(completed.getByText('screen:notifications')).toBeTruthy();
+  expect(completed.getByText('screen:notification-permission')).toBeTruthy();
+  expect(mockScreenOptions).toHaveBeenCalledWith(
+    'notification-permission',
+    expect.objectContaining({ presentation: 'modal', gestureEnabled: false, animation: 'fade' }),
+  );
   expect(completed.getByText('screen:profile')).toBeTruthy();
   expect(completed.getByText('screen:quick-log')).toBeTruthy();
   expect(mockScreenOptions).toHaveBeenCalledWith(
