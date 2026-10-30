@@ -68,6 +68,7 @@ test('route inventory contains only the authorized root, auth, and protected fil
       '(app)/(tabs)/review.tsx',
       '(app)/profile.tsx',
       '(app)/notifications.tsx',
+      '(app)/notification-permission.tsx',
       '(app)/quick-log.tsx',
       '(app)/plan-item.tsx',
       '(app)/plan-item-new.tsx',
