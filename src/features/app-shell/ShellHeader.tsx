@@ -1,3 +1,5 @@
+import { useInboxBadge, useHasInboxScope } from '@/features/notifications/InboxProvider';
+import { badgeText } from '@/features/notifications/state';
 import { Pressable, View } from 'react-native';
 import { AppText, IconButton } from '@/design-system';
 import { useTheme } from '@/design-system/theme';
@@ -26,6 +28,7 @@ export function ShellHeader({ title }: { title: string }) {
     session = useSession();
   const name = session.status === 'signedIn' ? session.account.displayName : undefined;
   const now = new Date();
+  const hasInbox = useHasInboxScope();
   return (
     <View
       testID="shell-header"
@@ -52,15 +55,15 @@ export function ShellHeader({ title }: { title: string }) {
           </AppText>
         )}
       </View>
-      <IconButton
-        style={{
-          borderRadius: theme.radii.pill,
-          backgroundColor: theme.colors.backgroundSecondary,
-        }}
-        icon="notifications"
-        accessibilityLabel="Open Notifications"
-        onPress={() => open(routes.app.notifications)}
-      />
+      {hasInbox ? (
+        <NotificationBell />
+      ) : (
+        <IconButton
+          icon="notifications"
+          accessibilityLabel="Open Notifications"
+          onPress={() => open(routes.app.notifications)}
+        />
+      )}
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Open Profile"
@@ -78,6 +81,49 @@ export function ShellHeader({ title }: { title: string }) {
           {displayInitials(name)}
         </AppText>
       </Pressable>
+    </View>
+  );
+}
+
+function NotificationBell() {
+  const theme = useTheme(),
+    open = useShellDestination(),
+    badge = useInboxBadge();
+  const count = badge?.data?.unread_count;
+  const text = count === undefined ? undefined : badgeText(count);
+  return (
+    <View>
+      <IconButton
+        style={{
+          borderRadius: theme.radii.pill,
+          backgroundColor: theme.colors.backgroundSecondary,
+        }}
+        icon="notifications"
+        accessibilityLabel={
+          count === undefined
+            ? 'Open Notifications, unread count unavailable'
+            : `Open Notifications, ${count} unread${badge?.stale ? ', count may be out of date' : ''}`
+        }
+        onPress={() => open(routes.app.notifications)}
+      />
+      {text && (
+        <View
+          pointerEvents="none"
+          accessible={false}
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            borderRadius: theme.radii.pill,
+            backgroundColor: theme.colors.accentSoft,
+            paddingHorizontal: theme.spacing.xxs,
+          }}
+        >
+          <AppText variant="caption" color="accent">
+            {text}
+          </AppText>
+        </View>
+      )}
     </View>
   );
 }

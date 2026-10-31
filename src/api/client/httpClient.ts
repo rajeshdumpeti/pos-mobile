@@ -1,5 +1,5 @@
 import { ApiError } from './apiError';
-export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
 export type HttpRequest<TBody = never> = {
   path: string;
   method: HttpMethod;
@@ -8,14 +8,20 @@ export type HttpRequest<TBody = never> = {
   requestId?: string;
   credential?: string;
   idempotencyKey?: string;
-  query?: Readonly<{ timezone: string; selected_date?: string; limit?: number; cursor?: string }>;
+  query?: Readonly<{
+    timezone?: string;
+    selected_date?: string;
+    limit?: number;
+    cursor?: string;
+    source?: 'all' | 'today' | 'plan';
+  }>;
   signal?: AbortSignal;
   timeoutMs?: number;
 };
 type FetchLike = typeof fetch;
 const requestIdPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 const allowedPath =
-  /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|api\/v1\/today$|api\/v1\/plan$|api\/v1\/plan\/items(?:\/[0-9a-f-]{36}(?:\/complete)?)?$|health$)/i;
+  /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|api\/v1\/account\/timezone$|api\/v1\/notifications(?:\/unread-count|\/read-all|\/[0-9a-f-]{36}\/read)?$|api\/v1\/today$|api\/v1\/plan$|api\/v1\/plan\/items(?:\/[0-9a-f-]{36}(?:\/complete)?)?$|health$)/i;
 function authorization(credential?: string) {
   if (credential === undefined) return undefined;
   if (!credential || /[\r\n\s]/.test(credential))
@@ -93,16 +99,25 @@ export function createHttpClient({
     if (input.query !== undefined) {
       const q = input.query;
       const plan = input.path === '/api/v1/plan';
+      const inbox = input.path === '/api/v1/notifications';
+      const count = input.path === '/api/v1/notifications/unread-count';
       if (
-        (!plan && input.path !== '/api/v1/today') ||
+        (!plan && !inbox && !count && input.path !== '/api/v1/today') ||
         input.method !== 'GET' ||
         Object.keys(q).some(
           (key) =>
-            !(plan ? ['timezone', 'selected_date', 'limit', 'cursor'] : ['timezone']).includes(key),
+            !(
+              plan
+                ? ['timezone', 'selected_date', 'limit', 'cursor']
+                : inbox
+                  ? ['timezone', 'source', 'limit', 'cursor']
+                  : count
+                    ? ['source']
+                    : ['timezone']
+            ).includes(key),
         ) ||
-        typeof q.timezone !== 'string' ||
-        !q.timezone ||
-        q.timezone.length > 128 ||
+        (!count && (typeof q.timezone !== 'string' || !q.timezone || q.timezone.length > 128)) ||
+        (q.source !== undefined && !['all', 'today', 'plan'].includes(q.source)) ||
         (plan &&
           (typeof q.selected_date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(q.selected_date))) ||
         (q.limit !== undefined && (!Number.isInteger(q.limit) || q.limit < 1 || q.limit > 100)) ||
