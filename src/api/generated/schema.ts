@@ -391,6 +391,103 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/account/timezone': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Timezone
+     * @description Authenticated active verified account; onboarding completion is not required. Idempotent identical updates; changed versions atomically replace the pending 18:00 local evaluation. No OS permission dependency.
+     */
+    put: operations['put_account_timezone'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/notifications': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Listing
+     * @description Inbox contract 1.0. Account-owned unexpired snapshots; expiry is exactly 90 elapsed days. Descending created_at then UUID; opaque keyset cursor binds account/filter/timezone and retained boundary. No cross-page snapshot guarantee. Unread count spans the complete filtered retained set. Today/Earlier uses created_at in the requested IANA timezone. Unavailable navigation strips references; completed/changed owned Plan targets remain navigable. Requires completed onboarding; independent of OS permission.
+     */
+    get: operations['list_notification_inbox'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/notifications/unread-count': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Count */
+    get: operations['get_notification_unread_count'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/notifications/read-all': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Read All
+     * @description Atomically mark all retained unread rows in the explicit source scope, using one server timestamp. Repeated execution changes zero rows. Count covers the selected scope.
+     */
+    post: operations['mark_all_notifications_read'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/notifications/{notification_id}/read': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Read
+     * @description Idempotent account-owned read transition preserves first read_at. Missing/expired/foreign records share one safe 404. Resulting count is account-wide across both sources.
+     */
+    post: operations['mark_notification_read'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -682,6 +779,200 @@ export interface components {
     HealthResponse: {
       /** Status */
       status: string;
+    };
+    /** InboxItemResponse */
+    InboxItemResponse: {
+      /**
+       * Notification Id
+       * Format: uuid
+       */
+      notification_id: string;
+      /**
+       * Source
+       * @enum {string}
+       */
+      source: 'today' | 'plan';
+      /**
+       * Category
+       * @enum {string}
+       */
+      category: 'reminder' | 'attention';
+      /**
+       * Event Type
+       * @enum {string}
+       */
+      event_type: 'plan.item_starting_soon' | 'today.items_remaining';
+      /** Title */
+      title: string;
+      /** Message */
+      message: string;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Group
+       * @enum {string}
+       */
+      group: 'today' | 'earlier';
+      /** Is Read */
+      is_read: boolean;
+      /** Read At */
+      read_at: string | null;
+      /** Source Timezone */
+      source_timezone: string;
+      navigation: components['schemas']['InboxNavigationResponse'];
+    };
+    /** InboxListResponse */
+    InboxListResponse: {
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      /**
+       * Generated At
+       * Format: date-time
+       */
+      generated_at: string;
+      /** Timezone */
+      timezone: string;
+      /**
+       * Filter
+       * @enum {string}
+       */
+      filter: 'all' | 'today' | 'plan';
+      /**
+       * Unread Count
+       * @description All retained unread records matching the filter, not the loaded page
+       */
+      unread_count: number;
+      /** Items */
+      items: components['schemas']['InboxItemResponse'][];
+      /** Next Cursor */
+      next_cursor: string | null;
+      /** Has More */
+      has_more: boolean;
+    };
+    /** InboxNavigationResponse */
+    InboxNavigationResponse: {
+      /**
+       * State
+       * @enum {string}
+       */
+      state: 'available' | 'unavailable';
+      /** Action */
+      action: ('today.view' | 'plan_item.view') | null;
+      /** Selected Date */
+      selected_date: string | null;
+      /** Plan Item Id */
+      plan_item_id: string | null;
+    };
+    /** InboxReadAllRequest */
+    InboxReadAllRequest: {
+      /**
+       * Source
+       * @enum {string}
+       */
+      source: 'all' | 'today' | 'plan';
+    };
+    /** InboxReadAllResponse */
+    InboxReadAllResponse: {
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      /**
+       * Source
+       * @enum {string}
+       */
+      source: 'all' | 'today' | 'plan';
+      /** Marked Read Count */
+      marked_read_count: number;
+      /** Unread Count */
+      unread_count: number;
+      /**
+       * Read At
+       * Format: date-time
+       */
+      read_at: string;
+    };
+    /** InboxReadResponse */
+    InboxReadResponse: {
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      /**
+       * Notification Id
+       * Format: uuid
+       */
+      notification_id: string;
+      /**
+       * Is Read
+       * @constant
+       */
+      is_read: true;
+      /**
+       * Read At
+       * Format: date-time
+       */
+      read_at: string;
+      /**
+       * Source
+       * @constant
+       */
+      source: 'all';
+      /**
+       * Unread Count
+       * @description Account-wide retained unread count across both sources
+       */
+      unread_count: number;
+    };
+    /** InboxTimezoneRequest */
+    InboxTimezoneRequest: {
+      /** Timezone */
+      timezone: string;
+    };
+    /** InboxTimezoneResponse */
+    InboxTimezoneResponse: {
+      /** Timezone */
+      timezone: string;
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string;
+      /** Version */
+      version: number;
+    };
+    /** InboxUnreadResponse */
+    InboxUnreadResponse: {
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      /**
+       * Source
+       * @enum {string}
+       */
+      source: 'all' | 'today' | 'plan';
+      /** Unread Count */
+      unread_count: number;
+      /**
+       * Generated At
+       * Format: date-time
+       */
+      generated_at: string;
     };
     /** IntegrationPreferencesResponse */
     IntegrationPreferencesResponse: {
@@ -4365,6 +4656,499 @@ export interface operations {
           'Cache-Control'?: 'no-store';
           /** @description Legacy cache prevention */
           Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  put_account_timezone: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['InboxTimezoneRequest'];
+      };
+    };
+    responses: {
+      /** @description Authoritative account-owned state; no-store, no-cache */
+      200: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['InboxTimezoneResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  list_notification_inbox: {
+    parameters: {
+      query: {
+        timezone: string;
+        source?: 'all' | 'today' | 'plan';
+        limit?: number;
+        /** @description Opaque account/filter/timezone-bound continuation; restart after expiry or mutation. Not a snapshot. */
+        cursor?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Authoritative account-owned state; no-store, no-cache */
+      200: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['InboxListResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  get_notification_unread_count: {
+    parameters: {
+      query?: {
+        source?: 'all' | 'today' | 'plan';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Authoritative account-owned state; no-store, no-cache */
+      200: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['InboxUnreadResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  mark_all_notifications_read: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['InboxReadAllRequest'];
+      };
+    };
+    responses: {
+      /** @description Authoritative account-owned state; no-store, no-cache */
+      200: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['InboxReadAllResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  mark_notification_read: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        notification_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Authoritative account-owned state; no-store, no-cache */
+      200: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['InboxReadResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The requested route, resource, or item was not found. */
+      404: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The request could not be validated. */
+      422: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          'Cache-Control'?: 'no-store';
+          Pragma?: 'no-cache';
+          'X-Request-ID'?: string;
           [name: string]: unknown;
         };
         content: {

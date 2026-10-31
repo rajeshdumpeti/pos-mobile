@@ -1,3 +1,4 @@
+import { InboxSessionScope } from '@/features/notifications/InboxProvider';
 import { QueryClientProvider } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
@@ -27,7 +28,9 @@ export function AppProviders({
             <QueryClientProvider client={queryClient}>
               <AuthenticationIntegrationProvider>
                 <SessionProvider state={sessionState}>
-                  <SessionNavigationAccess>{children}</SessionNavigationAccess>
+                  <InboxSessionScope>
+                    <SessionNavigationAccess>{children}</SessionNavigationAccess>
+                  </InboxSessionScope>
                 </SessionProvider>
               </AuthenticationIntegrationProvider>
             </QueryClientProvider>
