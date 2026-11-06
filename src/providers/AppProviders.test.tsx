@@ -1,0 +1,40 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { render, waitFor } from '@testing-library/react-native';
+import { Text } from 'react-native';
+
+import { AppProviders } from '@/providers/AppProviders';
+import { useTheme } from '@/design-system/theme';
+import { useNavigationAccess } from '@/navigation/NavigationAccessProvider';
+
+jest.mock('react-native-gesture-handler', () => {
+  const { View } = jest.requireActual<typeof import('react-native')>('react-native');
+  return { GestureHandlerRootView: View };
+});
+
+jest.mock('react-native-safe-area-context', () => {
+  const actual = jest.requireActual<typeof import('react-native-safe-area-context')>(
+    'react-native-safe-area-context',
+  );
+  const { View } = jest.requireActual<typeof import('react-native')>('react-native');
+  return { ...actual, SafeAreaProvider: View };
+});
+
+function QueryConsumer() {
+  const queryClient = useQueryClient();
+  const theme = useTheme();
+  const access = useNavigationAccess();
+  return (
+    <Text>{queryClient ? `providers ready:${theme.mode}:${access}` : 'missing providers'}</Text>
+  );
+}
+
+test('renders application children with the React Query provider', async () => {
+  const view = render(
+    <AppProviders themePreference="dark">
+      <QueryConsumer />
+    </AppProviders>,
+  );
+
+  expect(view.getByText('providers ready:dark:checking')).toBeTruthy();
+  await waitFor(() => expect(view.getByText('providers ready:dark:signedOut')).toBeTruthy());
+});

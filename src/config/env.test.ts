@@ -1,4 +1,4 @@
-const originalApiUrl = process.env.EXPO_PUBLIC_API_URL;
+const originalApiUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 function loadAppConfig() {
   let config: typeof import('./env').appConfig | undefined;
@@ -16,21 +16,21 @@ function loadAppConfig() {
 
 afterEach(() => {
   if (originalApiUrl === undefined) {
-    delete process.env.EXPO_PUBLIC_API_URL;
+    delete process.env.EXPO_PUBLIC_API_BASE_URL;
   } else {
-    process.env.EXPO_PUBLIC_API_URL = originalApiUrl;
+    process.env.EXPO_PUBLIC_API_BASE_URL = originalApiUrl;
   }
   jest.resetModules();
 });
 
 it('reads and trims the public API URL', () => {
-  process.env.EXPO_PUBLIC_API_URL = '  http://localhost:8000  ';
+  process.env.EXPO_PUBLIC_API_BASE_URL = '  http://localhost:8000  ';
 
   expect(loadAppConfig().apiUrl).toBe('http://localhost:8000');
 });
 
 it('fails clearly in development when the public API URL is missing', () => {
-  delete process.env.EXPO_PUBLIC_API_URL;
+  delete process.env.EXPO_PUBLIC_API_BASE_URL;
 
-  expect(() => loadAppConfig()).toThrow('EXPO_PUBLIC_API_URL is required for local development');
+  expect(() => loadAppConfig()).toThrow('The API base URL is required.');
 });

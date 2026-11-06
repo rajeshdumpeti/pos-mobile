@@ -31,7 +31,7 @@ to this repository.
 
 ## Public mobile configuration
 
-`EXPO_PUBLIC_API_URL` is the base URL for the optional POS API. The typed
+`EXPO_PUBLIC_API_BASE_URL` is the base URL for the optional POS API. The typed
 configuration in `src/config/env.ts` is the only application layer that reads
 it directly. Local development fails with a clear message when it is missing.
 

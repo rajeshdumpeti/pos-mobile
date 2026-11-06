@@ -1,11 +1,7 @@
-const apiUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
+import { loadApiConfig } from '@/api/client/apiConfig';
 
-if (!apiUrl && __DEV__) {
-  throw new Error(
-    'EXPO_PUBLIC_API_URL is required for local development. Copy .env.example to an ignored .env file.',
-  );
-}
+const apiConfig = loadApiConfig();
 
 export const appConfig = {
-  apiUrl: apiUrl ?? 'http://127.0.0.1:8000',
+  apiUrl: apiConfig.baseUrl,
 } as const;

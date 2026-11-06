@@ -13,6 +13,6 @@ No real environment URLs or production deployment are configured. GitHub
 environments and EAS environment integration are deferred to separately approved
 release work.
 
-The current public mobile configuration name is `EXPO_PUBLIC_API_URL`. Its value
+The current public mobile configuration name is `EXPO_PUBLIC_API_BASE_URL`. Its value
 must be supplied through an approved local or future environment mechanism and
 must not be committed when it represents a real environment.

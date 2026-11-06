@@ -6,10 +6,10 @@ build/
 web-build/
 package-lock.json
 
-# Existing prototype source is intentionally left unchanged during first-commit preparation.
-App.tsx
 app.json
 eslint.config.js
 jest.setup.js
 metro.config.js
-src/
+
+# Archived QA run outputs; preserve recorded evidence.
+/qa-output/today-acceptance-2026-10-06/
