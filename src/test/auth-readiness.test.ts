@@ -9,7 +9,8 @@ test('Expo and EAS own the required development-build foundation', () => {
   const eas = json('eas.json');
   const pkg = json('package.json');
   expect(app.scheme).toBe('pos');
-  expect(pkg.dependencies['expo-dev-client']).toBe('57.0.20');
+  // Expo Doctor owns SDK version compatibility; readiness requires the dependency.
+  expect(pkg.dependencies['expo-dev-client']).toEqual(expect.stringMatching(/\S/));
   expect(eas.build.development).toMatchObject({
     developmentClient: true,
     distribution: 'internal',
