@@ -11,6 +11,10 @@ jest.mock('@/features/today/PlanningProvider', () => ({
   PlanningSessionScope: ({ children }: React.PropsWithChildren) => children,
 }));
 
+// The voice provider needs the real planning scope, which this shell test replaces.
+jest.mock('@/features/voice/VoiceEntryProvider', () => ({
+  VoiceEntryProvider: ({ children }: { children: unknown }) => children,
+}));
 jest.mock('@/providers/AppProviders', () => ({
   AppProviders: ({ children }: React.PropsWithChildren) => children,
 }));

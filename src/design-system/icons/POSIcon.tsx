@@ -25,6 +25,7 @@ const iconMap = {
   search: 'search-outline',
   showPassword: 'eye-outline',
   hidePassword: 'eye-off-outline',
+  mic: 'mic-outline',
 } as const satisfies Record<string, React.ComponentProps<typeof Ionicons>['name']>;
 
 export type POSIconName = keyof typeof iconMap;

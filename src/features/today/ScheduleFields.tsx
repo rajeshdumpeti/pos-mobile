@@ -20,11 +20,17 @@ export function ScheduleFields({
   disabled,
   errors,
   onChange,
+  openRequest,
+  onPicked,
 }: {
   draft: PlanDraft;
   disabled: boolean;
   errors: DraftErrors;
   onChange: (patch: Partial<PlanDraft>) => void;
+  /** Opens a picker from outside (for example a voice clarification). A new nonce reopens it. */
+  openRequest?: { field: 'date' | 'start'; nonce: number };
+  /** Called after a picker is confirmed, even when the chosen value did not change. */
+  onPicked?: (field: 'date' | 'start' | 'end' | 'endDate') => void;
 }) {
   const theme = useTheme(),
     [field, setField] = useState<Field>(),
@@ -34,6 +40,13 @@ export function ScheduleFields({
     origin = useRef<View>(null),
     rows = useRef<Partial<Record<Field, View | null>>>({}),
     focusFrame = useRef<number>(undefined);
+  const lastRequest = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (openRequest && openRequest.nonce !== lastRequest.current) {
+      lastRequest.current = openRequest.nonce;
+      setField(openRequest.field);
+    }
+  }, [openRequest]);
   useEffect(
     () => () => {
       if (focusFrame.current !== undefined) cancelAnimationFrame(focusFrame.current);
@@ -120,6 +133,7 @@ export function ScheduleFields({
       choose('end', value.date, wallClock(new Date(draft.end), draft.timezone));
     else if (field === 'start' || field === 'end')
       choose(field, field === 'end' ? endDate : draft.date, value.clock);
+    if (field) onPicked?.(field);
   };
   return (
     <View style={{ gap: theme.spacing.sm }}>

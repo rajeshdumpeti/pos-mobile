@@ -2,11 +2,12 @@ import { useRef, useState } from 'react';
 import { useAuthenticationConnectivity } from '@/features/auth/integration/useConnectivity';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/api';
+import type { EntrySource } from '@/api/client';
 import type { CreatePlanItem, PlanItem, UpdatePlanItem } from './types';
 import { mapPlanningFailure, type PlanningFailure } from './failure';
 import { planningKeys, usePlanning } from './PlanningProvider';
 export const planningMutationPolicy = { retry: false, networkMode: 'always', gcTime: 0 } as const;
-export function usePlanMutations(id?: string) {
+export function usePlanMutations(id?: string, options: { entrySource?: EntrySource } = {}) {
   const planning = usePlanning(),
     client = useQueryClient(),
     busy = useRef(false),
@@ -52,7 +53,9 @@ export function usePlanMutations(id?: string) {
     mutationKey: [...planningKeys.account(planning.account), 'create'],
     mutationFn: (payload: CreatePlanItem) =>
       planning.creation.submit(payload, (body, key) =>
-        planning.service.create(planning.credential(), body, key),
+        planning.service.create(planning.credential(), body, key, {
+          entrySource: options.entrySource ?? 'manual',
+        }),
       ),
     onSuccess,
     onError,

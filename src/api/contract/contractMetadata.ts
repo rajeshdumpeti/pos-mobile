@@ -1,5 +1,5 @@
 export const contractMetadata = {
-  backendCommit: '98b9124cb26e179a3a001fab47981d0eeaf581db',
+  backendCommit: '1574006035def4916693b4ee2399c1e0b7496b25',
   apiTitle: 'POS Local Mock API',
   apiVersion: '0.1.0',
   authenticationContractVersion: '1.1.0',
@@ -7,4 +7,5 @@ export const contractMetadata = {
   todayContractVersion: '1.0',
   planContractVersion: '1.0',
   inboxContractVersion: '1.0',
+  featureFlagsContractVersion: '1.0',
 } as const;

@@ -1,4 +1,4 @@
-import type { HttpRequest } from '@/api/client';
+import type { EntrySource, HttpRequest } from '@/api/client';
 import type { CreatePlanItem, UpdatePlanItem } from './types';
 import { requireToday, requirePlanItem } from './validation';
 import { requirePlanDate } from '@/features/plan/validation';
@@ -51,7 +51,12 @@ export function createPlanningService(request: Request) {
           expectedStatuses: [200],
         }),
       ),
-    create: async (credential: string, body: CreatePlanItem, key: string) =>
+    create: async (
+      credential: string,
+      body: CreatePlanItem,
+      key: string,
+      options: { entrySource?: EntrySource; timeoutMs?: number } = {},
+    ) =>
       requirePlanItem(
         await request<unknown, CreatePlanItem>({
           path: '/api/v1/plan/items',
@@ -59,6 +64,8 @@ export function createPlanningService(request: Request) {
           credential,
           body,
           idempotencyKey: key,
+          ...(options.entrySource ? { entrySource: options.entrySource } : {}),
+          ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
           expectedStatuses: [201],
         }),
       ),

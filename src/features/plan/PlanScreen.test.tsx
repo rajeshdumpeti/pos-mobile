@@ -34,6 +34,14 @@ jest.mock('@/features/today/useReturnFocus', () => ({ useReturnFocus: () => jest
 jest.mock('@/features/today/motion', () => ({ useReducedMotion: () => ({ reduced: true }) }));
 jest.mock('@/features/today/NativePicker', () => ({ NativePicker: () => null }));
 jest.mock('@/features/app-shell/ShellHeader', () => ({ ShellHeader: () => null }));
+const mockVoiceOpen = jest.fn();
+let mockVoiceEnabled = false;
+jest.mock('@/features/voice/availability', () => ({
+  useVoiceAvailability: () => ({ enabled: mockVoiceEnabled }),
+}));
+jest.mock('@/features/voice/VoiceEntryProvider', () => ({
+  useVoiceEntry: () => ({ open: mockVoiceOpen }),
+}));
 function screen(mode: 'light' | 'dark' = 'light') {
   return render(
     <SafeAreaProvider
@@ -54,6 +62,7 @@ beforeEach(() => {
   mockError = null;
   mockMore = false;
   mockOffline = false;
+  mockVoiceEnabled = false;
 });
 test.each(['light', 'dark'] as const)(
   'empty %s state, summary null and supported creation',
@@ -153,4 +162,15 @@ test('same-date confirmed content survives failure with explicit cursor recovery
   expect(mockRefresh).toHaveBeenCalled();
   expect(view.queryByText('private-error')).toBeNull();
   expect(view.getByText('Support ID: safe-plan')).toBeTruthy();
+});
+
+test('the mic is absent unless voice is available, and then opens for the selected date', () => {
+  const hidden = screen();
+  expect(hidden.queryByRole('button', { name: 'Add by voice' })).toBeNull();
+  hidden.unmount();
+  mockVoiceEnabled = true;
+  const view = screen();
+  expect(view.getByRole('button', { name: 'Add plan item' })).toBeTruthy();
+  fireEvent.press(view.getByRole('button', { name: 'Add by voice' }));
+  expect(mockVoiceOpen).toHaveBeenCalledWith('plan', expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/));
 });

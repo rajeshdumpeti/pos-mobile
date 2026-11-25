@@ -22,6 +22,14 @@ jest.mock('./useToday', () => ({
 jest.mock('./useReturnFocus', () => ({ useReturnFocus: () => jest.fn() }));
 jest.mock('./usePlanAction', () => ({ usePlanAction: () => mockOpen }));
 jest.mock('@/features/app-shell/ShellHeader', () => ({ ShellHeader: () => null }));
+const mockVoiceOpen = jest.fn();
+let mockVoiceEnabled = false;
+jest.mock('@/features/voice/availability', () => ({
+  useVoiceAvailability: () => ({ enabled: mockVoiceEnabled }),
+}));
+jest.mock('@/features/voice/VoiceEntryProvider', () => ({
+  useVoiceEntry: () => ({ open: mockVoiceOpen }),
+}));
 function wrap(mode: 'light' | 'dark' = 'light') {
   return (
     <SafeAreaProvider
@@ -43,6 +51,7 @@ beforeEach(() => {
   mockError = null;
   mockConnectivity = 'online';
   mockPending = false;
+  mockVoiceEnabled = false;
   jest.clearAllMocks();
 });
 test.each(['light', 'dark'] as const)(
@@ -146,4 +155,15 @@ test('unsupported create capability hides working quick actions', () => {
   const view = render(wrap());
   expect(view.queryByRole('button', { name: 'Create a plan item' })).toBeNull();
   expect(view.queryByText('Quick Actions')).toBeNull();
+});
+
+test('the mic is absent unless voice is available, and then sits next to Add plan item', () => {
+  const hidden = render(wrap());
+  expect(hidden.queryByRole('button', { name: 'Add by voice' })).toBeNull();
+  hidden.unmount();
+  mockVoiceEnabled = true;
+  const view = render(wrap());
+  expect(view.getByRole('button', { name: 'Add plan item' })).toBeTruthy();
+  fireEvent.press(view.getByRole('button', { name: 'Add by voice' }));
+  expect(mockVoiceOpen).toHaveBeenCalledWith('today', expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/));
 });

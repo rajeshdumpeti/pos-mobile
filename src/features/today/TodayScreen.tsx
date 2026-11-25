@@ -15,6 +15,7 @@ import { useToday } from './useToday';
 import { mapPlanningFailure } from './failure';
 import { recommendationCopy, sectionCopy, visibleActions } from './actions';
 import { usePlanAction } from './usePlanAction';
+import { VoiceEntryButton } from '@/features/voice/VoiceEntryButton';
 import { ScoreBreakdown, ScoreRing } from './ScoreBreakdown';
 import { formatInstant } from './time';
 import { friendlyDate, friendlyTime } from './presentation';
@@ -464,15 +465,20 @@ export function TodayScreen() {
               <AppText variant="label" accessibilityRole="header">
                 Quick Actions
               </AppText>
-              <Button
-                ref={addButton}
-                label="Add plan item"
-                leadingIcon="add"
-                onPress={() => {
-                  markOrigin(addButton);
-                  open('plan_item.create');
-                }}
-              />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.xs }}>
+                <View style={{ flex: 1 }}>
+                  <Button
+                    ref={addButton}
+                    label="Add plan item"
+                    leadingIcon="add"
+                    onPress={() => {
+                      markOrigin(addButton);
+                      open('plan_item.create');
+                    }}
+                  />
+                </View>
+                <VoiceEntryButton entry="today" />
+              </View>
             </View>
           )}
           <ScoreBreakdown

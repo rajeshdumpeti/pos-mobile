@@ -1,4 +1,5 @@
 export * from './AppText';
+export * from './BottomSheet';
 export * from './Box';
 export * from './Button';
 export * from './Card';
