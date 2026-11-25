@@ -14,7 +14,9 @@ describe('rejection detection', () => {
   it.each([
     'mark gym as done',
     'check off milk',
-    'delete gym',
+    'delete my gym',
+    'delete gym from my calendar',
+    'cancel my gym',
     'remove milk from my list',
     'cancel gym from my plan',
     'reschedule dentist',
@@ -25,9 +27,12 @@ describe('rejection detection', () => {
     expect(unsupported(text)).toBe(true);
   });
 
-  it('rejects move only when a date or time follows "to"', () => {
+  it('rejects move only when a date or time phrase is what follows "to"', () => {
     expect(unsupported('move gym to tomorrow', [3])).toBe(true);
+    expect(unsupported('move gym to today', [2])).toBe(true);
     expect(unsupported('move the couch to the garage')).toBe(false);
+    // "on saturday" starts at token 5, not right after "to".
+    expect(unsupported('move to the new apartment on saturday', [5])).toBe(false);
   });
 
   it.each([

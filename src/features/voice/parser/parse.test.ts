@@ -68,7 +68,7 @@ describe('parseVoiceInput', () => {
 
   it('returns a rejection for each reason', () => {
     expect(parse('   ')).toMatchObject({ reason: 'empty' });
-    expect(parse('delete gym')).toMatchObject({ reason: 'unsupported_action' });
+    expect(parse('delete my gym')).toMatchObject({ reason: 'unsupported_action' });
     expect(parse('gym at 7 and dentist at 3')).toMatchObject({ reason: 'multiple_requests' });
     expect(parse('gym yesterday')).toMatchObject({ reason: 'past_date' });
   });
@@ -105,5 +105,33 @@ describe('parseVoiceInput', () => {
       expect(result.proposal.title.length).toBeLessThanOrEqual(200);
       expect(result.proposal.endTime === null || result.proposal.startTime !== null).toBe(true);
     }
+  });
+
+  it('keeps recurrence words in the title and flags them without repeating anything', () => {
+    const result = parse('Gym every friday at 7 am');
+    expect(result).toMatchObject({
+      kind: 'proposal',
+      proposal: { title: 'Gym every friday', date: '2026-11-20', startTime: '07:00' },
+      hints: ['recurrence_not_supported'],
+    });
+    expect(parse('Water plants daily')).toMatchObject({
+      proposal: { title: 'Water plants daily' },
+      hints: ['recurrence_not_supported'],
+    });
+    expect(parse('Gym tomorrow')).toMatchObject({ hints: [] });
+  });
+
+  it('orders hints: duration, end dropped, recurrence, then title', () => {
+    const long = Array(60).fill('apples').join(' ');
+    const result = parse(`Buy ${long} daily`);
+    expect(result).toMatchObject({ hints: ['recurrence_not_supported', 'title_truncated'] });
+  });
+
+  it('treats plain delete, remove and cancel as normal tasks', () => {
+    expect(parse('Delete old photos')).toMatchObject({ kind: 'proposal' });
+    expect(parse('Remove the trash')).toMatchObject({ kind: 'proposal' });
+    expect(parse('Move to the new apartment on Saturday')).toMatchObject({
+      proposal: { title: 'Move to the new apartment', date: '2026-11-21' },
+    });
   });
 });

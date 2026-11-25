@@ -67,6 +67,10 @@ const DAYPARTS: Record<string, Daypart> = {
   night: 'pm',
 };
 
+export function isWeekdayWord(word: string): boolean {
+  return WEEKDAYS[word] !== undefined;
+}
+
 type Found = { phrase: DatePhrase; end: number; daypart?: Daypart };
 
 function readDay(scan: Scan, index: number): { day: number; suffix: boolean } | null {

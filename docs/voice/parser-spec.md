@@ -45,7 +45,11 @@ type Clarification =
   | { kind: 'date_invalid' } // e.g. "February 30"
   | { kind: 'date_unsupported' } // "next week", "this weekend", "next month"
   | { kind: 'title_missing' };
-type Hint = 'duration_without_start_ignored' | 'end_after_midnight_dropped' | 'title_truncated';
+type Hint =
+  | 'duration_without_start_ignored'
+  | 'end_after_midnight_dropped'
+  | 'recurrence_not_supported'
+  | 'title_truncated';
 type RejectionReason = 'empty' | 'unsupported_action' | 'multiple_requests' | 'past_date';
 type ParseResult =
   | {
@@ -75,6 +79,8 @@ A proposal with one or more clarifications is not ready; the review card (M4) mu
 
 - empty: nothing left after normalization.
 - unsupported_action: explicit manipulation of existing items only. Patterns: "mark … (as) done|complete|completed|finished", "check off …", "delete …", "remove … (from my list|plan|today)?", "cancel … from my list|plan|today", "move … to <date/time>", "reschedule …", "change … to …", "edit …", "complete my|the …". Be conservative: "cancel gym membership", "finish report", "complete tax form" are normal tasks and must produce proposals.
+  - Narrowed rule (founder decision, VOICE-M2 review): "delete", "remove" and "cancel" are rejected only when the sentence refers to the list or to an existing item: "from my list|plan|today|calendar", or "delete|remove|cancel my …". "Remove the trash", "Delete old photos" and "Cancel gym membership" are normal tasks and produce proposals.
+  - "move … to <X>" is unsupported only when X is itself a date or time phrase ("Move gym to Friday", "Move gym to 7 pm"). "Move to the new apartment on Saturday" is a proposal titled "Move to the new apartment" on Saturday, and "Move the couch to the garage" is a proposal.
 - multiple_requests: a second date phrase or a second time phrase for a different task, or list markers ("two things", "and also", "and then", "first … then", "as well as"). "Buy bread and milk" is ONE task (one date, no list words).
 - past_date: "yesterday", "last <weekday>", "last week", or an absolute date with an explicit year that is before contextDate's today. (Dates before today are not allowed in v1, D10.)
 
@@ -97,6 +103,7 @@ A proposal with one or more clarifications is not ready; the review card (M4) mu
 - "next week", "this weekend", "next weekend", "next month", "end of the month", "in N weeks" → clarification date_unsupported (date = contextDate). Do not silently map them.
 - Spoken date always overrides contextDate (VX-11).
 - Relative words (today, tomorrow, in N days, weekdays) always count from the real today in the device timezone, never from the Plan's selected date. contextDate is used only when no date is spoken. Past and time-passed checks also compare to the real today. (Founder decision, VOICE-M2 review.)
+- Recurrence is out of scope for v1 (founder decision, VOICE-M2 review). When the sentence contains recurrence words (every day, every <weekday>, every week|month|morning|afternoon|evening|night, each day|week|month, daily, weekly, monthly), the parser keeps one proposal for the single date it resolves to, leaves the recurrence words in the title and adds the hint recurrence_not_supported. It never creates repeats. Hint order: duration_without_start_ignored, end_after_midnight_dropped, recurrence_not_supported, title_truncated.
 
 9. TIMES
 

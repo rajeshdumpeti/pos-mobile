@@ -748,7 +748,7 @@
         "isPriority": false
       },
       "clarifications": [],
-      "hints": [],
+      "hints": ["recurrence_not_supported"],
       "grammarVersion": "1.0.0"
     }
   },
@@ -7815,6 +7815,124 @@
     }
   },
   {
+    "id": "range-041",
+    "category": "range",
+    "text": "Party 10 to 2 am",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Party",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "meridiem",
+          "options": [
+            {
+              "label": "10 AM",
+              "startTime": "10:00",
+              "endTime": null
+            },
+            {
+              "label": "10 PM",
+              "startTime": "22:00",
+              "endTime": null
+            }
+          ]
+        }
+      ],
+      "hints": ["end_after_midnight_dropped"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-042",
+    "category": "range",
+    "text": "11 to 1 pm standup",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Standup",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": "11:00",
+        "endTime": "13:00",
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "time_passed",
+          "options": [
+            {
+              "label": "Keep today",
+              "date": "2026-11-18"
+            },
+            {
+              "label": "Move to tomorrow",
+              "date": "2026-11-19"
+            }
+          ]
+        }
+      ],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-043",
+    "category": "range",
+    "text": "Study from 1 to 3",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Study",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "meridiem",
+          "options": [
+            {
+              "label": "1 AM – 3 AM",
+              "startTime": "01:00",
+              "endTime": "03:00"
+            },
+            {
+              "label": "1 PM – 3 PM",
+              "startTime": "13:00",
+              "endTime": "15:00"
+            }
+          ]
+        }
+      ],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
     "id": "duration-001",
     "category": "duration",
     "text": "Call mom at 6 pm for 45 minutes tomorrow",
@@ -9069,8 +9187,17 @@
       "now": "2026-11-18T19:00:00.000Z"
     },
     "expected": {
-      "kind": "rejection",
-      "reason": "unsupported_action",
+      "kind": "proposal",
+      "proposal": {
+        "title": "Delete call mom",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
       "grammarVersion": "1.0.0"
     }
   },
@@ -9084,8 +9211,17 @@
       "now": "2026-11-18T19:00:00.000Z"
     },
     "expected": {
-      "kind": "rejection",
-      "reason": "unsupported_action",
+      "kind": "proposal",
+      "proposal": {
+        "title": "Delete the gym task",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
       "grammarVersion": "1.0.0"
     }
   },
@@ -9114,8 +9250,17 @@
       "now": "2026-11-18T19:00:00.000Z"
     },
     "expected": {
-      "kind": "rejection",
-      "reason": "unsupported_action",
+      "kind": "proposal",
+      "proposal": {
+        "title": "Remove buy milk",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
       "grammarVersion": "1.0.0"
     }
   },
@@ -9548,6 +9693,261 @@
       },
       "clarifications": [],
       "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-036",
+    "category": "unsupported",
+    "text": "Remove the trash",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Remove the trash",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-037",
+    "category": "unsupported",
+    "text": "Delete old photos",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Delete old photos",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-038",
+    "category": "unsupported",
+    "text": "Cancel gym membership tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Cancel gym membership",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-039",
+    "category": "unsupported",
+    "text": "Delete my dentist appointment",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-040",
+    "category": "unsupported",
+    "text": "Remove my meeting",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-041",
+    "category": "unsupported",
+    "text": "Cancel my gym",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-042",
+    "category": "unsupported",
+    "text": "Cancel dentist from my calendar",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-043",
+    "category": "unsupported",
+    "text": "Remove the trash from my list",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-044",
+    "category": "unsupported",
+    "text": "Delete old photos from my plan",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-045",
+    "category": "unsupported",
+    "text": "Move to the new apartment on Saturday",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Move to the new apartment",
+        "date": "2026-11-21",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-046",
+    "category": "unsupported",
+    "text": "Move boxes to the garage tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Move boxes to the garage",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-047",
+    "category": "unsupported",
+    "text": "Move gym to Friday",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-048",
+    "category": "unsupported",
+    "text": "Move gym to 7 pm",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "unsupported-049",
+    "category": "unsupported",
+    "text": "Move gym to today",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "unsupported_action",
       "grammarVersion": "1.0.0"
     }
   },
@@ -13297,6 +13697,380 @@
       },
       "clarifications": [],
       "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-014",
+    "category": "plan",
+    "text": "Buy gift tomorrow",
+    "input": {
+      "contextDate": "2027-01-10",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Buy gift",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-015",
+    "category": "plan",
+    "text": "Book flights in 3 days",
+    "input": {
+      "contextDate": "2027-01-10",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Book flights",
+        "date": "2026-11-21",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-016",
+    "category": "plan",
+    "text": "Send card tomorrow at 9 am",
+    "input": {
+      "contextDate": "2027-01-10",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Send card",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "09:00",
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-001",
+    "category": "recurrence",
+    "text": "Gym every day at 6 am",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Gym every day",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": "06:00",
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "time_passed",
+          "options": [
+            {
+              "label": "Keep today",
+              "date": "2026-11-18"
+            },
+            {
+              "label": "Move to tomorrow",
+              "date": "2026-11-19"
+            }
+          ]
+        }
+      ],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-002",
+    "category": "recurrence",
+    "text": "Water plants daily",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Water plants daily",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-003",
+    "category": "recurrence",
+    "text": "Call mom every friday",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Call mom every friday",
+        "date": "2026-11-20",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-004",
+    "category": "recurrence",
+    "text": "Gym every monday at 7 am",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Gym every monday",
+        "date": "2026-11-23",
+        "dateSource": "spoken",
+        "startTime": "07:00",
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-005",
+    "category": "recurrence",
+    "text": "Stretch every morning",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Stretch every morning",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-006",
+    "category": "recurrence",
+    "text": "Review weekly",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Review weekly",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-007",
+    "category": "recurrence",
+    "text": "Clean the kitchen each week",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Clean the kitchen each week",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-008",
+    "category": "recurrence",
+    "text": "Take vitamins every night",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Take vitamins every night",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-009",
+    "category": "recurrence",
+    "text": "Pay rent every month tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Pay rent every month",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-010",
+    "category": "recurrence",
+    "text": "Every day is a gift",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Every day is a gift",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-011",
+    "category": "recurrence",
+    "text": "Gym tomorrow at 7 am",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Gym",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "07:00",
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "recurrence-012",
+    "category": "recurrence",
+    "text": "Read every day for 30 minutes at 8 pm",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Read every day",
+        "date": "2026-11-18",
+        "dateSource": "context",
+        "startTime": "20:00",
+        "endTime": "20:30",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["recurrence_not_supported"],
       "grammarVersion": "1.0.0"
     }
   }

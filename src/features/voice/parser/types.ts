@@ -37,7 +37,10 @@ export type Clarification =
   | { kind: 'title_missing' };
 
 export type Hint =
-  'duration_without_start_ignored' | 'end_after_midnight_dropped' | 'title_truncated';
+  | 'duration_without_start_ignored'
+  | 'end_after_midnight_dropped'
+  | 'recurrence_not_supported'
+  | 'title_truncated';
 
 export type RejectionReason = 'empty' | 'unsupported_action' | 'multiple_requests' | 'past_date';
 

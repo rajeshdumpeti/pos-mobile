@@ -3,6 +3,7 @@ import { resolveDate, scanDates, scanLooseDaypart, type Daypart } from './date';
 import { classifyLocalTime } from './dst';
 import { scanDuration } from './duration';
 import { scanPriority } from './priority';
+import { findRecurrence } from './recurrence';
 import { hasListMarker, isEmptyAfterNormalization, isUnsupportedAction } from './rejections';
 import { resolveTime, scanTimes, type TimeResolution } from './time';
 import { buildTitle } from './title';
@@ -51,6 +52,7 @@ export function parseVoiceInput(input: ParseInput): ParseResult {
   removeFillers(scan);
   if (isEmptyAfterNormalization(scan)) return reject('empty');
 
+  const recurrence = findRecurrence(scan);
   const isPriority = scanPriority(scan);
   const durationMinutes = scanDuration(scan);
 
@@ -142,6 +144,12 @@ export function parseVoiceInput(input: ParseInput): ParseResult {
       });
     }
   }
+
+  // Recurrence words stay in the title; nothing is ever repeated.
+  for (const [from, to] of recurrence) {
+    for (let i = from; i < to; i += 1) scan.used[i] = false;
+  }
+  if (recurrence.length > 0) hints.push('recurrence_not_supported');
 
   const built = buildTitle(scan);
   if (built.title === '') clarifications.push({ kind: 'title_missing' });
