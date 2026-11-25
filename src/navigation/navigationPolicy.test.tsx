@@ -73,6 +73,7 @@ test('route inventory contains only the authorized root, auth, and protected fil
       '(app)/plan-item.tsx',
       '(app)/plan-item-new.tsx',
       '(app)/plan-item-edit.tsx',
+      '(app)/dev/voice-debug.tsx',
       '(auth)/_layout.tsx',
       '(auth)/create-account.tsx',
       '(auth)/forgot-password.tsx',
