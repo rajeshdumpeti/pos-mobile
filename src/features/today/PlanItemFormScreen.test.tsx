@@ -7,6 +7,7 @@ import type { PlanContext } from '@/features/plan/calendar';
 import { createCreationCoordinator } from './creation';
 import type { SavedPlanDraft } from './PlanningProvider';
 import { itemFixture, itemId } from './testFixtures';
+import { setVoicePrefill, takeVoicePrefill } from '@/features/voice/prefill';
 const mockCreate = jest.fn(),
   mockUpdate = jest.fn(),
   mockBack = jest.fn(),
@@ -47,18 +48,19 @@ jest.mock('./PlanningProvider', () => ({
 jest.mock('./usePlanItem', () => ({
   usePlanItem: () => ({ data: mockItem, isPending: false, refetch: jest.fn() }),
 }));
+const mockUseMutations = jest.fn((..._args: unknown[]) => ({
+  busy: false,
+  create: mockCreate,
+  update: mockUpdate,
+  reviewRequired: false,
+}));
 jest.mock('./usePlanMutations', () => ({
-  usePlanMutations: () => ({
-    busy: false,
-    create: mockCreate,
-    update: mockUpdate,
-    reviewRequired: false,
-  }),
+  usePlanMutations: (...args: unknown[]) => mockUseMutations(...args),
 }));
 jest.mock('@/features/auth/integration/useConnectivity', () => ({
   useAuthenticationConnectivity: () => 'online',
 }));
-function screen(edit = false, context?: PlanContext) {
+function screen(edit = false, context?: PlanContext, entrySource?: 'manual' | 'quick_log') {
   return render(
     <SafeAreaProvider
       initialMetrics={{
@@ -71,6 +73,7 @@ function screen(edit = false, context?: PlanContext) {
           mode={edit ? 'edit' : 'create'}
           id={edit ? itemId : undefined}
           context={context}
+          entrySource={entrySource}
         />
       </ThemeProvider>
     </SafeAreaProvider>,
@@ -248,4 +251,27 @@ test('Plan creation defaults to selected date, unscheduled and non-priority, the
       params: { selectedDate: context.selectedDate },
     }),
   );
+});
+
+test('creates carry the entry source of the path that opened the form', () => {
+  screen();
+  expect(mockUseMutations).toHaveBeenLastCalledWith(undefined, { entrySource: 'manual' });
+  screen(false, undefined, 'quick_log');
+  expect(mockUseMutations).toHaveBeenLastCalledWith(undefined, { entrySource: 'quick_log' });
+});
+test('Type it instead from voice fills the new form once, from memory, and is then cleared', () => {
+  setVoicePrefill({ title: 'Workout', priority: true });
+  const first = screen();
+  expect(first.getByDisplayValue('Workout')).toBeTruthy();
+  expect(takeVoicePrefill()).toBeUndefined();
+  first.unmount();
+  const second = screen();
+  expect(second.queryByDisplayValue('Workout')).toBeNull();
+});
+test('a voice prefill never leaks into an edit form', () => {
+  setVoicePrefill({ title: 'Workout' });
+  mockItem = itemFixture();
+  const view = screen(true);
+  expect(view.queryByDisplayValue('Workout')).toBeNull();
+  expect(takeVoicePrefill()).toEqual({ title: 'Workout' });
 });

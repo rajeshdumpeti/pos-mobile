@@ -21,6 +21,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/health/ready': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Check database connectivity and schema compatibility */
+    get: operations['get_database_readiness'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/auth/registration-policy': {
     parameters: {
       query?: never;
@@ -488,6 +505,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/features': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Read feature flags for the authenticated account
+     * @description Feature flags contract 1.0. Requires the same authentication and completed onboarding as Today and Plan. The response states only whether each feature is enabled for the caller; it never reveals configuration, rollout mode or other accounts. Responses are never cached.
+     */
+    get: operations['get_feature_flags'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -747,6 +784,15 @@ export interface components {
       request_id: string;
       /** Details */
       details?: components['schemas']['ErrorDetail'][];
+    };
+    /** FeatureFlagsResponse */
+    FeatureFlagsResponse: {
+      /**
+       * Contract Version
+       * @constant
+       */
+      contract_version: '1.0';
+      voice_entry: components['schemas']['VoiceEntryFlagResponse'];
     };
     /** FreshnessResponse */
     FreshnessResponse: {
@@ -1848,6 +1894,11 @@ export interface components {
        */
       resend_available_at: string;
     };
+    /** VoiceEntryFlagResponse */
+    VoiceEntryFlagResponse: {
+      /** Enabled */
+      enabled: boolean;
+    };
     /** WaterValue */
     WaterValue: {
       /** Value */
@@ -1911,6 +1962,35 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  get_database_readiness: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HealthResponse'];
+        };
+      };
+      /** @description Service Unavailable */
+      503: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['HealthResponse'];
         };
       };
     };
@@ -3883,6 +3963,8 @@ export interface operations {
       query?: never;
       header: {
         'Idempotency-Key': string;
+        /** @description Optional, diagnostic only. Where the request originated: manual, quick_log or voice (case-sensitive). Missing, empty, unknown or over-32-character values are treated as unspecified and never cause an error. It is not part of the idempotency comparison and does not change the stored item or the response. */
+        'X-POS-Entry-Source'?: string | null;
       };
       path?: never;
       cookie?: never;
@@ -5149,6 +5231,92 @@ export interface operations {
           'Cache-Control'?: 'no-store';
           Pragma?: 'no-cache';
           'X-Request-ID'?: string;
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+    };
+  };
+  get_feature_flags: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Feature flags for the authenticated account */
+      200: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Account-specific responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FeatureFlagsResponse'];
+        };
+      };
+      /** @description Authentication is required or invalid. */
+      401: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Account-specific responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description The authenticated account is not eligible for this operation. */
+      403: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Account-specific responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description An unexpected server error occurred. */
+      500: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Account-specific responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponse'];
+        };
+      };
+      /** @description A required dependency is unavailable. */
+      503: {
+        headers: {
+          /** @description Validated caller correlation ID or generated server ID */
+          'X-Request-ID'?: string;
+          /** @description Account-specific responses are not stored */
+          'Cache-Control'?: 'no-store';
+          /** @description Legacy cache prevention */
+          Pragma?: 'no-cache';
           [name: string]: unknown;
         };
         content: {

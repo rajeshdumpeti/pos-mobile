@@ -34,3 +34,31 @@ it('fails clearly in development when the public API URL is missing', () => {
 
   expect(() => loadAppConfig()).toThrow('The API base URL is required.');
 });
+
+describe('EXPO_PUBLIC_VOICE_ENABLED (VOICE-M4)', () => {
+  const original = process.env.EXPO_PUBLIC_VOICE_ENABLED;
+  const voiceEnabled = () =>
+    jest.requireActual<typeof import('./env')>('./env').isVoiceBuildEnabled();
+  afterEach(() => {
+    if (original === undefined) delete process.env.EXPO_PUBLIC_VOICE_ENABLED;
+    else process.env.EXPO_PUBLIC_VOICE_ENABLED = original;
+  });
+
+  it('is off by default', () => {
+    delete process.env.EXPO_PUBLIC_VOICE_ENABLED;
+    expect(voiceEnabled()).toBe(false);
+  });
+
+  it.each(['TRUE', 'True', '1', 'yes', 'on', ' true', 'true ', '', 'false'])(
+    'treats %j as off',
+    (value) => {
+      process.env.EXPO_PUBLIC_VOICE_ENABLED = value;
+      expect(voiceEnabled()).toBe(false);
+    },
+  );
+
+  it('is on only for the exact string "true"', () => {
+    process.env.EXPO_PUBLIC_VOICE_ENABLED = 'true';
+    expect(voiceEnabled()).toBe(true);
+  });
+});

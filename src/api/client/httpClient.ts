@@ -1,5 +1,8 @@
 import { ApiError } from './apiError';
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
+/** Content-free origin of a create request. Diagnostic only; the server never rejects it. */
+export type EntrySource = 'manual' | 'quick_log' | 'voice';
+const entrySources: readonly EntrySource[] = ['manual', 'quick_log', 'voice'];
 export type HttpRequest<TBody = never> = {
   path: string;
   method: HttpMethod;
@@ -8,6 +11,7 @@ export type HttpRequest<TBody = never> = {
   requestId?: string;
   credential?: string;
   idempotencyKey?: string;
+  entrySource?: EntrySource;
   query?: Readonly<{
     timezone?: string;
     selected_date?: string;
@@ -21,7 +25,7 @@ export type HttpRequest<TBody = never> = {
 type FetchLike = typeof fetch;
 const requestIdPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 const allowedPath =
-  /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|api\/v1\/account\/timezone$|api\/v1\/notifications(?:\/unread-count|\/read-all|\/[0-9a-f-]{36}\/read)?$|api\/v1\/today$|api\/v1\/plan$|api\/v1\/plan\/items(?:\/[0-9a-f-]{36}(?:\/complete)?)?$|health$)/i;
+  /^\/(?:api\/v1\/(?:auth|onboarding)(?:\/|$)|api\/v1\/account\/timezone$|api\/v1\/notifications(?:\/unread-count|\/read-all|\/[0-9a-f-]{36}\/read)?$|api\/v1\/today$|api\/v1\/features$|api\/v1\/plan$|api\/v1\/plan\/items(?:\/[0-9a-f-]{36}(?:\/complete)?)?$|health$)/i;
 function authorization(credential?: string) {
   if (credential === undefined) return undefined;
   if (!credential || /[\r\n\s]/.test(credential))
@@ -95,6 +99,13 @@ export function createHttpClient({
       input.path === '/api/v1/plan/items' ? /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/ : requestIdPattern;
     if (input.idempotencyKey && !keyPattern.test(input.idempotencyKey))
       throw new ApiError('configuration', 'The idempotency key is malformed.');
+    if (
+      input.entrySource !== undefined &&
+      (input.path !== '/api/v1/plan/items' ||
+        input.method !== 'POST' ||
+        !entrySources.includes(input.entrySource))
+    )
+      throw new ApiError('configuration', 'The entry source is not allowed.');
     let query = '';
     if (input.query !== undefined) {
       const q = input.query;
@@ -148,6 +159,7 @@ export function createHttpClient({
     if (input.body !== undefined) headers['Content-Type'] = 'application/json';
     if (auth) headers.Authorization = auth;
     if (input.idempotencyKey) headers['Idempotency-Key'] = input.idempotencyKey;
+    if (input.entrySource) headers['X-POS-Entry-Source'] = input.entrySource;
     try {
       if (input.signal?.aborted) throw new ApiError('cancelled', 'The API request was cancelled.');
       const response = await fetchImpl(`${baseUrl}${input.path}${query}`, {

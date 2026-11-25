@@ -5,11 +5,12 @@ import { PlanningButton as Button } from './TodayVisuals';
 import { AppText, LoadingIndicator } from '@/design-system';
 import { SecondaryScreen } from '@/features/app-shell/ShellScreens';
 import { usePlanAction } from './usePlanAction';
+import { VoiceEntryButton } from '@/features/voice/VoiceEntryButton';
 import { useToday } from './useToday';
 import { FailureNotice } from './PlanItemPage';
 import { mapPlanningFailure } from './failure';
 export function QuickActionsScreen() {
-  const open = usePlanAction(),
+  const open = usePlanAction(undefined, 'quick_log'),
     { query, refresh, connectivity, timezone } = useToday(),
     origin = useRef<View>(null),
     markOrigin = useReturnFocus();
@@ -49,6 +50,7 @@ export function QuickActionsScreen() {
               open('plan_item.create');
             }}
           />
+          <VoiceEntryButton entry="quick_log" kind="labeled" />
           <AppText color="secondary">
             Open a plan item from Today to view, edit or complete it.
           </AppText>

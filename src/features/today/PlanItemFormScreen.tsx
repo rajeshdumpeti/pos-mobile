@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
+import type { EntrySource } from '@/api/client';
 import { useRouter, useNavigation } from 'expo-router';
 import { AppText, Checkbox, LoadingIndicator, TextInput } from '@/design-system';
 import { useTheme } from '@/design-system/theme';
@@ -31,21 +32,24 @@ import { PlanningButton as Button, PlanningCard as Card, PlanningCard } from './
 import { ScheduleFields } from './ScheduleFields';
 import { friendlyDate } from './presentation';
 import { usePreventRemove } from 'expo-router/react-navigation';
+import { takeVoicePrefill } from '@/features/voice/prefill';
 import type { NativeStackNavigationProp } from 'expo-router/native-stack';
 export function PlanItemFormScreen({
   id: input,
   mode = 'create',
   context,
+  entrySource = 'manual',
 }: {
   id?: string | string[];
   mode?: 'create' | 'edit';
   context?: PlanContext;
+  entrySource?: Exclude<EntrySource, 'voice'>;
 }) {
   const id = validPlanId(input),
     edit = mode === 'edit',
     planning = usePlanning(),
     query = usePlanItem(edit ? id : undefined);
-  const mutations = usePlanMutations(edit ? id : undefined),
+  const mutations = usePlanMutations(edit ? id : undefined, { entrySource }),
     router = useRouter(),
     navigation = useSafeNavigation(),
     nativeNavigation = useNavigation<NativeStackNavigationProp<Record<string, undefined>>>(),
@@ -55,9 +59,17 @@ export function PlanItemFormScreen({
     hydrated = useRef(false),
     titleInput = useRef<NativeTextInput>(null);
   const draftKey = edit ? `edit:${id}` : context ? `create:plan:${context.selectedDate}` : 'create';
-  const initialDraft = () => ({
+  // "Type it instead" from voice hands over what was understood once, in memory only.
+  const voicePrefill = useRef<Partial<PlanDraft> | undefined>(undefined);
+  const voicePrefillRead = useRef(false);
+  if (!voicePrefillRead.current) {
+    voicePrefillRead.current = true;
+    if (!edit) voicePrefill.current = takeVoicePrefill();
+  }
+  const initialDraft = (withPrefill = false): PlanDraft => ({
     ...emptyDraft(resolveTimeZone()),
     ...(context ? { date: context.selectedDate } : {}),
+    ...(withPrefill ? voicePrefill.current : {}),
   });
   const stored = planning.drafts?.get(draftKey);
   const confirmedWrite = useRef(false),
@@ -75,7 +87,9 @@ export function PlanItemFormScreen({
     formState: { errors, isSubmitted },
   } = useForm<PlanDraft>({
     defaultValues:
-      attempt && !edit ? draftFromCreation(attempt.payload) : (stored?.values ?? initialDraft()),
+      attempt && !edit
+        ? draftFromCreation(attempt.payload)
+        : (stored?.values ?? initialDraft(true)),
   });
   const openingComplete = useRef(Platform.OS === 'web');
   const [creationRevision, setCreationRevision] = useState(0);

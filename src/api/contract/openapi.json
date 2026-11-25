@@ -42,6 +42,35 @@
         }
       }
     },
+    "/health/ready": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Check database connectivity and schema compatibility",
+        "operationId": "get_database_readiness",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/registration-policy": {
       "get": {
         "tags": ["Authentication"],
@@ -3166,6 +3195,25 @@
               "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
               "title": "Idempotency-Key"
             }
+          },
+          {
+            "name": "X-POS-Entry-Source",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional, diagnostic only. Where the request originated: manual, quick_log or voice (case-sensitive). Missing, empty, unknown or over-32-character values are treated as unspecified and never cause an error. It is not part of the idempotency comparison and does not change the stored item or the response.",
+              "examples": ["manual", "quick_log", "voice"],
+              "title": "X-Pos-Entry-Source"
+            },
+            "description": "Optional, diagnostic only. Where the request originated: manual, quick_log or voice (case-sensitive). Missing, empty, unknown or over-32-character values are treated as unspecified and never cause an error. It is not part of the idempotency comparison and does not change the stored item or the response."
           }
         ],
         "requestBody": {
@@ -6040,6 +6088,181 @@
           }
         }
       }
+    },
+    "/api/v1/features": {
+      "get": {
+        "tags": ["Feature flags"],
+        "summary": "Read feature flags for the authenticated account",
+        "description": "Feature flags contract 1.0. Requires the same authentication and completed onboarding as Today and Plan. The response states only whether each feature is enabled for the caller; it never reveals configuration, rollout mode or other accounts. Responses are never cached.",
+        "operationId": "get_feature_flags",
+        "responses": {
+          "200": {
+            "description": "Feature flags for the authenticated account",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Account-specific responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication is required or invalid.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Account-specific responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated account is not eligible for this operation.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Account-specific responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Account-specific responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "A required dependency is unavailable.",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Validated caller correlation ID or generated server ID",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "description": "Account-specific responses are not stored",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Pragma": {
+                "description": "Legacy cache prevention",
+                "schema": {
+                  "type": "string",
+                  "const": "no-cache"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -6566,6 +6789,22 @@
         "type": "object",
         "required": ["code", "message", "request_id"],
         "title": "ErrorResponse"
+      },
+      "FeatureFlagsResponse": {
+        "properties": {
+          "contract_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Contract Version"
+          },
+          "voice_entry": {
+            "$ref": "#/components/schemas/VoiceEntryFlagResponse"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["contract_version", "voice_entry"],
+        "title": "FeatureFlagsResponse"
       },
       "FreshnessResponse": {
         "properties": {
@@ -9223,6 +9462,18 @@
         "type": "object",
         "required": ["flow_token", "masked_email", "expires_at", "resend_available_at"],
         "title": "VerificationFlowContinuation"
+      },
+      "VoiceEntryFlagResponse": {
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["enabled"],
+        "title": "VoiceEntryFlagResponse"
       },
       "WaterValue": {
         "properties": {

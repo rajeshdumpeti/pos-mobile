@@ -6,6 +6,7 @@ import { useTheme } from '@/design-system/theme';
 import { ShellHeader } from '@/features/app-shell/ShellHeader';
 import { PlanningCard as Card, PlanningButton as Button } from '@/features/today/TodayVisuals';
 import { usePlanAction } from '@/features/today/usePlanAction';
+import { VoiceEntryButton } from '@/features/voice/VoiceEntryButton';
 import { useReturnFocus } from '@/features/today/useReturnFocus';
 import { useReducedMotion } from '@/features/today/motion';
 import { NativePicker } from '@/features/today/NativePicker';
@@ -388,15 +389,20 @@ export function PlanScreen() {
             {items.length} loaded of {data.summary.total} assigned items. Changes between pages can
             change this list.
           </AppText>
-          <Button
-            ref={addButton}
-            label="Add plan item"
-            leadingIcon="add"
-            onPress={() => {
-              mark(addButton);
-              open('plan_item.create');
-            }}
-          />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.xs }}>
+            <View style={{ flex: 1 }}>
+              <Button
+                ref={addButton}
+                label="Add plan item"
+                leadingIcon="add"
+                onPress={() => {
+                  mark(addButton);
+                  open('plan_item.create');
+                }}
+              />
+            </View>
+            <VoiceEntryButton entry="plan" contextDate={date} />
+          </View>
         </Transition>
       )}
       {picker && timezone && (

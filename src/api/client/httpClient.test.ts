@@ -151,3 +151,88 @@ test('distinguishes timeout, cancellation and network without retry', async () =
     offline({ path: '/health', method: 'GET', expectedStatuses: [200] }),
   ).rejects.toMatchObject({ category: 'network' });
 });
+
+describe('VOICE-M4 entry source and features path', () => {
+  const create = () => {
+    const fetcher = jest.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
+      json({ ok: true }, 201),
+    );
+    const request = createHttpClient({
+      baseUrl: 'https://api.example.test',
+      fetchImpl: fetcher,
+      requestIdFactory: () => 'generated-1',
+    });
+    return { fetcher, request };
+  };
+
+  test('allows GET /api/v1/features', async () => {
+    const { fetcher, request } = create();
+    await request({
+      path: '/api/v1/features',
+      method: 'GET',
+      credential: 'access',
+      expectedStatuses: [201],
+    });
+    expect(fetcher.mock.calls[0]![0]).toBe('https://api.example.test/api/v1/features');
+  });
+
+  test.each(['manual', 'quick_log', 'voice'] as const)(
+    'sends X-POS-Entry-Source %s on create',
+    async (entrySource) => {
+      const { fetcher, request } = create();
+      await request({
+        path: '/api/v1/plan/items',
+        method: 'POST',
+        body: { title: 'x' },
+        credential: 'access',
+        idempotencyKey: 'plan-key-1',
+        entrySource,
+        expectedStatuses: [201],
+      });
+      expect(fetcher.mock.calls[0]![1]!.headers).toEqual({
+        Accept: 'application/json',
+        'X-Request-ID': 'generated-1',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer access',
+        'Idempotency-Key': 'plan-key-1',
+        'X-POS-Entry-Source': entrySource,
+      });
+    },
+  );
+
+  test('adds no header when no entry source is given', async () => {
+    const { fetcher, request } = create();
+    await request({
+      path: '/api/v1/plan/items',
+      method: 'POST',
+      body: { title: 'x' },
+      credential: 'access',
+      idempotencyKey: 'plan-key-1',
+      expectedStatuses: [201],
+    });
+    expect(fetcher.mock.calls[0]![1]!.headers).not.toHaveProperty('X-POS-Entry-Source');
+  });
+
+  test('rejects an entry source anywhere but plan-item creation or with an unknown value', async () => {
+    const { fetcher, request } = create();
+    await expect(
+      request({
+        path: '/api/v1/today',
+        method: 'GET',
+        query: { timezone: 'UTC' },
+        entrySource: 'voice',
+        expectedStatuses: [200],
+      }),
+    ).rejects.toMatchObject({ category: 'configuration' });
+    await expect(
+      request({
+        path: '/api/v1/plan/items',
+        method: 'POST',
+        body: {},
+        entrySource: 'robot' as never,
+        expectedStatuses: [201],
+      }),
+    ).rejects.toMatchObject({ category: 'configuration' });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+});
