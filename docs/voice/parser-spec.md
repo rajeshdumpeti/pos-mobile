@@ -96,6 +96,7 @@ A proposal with one or more clarifications is not ready; the review card (M4) mu
 - Absolute: "november 21", "nov 21", "nov 21st", "21st of november", "the 21st", "on the 1st", optional year "november 21 2027". Without a year: next occurrence that is today or later. Ordinal day alone: this month if ≥ today's day, else next month. Impossible dates (Feb 30, April 31) → clarification date_invalid (date = contextDate).
 - "next week", "this weekend", "next weekend", "next month", "end of the month", "in N weeks" → clarification date_unsupported (date = contextDate). Do not silently map them.
 - Spoken date always overrides contextDate (VX-11).
+- Relative words (today, tomorrow, in N days, weekdays) always count from the real today in the device timezone, never from the Plan's selected date. contextDate is used only when no date is spoken. Past and time-passed checks also compare to the real today. (Founder decision, VOICE-M2 review.)
 
 9. TIMES
 
@@ -107,6 +108,11 @@ A proposal with one or more clarifications is not ready; the review card (M4) mu
   - hour 12 bare → meridiem clarification (12 PM noon vs 12 AM).
 - Daypart without a time ("tomorrow morning") → no time (unscheduled); daypart only informs meridiem.
 - Range: "from 9 to 11 am", "9 to 11 am", "9-11am", "between 2 and 4 pm": a meridiem stated once applies to both if that gives start < end; else meridiem clarification with both interpretations. End must be > start on the same date.
+  - Range meridiem rule (founder decision, VOICE-M2 review; supersedes "else meridiem clarification with both interpretations" above): a range with one stated meridiem is tried with that meridiem on both ends, and also with the other end in the opposite meridiem. Keep only readings where start < end on the same date and the span is under 12 hours.
+    - Exactly one valid reading: use it, with no clarification ("11 to 1 pm" → 11:00–13:00; "9 to 11 pm" → 21:00–23:00, because 9 AM–11 PM is a 14-hour span, not a reading).
+    - Two valid readings: meridiem clarification with both ("from 1 to 3" with no meridiem → 1–3 AM or 1–3 PM).
+    - No valid reading (for example "10 to 2 am"): meridiem clarification for the start time only, end time dropped, hint end_after_midnight_dropped. If the start is already explicit, keep it and drop the end with the same hint.
+    - With no meridiem stated at all, the same readings are tried for every AM/PM combination of both ends.
 - Duration with a start: "for 45 minutes", "for an hour", "for 2 hours", "for an hour and a half", "for 1.5 hours", "for 90 minutes" → endTime = start + duration. If the end passes midnight → drop end, hint end_after_midnight_dropped.
 - Duration without a start → ignore it, hint duration_without_start_ignored, startTime null.
 - Time passed: if date is today (in timezone) and startTime is before now → clarification time_passed with options Keep today (today) / Move to tomorrow (today + 1). Applies to both context and spoken "today".

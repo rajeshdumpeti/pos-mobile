@@ -104,9 +104,11 @@ export function parseVoiceInput(input: ParseInput): ParseResult {
           : null),
     }));
     clarifications.push({ kind: 'meridiem', options });
+    if (time.endDropped) hints.push('end_after_midnight_dropped');
   } else if (time.kind === 'exact') {
     startTime = time.start;
     endTime = time.end;
+    if (time.endDropped) hints.push('end_after_midnight_dropped');
     if (endTime === null && durationMinutes !== null && !isRange) {
       endTime = addMinutes(startTime, durationMinutes);
       if (endTime === null) hints.push('end_after_midnight_dropped');

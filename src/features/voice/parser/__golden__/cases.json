@@ -7359,6 +7359,462 @@
     }
   },
   {
+    "id": "range-026",
+    "category": "range",
+    "text": "Call mom from 11 to 1 pm tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Call mom",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "11:00",
+        "endTime": "13:00",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-027",
+    "category": "range",
+    "text": "Class 11 to 1 pm tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Class",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "11:00",
+        "endTime": "13:00",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-028",
+    "category": "range",
+    "text": "Study from 10 to 2 pm tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Study",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "10:00",
+        "endTime": "14:00",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-029",
+    "category": "range",
+    "text": "Dinner from 9 to 11 pm tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Dinner",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "21:00",
+        "endTime": "23:00",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-030",
+    "category": "range",
+    "text": "Dinner from 8 to 10 pm tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Dinner",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "20:00",
+        "endTime": "22:00",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-031",
+    "category": "range",
+    "text": "Meeting from 11 am to 1 tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Meeting",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "11:00",
+        "endTime": "13:00",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-032",
+    "category": "range",
+    "text": "Meeting from 10 to 2 tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Meeting",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "10:00",
+        "endTime": "14:00",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-033",
+    "category": "range",
+    "text": "Lunch from 11 to 12 tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Lunch",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "11:00",
+        "endTime": "12:00",
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-034",
+    "category": "range",
+    "text": "Study from 1 to 3 tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Study",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "meridiem",
+          "options": [
+            {
+              "label": "1 AM – 3 AM",
+              "startTime": "01:00",
+              "endTime": "03:00"
+            },
+            {
+              "label": "1 PM – 3 PM",
+              "startTime": "13:00",
+              "endTime": "15:00"
+            }
+          ]
+        }
+      ],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-035",
+    "category": "range",
+    "text": "Study between 4 and 6 tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Study",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "meridiem",
+          "options": [
+            {
+              "label": "4 AM – 6 AM",
+              "startTime": "04:00",
+              "endTime": "06:00"
+            },
+            {
+              "label": "4 PM – 6 PM",
+              "startTime": "16:00",
+              "endTime": "18:00"
+            }
+          ]
+        }
+      ],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-036",
+    "category": "range",
+    "text": "Class from 12 to 1 tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Class",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "meridiem",
+          "options": [
+            {
+              "label": "12 AM – 1 AM",
+              "startTime": "00:00",
+              "endTime": "01:00"
+            },
+            {
+              "label": "12 PM – 1 PM",
+              "startTime": "12:00",
+              "endTime": "13:00"
+            }
+          ]
+        }
+      ],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-037",
+    "category": "range",
+    "text": "Call mom from 10 to 2 am tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Call mom",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "meridiem",
+          "options": [
+            {
+              "label": "10 AM",
+              "startTime": "10:00",
+              "endTime": null
+            },
+            {
+              "label": "10 PM",
+              "startTime": "22:00",
+              "endTime": null
+            }
+          ]
+        }
+      ],
+      "hints": ["end_after_midnight_dropped"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-038",
+    "category": "range",
+    "text": "Study from 9 to 8 am tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Study",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "meridiem",
+          "options": [
+            {
+              "label": "9 AM",
+              "startTime": "09:00",
+              "endTime": null
+            },
+            {
+              "label": "9 PM",
+              "startTime": "21:00",
+              "endTime": null
+            }
+          ]
+        }
+      ],
+      "hints": ["end_after_midnight_dropped"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-039",
+    "category": "range",
+    "text": "Study from 5 to 5 tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Study",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "meridiem",
+          "options": [
+            {
+              "label": "5 AM",
+              "startTime": "05:00",
+              "endTime": null
+            },
+            {
+              "label": "5 PM",
+              "startTime": "17:00",
+              "endTime": null
+            }
+          ]
+        }
+      ],
+      "hints": ["end_after_midnight_dropped"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "range-040",
+    "category": "range",
+    "text": "Gym from 10 pm to 2 am tomorrow",
+    "input": {
+      "contextDate": "2026-11-18",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Gym",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "22:00",
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": ["end_after_midnight_dropped"],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
     "id": "duration-001",
     "category": "duration",
     "text": "Call mom at 6 pm for 45 minutes tomorrow",
@@ -12509,6 +12965,337 @@
           ]
         }
       ],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-001",
+    "category": "plan",
+    "text": "Call mom tomorrow",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Call mom",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-002",
+    "category": "plan",
+    "text": "Dentist in 3 days",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Dentist",
+        "date": "2026-11-21",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-003",
+    "category": "plan",
+    "text": "Gym Friday",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Gym",
+        "date": "2026-11-20",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-004",
+    "category": "plan",
+    "text": "Pay rent today",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Pay rent",
+        "date": "2026-11-18",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-005",
+    "category": "plan",
+    "text": "Haircut day after tomorrow",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Haircut",
+        "date": "2026-11-20",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-006",
+    "category": "plan",
+    "text": "Call mom",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Call mom",
+        "date": "2026-12-05",
+        "dateSource": "context",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-007",
+    "category": "plan",
+    "text": "Gym at 7 am",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Gym",
+        "date": "2026-12-05",
+        "dateSource": "context",
+        "startTime": "07:00",
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-008",
+    "category": "plan",
+    "text": "Gym at 7 am today",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Gym",
+        "date": "2026-11-18",
+        "dateSource": "spoken",
+        "startTime": "07:00",
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "time_passed",
+          "options": [
+            {
+              "label": "Keep today",
+              "date": "2026-11-18"
+            },
+            {
+              "label": "Move to tomorrow",
+              "date": "2026-11-19"
+            }
+          ]
+        }
+      ],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-009",
+    "category": "plan",
+    "text": "Dentist next friday",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Dentist",
+        "date": "2026-11-20",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [
+        {
+          "kind": "next_weekday",
+          "options": [
+            {
+              "label": "Fri, Nov 20",
+              "date": "2026-11-20"
+            },
+            {
+              "label": "Fri, Nov 27",
+              "date": "2026-11-27"
+            }
+          ]
+        }
+      ],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-010",
+    "category": "plan",
+    "text": "Pay rent on the 1st",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Pay rent",
+        "date": "2026-12-01",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-011",
+    "category": "plan",
+    "text": "Pay rent november 17 2026",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "rejection",
+      "reason": "past_date",
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-012",
+    "category": "plan",
+    "text": "Pay rent november 30 2026",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Pay rent",
+        "date": "2026-11-30",
+        "dateSource": "spoken",
+        "startTime": null,
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
+      "hints": [],
+      "grammarVersion": "1.0.0"
+    }
+  },
+  {
+    "id": "plan-013",
+    "category": "plan",
+    "text": "Lunch tomorrow at noon",
+    "input": {
+      "contextDate": "2026-12-05",
+      "timezone": "America/New_York",
+      "now": "2026-11-18T19:00:00.000Z"
+    },
+    "expected": {
+      "kind": "proposal",
+      "proposal": {
+        "title": "Lunch",
+        "date": "2026-11-19",
+        "dateSource": "spoken",
+        "startTime": "12:00",
+        "endTime": null,
+        "isPriority": false
+      },
+      "clarifications": [],
       "hints": [],
       "grammarVersion": "1.0.0"
     }

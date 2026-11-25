@@ -84,4 +84,35 @@ describe('time phrases', () => {
       end: null,
     });
   });
+
+  it('reads one stated meridiem both ways and keeps only readings that fit', () => {
+    // One valid reading: no clarification.
+    expect(resolveTime(first('11 to 1 pm'), null)).toMatchObject({ start: '11:00', end: '13:00' });
+    expect(resolveTime(first('from 9 to 11 pm'), null)).toMatchObject({
+      start: '21:00',
+      end: '23:00',
+    });
+    expect(resolveTime(first('from 11 am to 1'), null)).toMatchObject({
+      start: '11:00',
+      end: '13:00',
+    });
+    expect(resolveTime(first('from 10 to 2'), null)).toMatchObject({
+      start: '10:00',
+      end: '14:00',
+    });
+    // Two valid readings: ask.
+    expect(resolveTime(first('from 1 to 3'), null)).toMatchObject({
+      kind: 'meridiem',
+      options: [{ label: '1 AM – 3 AM' }, { label: '1 PM – 3 PM' }],
+    });
+    // No valid reading: ask about the start and drop the end.
+    expect(resolveTime(first('from 10 to 2 am'), null)).toEqual({
+      kind: 'meridiem',
+      endDropped: true,
+      options: [
+        { label: '10 AM', startTime: '10:00', endTime: null },
+        { label: '10 PM', startTime: '22:00', endTime: null },
+      ],
+    });
+  });
 });

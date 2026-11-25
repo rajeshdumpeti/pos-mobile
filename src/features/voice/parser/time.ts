@@ -178,8 +178,8 @@ export function scanTimes(scan: Scan, starts: number[] = []): TimeMatch[] {
 export type TimeResolution =
   | { kind: 'none' }
   | { kind: 'midnight' }
-  | { kind: 'exact'; start: string; end: string | null; startMinutes: number }
-  | { kind: 'meridiem'; options: MeridiemOption[] };
+  | { kind: 'exact'; start: string; end: string | null; startMinutes: number; endDropped?: boolean }
+  | { kind: 'meridiem'; options: MeridiemOption[]; endDropped?: boolean };
 
 function to24(hour: number, meridiem: Meridiem): number {
   if (hour > 12) return hour;
@@ -224,7 +224,11 @@ export function resolveTime(match: TimeMatch | null, daypart: Daypart | null): T
   return resolveRange(match.start, match.end, daypart);
 }
 
-function exact(hour: number, minute: number, endMinutes: number | null): TimeResolution {
+function exact(
+  hour: number,
+  minute: number,
+  endMinutes: number | null,
+): Extract<TimeResolution, { kind: 'exact' }> {
   return {
     kind: 'exact',
     start: hm(hour, minute),
@@ -233,58 +237,69 @@ function exact(hour: number, minute: number, endMinutes: number | null): TimeRes
   };
 }
 
+const MAX_PLAUSIBLE_RANGE_MINUTES = 12 * 60;
+
+/**
+ * Founder-approved range rule (spec section 9). A range with one stated meridiem is read with
+ * that meridiem on both ends and with the unstated end in the opposite half of the day. Keep
+ * only readings where start < end on the same date and the span is under 12 hours.
+ * One reading: use it. Two: ask. None: ask about the start only and drop the end.
+ */
 function resolveRange(start: Clock, end: Clock, daypart: Daypart | null): TimeResolution {
-  const startMin = (h: number, c: Clock): number => h * 60 + c.minute;
-
-  // Explicit 24-hour readings need no meridiem.
-  const startHour24 = start.hour >= 13 || start.hour === 0;
-  const endHour24 = end.hour >= 13 || end.hour === 0;
   const stated = start.meridiem ?? end.meridiem ?? daypart;
+  const fromDaypart = start.meridiem === null && end.meridiem === null;
 
-  const hourFor = (
-    clock: Clock,
-    own: Meridiem | null,
-    borrowed: Meridiem | null,
-  ): number | null => {
-    if (clock.hour >= 13 || clock.hour === 0) return clock.hour;
-    const meridiem = own ?? borrowed;
-    return meridiem === null ? null : to24(clock.hour, meridiem);
+  const hoursFor = (clock: Clock): { hours: number[]; fixed: boolean } => {
+    if (clock.hour >= 13 || clock.hour === 0) return { hours: [clock.hour], fixed: true };
+    if (clock.meridiem !== null) return { hours: [to24(clock.hour, clock.meridiem)], fixed: true };
+    if (stated === null)
+      return { hours: [to24(clock.hour, 'am'), to24(clock.hour, 'pm')], fixed: false };
+    const opposite: Meridiem = stated === 'am' ? 'pm' : 'am';
+    if (fromDaypart && daypart !== null) return { hours: [to24(clock.hour, stated)], fixed: false };
+    return { hours: [to24(clock.hour, stated), to24(clock.hour, opposite)], fixed: false };
   };
 
-  if (startHour24 || endHour24 || stated !== null) {
-    const borrowedStart = end.meridiem ?? daypart ?? (endHour24 && end.hour >= 12 ? 'pm' : null);
-    const borrowedEnd =
-      start.meridiem ?? daypart ?? (startHour24 && start.hour >= 12 ? 'pm' : null);
-    const s = hourFor(start, start.meridiem, borrowedStart);
-    const e = hourFor(end, end.meridiem, borrowedEnd);
-    if (s !== null && e !== null) {
-      if (startMin(s, start) < startMin(e, end)) return exact(s, start.minute, startMin(e, end));
-      // Same meridiem for both does not fit: read the start as the other half of the day.
-      if (start.meridiem === null && end.meridiem !== null) {
-        const flipped = to24(start.hour, end.meridiem === 'pm' ? 'am' : 'pm');
-        if (startMin(flipped, start) < startMin(e, end)) {
-          return exact(flipped, start.minute, startMin(e, end));
-        }
-      }
-      return exact(s, start.minute, null);
+  const startChoices = hoursFor(start);
+  const endChoices = hoursFor(end);
+  const bothFixed = startChoices.fixed && endChoices.fixed;
+
+  const readings: Array<{ s: number; e: number; startHour: number; endHour: number }> = [];
+  for (const startHour of startChoices.hours) {
+    for (const endHour of endChoices.hours) {
+      const s = startHour * 60 + start.minute;
+      const e = endHour * 60 + end.minute;
+      if (s >= e) continue;
+      if (!bothFixed && e - s >= MAX_PLAUSIBLE_RANGE_MINUTES) continue;
+      readings.push({ s, e, startHour, endHour });
     }
+  }
+  readings.sort((a, b) => a.s - b.s);
+
+  const only = readings[0];
+  if (readings.length === 1 && only) return exact(only.startHour, start.minute, only.e);
+  if (readings.length > 1) {
+    return {
+      kind: 'meridiem',
+      options: readings.map((r) => ({
+        label: `${formatClockLabel(r.startHour, start.minute)} – ${formatClockLabel(r.endHour, end.minute)}`,
+        startTime: hm(r.startHour, start.minute),
+        endTime: hm(r.endHour, end.minute),
+      })),
+    };
   }
 
-  const options: MeridiemOption[] = [];
-  for (const meridiem of ['am', 'pm'] as const) {
-    const s = to24(start.hour, meridiem);
-    const e = to24(end.hour, meridiem);
-    if (startMin(s, start) < startMin(e, end)) {
-      options.push({
-        label: `${formatClockLabel(s, start.minute)} – ${formatClockLabel(e, end.minute)}`,
-        startTime: hm(s, start.minute),
-        endTime: hm(e, end.minute),
-      });
-    }
+  // No valid reading: keep the start, drop the end.
+  const startHour = startChoices.hours[0];
+  if (startChoices.fixed && startHour !== undefined) {
+    return { ...exact(startHour, start.minute, null), endDropped: true };
   }
-  if (options.length === 2) return { kind: 'meridiem', options };
-  // Neither half of the day fits both ends ("11 to 1"): read it as morning into afternoon.
-  const s = to24(start.hour, 'am');
-  const e = to24(end.hour, 'pm');
-  return exact(s, start.minute, startMin(e, end));
+  return {
+    kind: 'meridiem',
+    endDropped: true,
+    options: startChoices.hours.map((h) => ({
+      label: formatClockLabel(h, start.minute),
+      startTime: hm(h, start.minute),
+      endTime: null,
+    })),
+  };
 }
