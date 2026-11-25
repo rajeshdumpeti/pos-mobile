@@ -10,6 +10,7 @@
   "scripts": {
     "start": "expo start",
     "start:dev-client": "expo start --dev-client",
+    "start:staging": "node --env-file=.env.staging node_modules/expo/bin/cli start --dev-client --clear",
     "config:public": "expo config --type public",
     "auth:readiness": "node scripts/auth-readiness-check.mjs",
     "brand:generate": "node scripts/generate-brand-assets.mjs",
