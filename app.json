@@ -12,7 +12,9 @@
       "bundleIdentifier": "com.personaloperatingsystem.mobile",
       "buildNumber": "1",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSMicrophoneUsageDescription": "POS uses the microphone only while you're adding a task by voice.",
+        "NSSpeechRecognitionUsageDescription": "Your speech is turned into text on this iPhone to create the task you ask for. It isn't sent to POS or anyone else."
       }
     },
     "android": {
